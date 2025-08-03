@@ -109,11 +109,50 @@ void loop() {
 
   if(Serial.available()) {
     temp = Serial.read();
-    if(temp == 0x10) {
-      mode = 1;
-      temp = 0xff;
-      start_capture = 1;
-      Serial.println(F("ACK CMD CAM start single shoot. END"));
+
+    switch(temp) {
+      case 0x10:
+        mode = 1;
+        temp = 0xff;
+        start_capture = 1;
+        Serial.println(F("ACK CMD CAM start single shoot. END"));
+        break;
+
+      case 0x01:
+        myCAM.OV2640_set_JPEG_size(OV2640_160x120);
+        break;
+
+      case 0x02:
+        myCAM.OV2640_set_JPEG_size(OV2640_176x144);
+        break;
+
+      case 0x03:
+        myCAM.OV2640_set_JPEG_size(OV2640_320x240);
+        break;
+
+      case 0x04:
+        myCAM.OV2640_set_JPEG_size(OV2640_352x288);
+        break;
+
+      case 0x05:
+        myCAM.OV2640_set_JPEG_size(OV2640_640x480);
+        break;
+
+      case 0x06:
+        myCAM.OV2640_set_JPEG_size(OV2640_800x600);
+        break;
+
+      case 0x07:
+        myCAM.OV2640_set_JPEG_size(OV2640_1024x768);
+        break;
+
+      case 0x08:
+        myCAM.OV2640_set_JPEG_size(OV2640_1280x1024);
+        break;
+
+      case 0x09:
+        myCAM.OV2640_set_JPEG_size(OV2640_1600x1200);
+        break;
     }
   }
 
