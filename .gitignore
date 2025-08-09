@@ -140,3 +140,6 @@ GitHub.sublime-settings
 
 # Photos
 *.jpg
+
+# Config file
+config.h
