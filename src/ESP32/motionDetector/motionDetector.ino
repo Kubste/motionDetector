@@ -4,13 +4,13 @@
 #include <Wire.h>
 #include <ArduCAM.h>
 #include <SPI.h>
-#include <vector>
 
 // configuration files
 #include "memorysaver.h"
 #include "config.h"
 
 #define BMPIMAGEOFFSET 66
+#define CHUNK_SIZE 4096
 
 const int CS = 5;
 bool is_header = false;
@@ -18,79 +18,62 @@ int mode = 0;
 uint8_t start_capture = 0;
 //uint8_t length = 0, width = 0;
 uint8_t length = 160, width = 120;
-std::vector<uint8_t> image_buffer;
+uint8_t chunk_buffer[CHUNK_SIZE];
 
 ArduCAM myCAM(OV2640, CS);
 
-uint8_t read_fifo_burst(ArduCAM myCAM) {
-  uint8_t temp = 0, temp_last = 0;
-  uint32_t buffer_length = 0;
-  buffer_length = myCAM.read_fifo_length();
+void read_chunk(uint8_t bytes_to_read) {
+  for(uint16_t i = 0; i < bytes_to_read; i++) {
+    chunk_buffer[i] = SPI.transfer(0x00);
+    delayMicroseconds(15);
+  }
+}
 
-  if(buffer_length >= MAX_FIFO_SIZE) {
+bool send_image(String endpoint) {
+  int len = myCAM.read_fifo_length();
+
+  if(len >= MAX_FIFO_SIZE) {
     Serial.println(F("ACK CMD Over size. END"));
-    return 0;
+    return false;
   }
 
-  if(buffer_length == 0 ) {
+  if(len == 0 ) {
     Serial.println(F("ACK CMD Size is 0. END"));
-    return 0;
+    return false;
   }
+
+  Serial.println(String("Image size: " + String(len) + " bytes"));
+
+  HTTPClient http;
+  http.begin(String(serverURL) + "/" + String(uploadEndpoint));
+  http.addHeader("Content-Type", "image/jpeg");
+  http.addHeader("Content-Length", String(len));
+
+  int httpCode = http.sendRequest("POST");
+  if(httpCode <= 0) {
+    Serial.println("HTTP begin failed: " +  String(http.errorToString(httpCode).c_str()));
+    return false;
+  }
+
+  WiFiClient* stream = http.getStreamPtr();
 
   myCAM.CS_LOW();
   myCAM.set_fifo_burst();//Set fifo burst mode
-  temp =  SPI.transfer(0x00);
-  buffer_length --;
 
-  while(buffer_length--) {
-    temp_last = temp;
-    temp =  SPI.transfer(0x00);
-
-    //if(is_header == true) Serial.write(temp);
-    if(is_header == true) image_buffer.push_back(temp);
-    else if((temp == 0xD8) & (temp_last == 0xFF)) {
-      is_header = true;
-      Serial.println(F("ACK IMG END"));
-      image_buffer.push_back(temp_last);
-      image_buffer.push_back(temp);
-      // Serial.write(temp_last);
-      // Serial.write(temp);
-    }
-
-    if((temp == 0xD9) && (temp_last == 0xFF))
-    break;
-    delayMicroseconds(15);
+  while(len > 0) {
+    uint16_t bytesToRead = min(CHUNK_SIZE, len);
+    read_chunk(bytesToRead);
+    stream->write(chunk_buffer, bytesToRead);
+    len -= bytesToRead;
   }
 
   myCAM.CS_HIGH();
-  is_header = false;
-  return 1;
+
+  http.end();
+  Serial.println("Image sent successfully");
+  return true;
 }
 
-bool send_picture() {
-  if(WiFi.status() != WL_CONNECTED) {
-    Serial.println("Cannot connect to Wi-Fi");
-    return false;
-  }
-
-  Serial.println("TestSend");
-
-  HTTPClient client;
-  client.begin(serverURL);
-  client.addHeader("Content-Type", "image/jpeg");
-
-  int response = client.POST(image_buffer.data(), image_buffer.size());
-
-  if(response > 0) {
-    Serial.println(String("HTTP Response code: " + response));
-    client.end();
-    return true;
-  } else {
-    Serial.println(String("HTTP error code: " + client.errorToString(response)));
-    client.end();
-    return false;
-  }
-}
 
 void setup() {
   pinMode(CS, OUTPUT);
@@ -138,7 +121,7 @@ void setup() {
       Serial.println(F("ACK CMD Can't find OV2640 module! END"));
       delay(1000);continue;
     } else {
-      Serial.println(F("ACK CMD OV2640 detected. END"));break;
+      Serial.println(F("ACK CMD OV2640 detected. END")); break;
     } 
   }
 
@@ -151,7 +134,7 @@ void setup() {
   WiFi.begin(ssid, password);
   while(WiFi.status() != WL_CONNECTED) {
     delay(500);
-    Serial.println("Cannot conenct to Wi-Fi network");
+    Serial.println("Cannot connect to Wi-Fi network");
   }
   Serial.println("Connected to Wi-FI network");
 }
@@ -235,29 +218,22 @@ void loop() {
       myCAM.flush_fifo();
       myCAM.clear_fifo_flag();
 
-      // clearing image_buffer
-      image_buffer.clear();
-      image_buffer.shrink_to_fit();
-
       //Start capture
       myCAM.start_capture();
       start_capture = 0;
       Serial.println("Test3");
     }
 
-    delay(5000);
-
     if(myCAM.get_bit(ARDUCHIP_TRIG, CAP_DONE_MASK)) {
       Serial.println("Test4");
       Serial.println(F("ACK CMD CAM Capture Done. END"));
       delay(50);
-      read_fifo_burst(myCAM);
-      if(send_picture()) Serial.println("Picture sent");
-      else {
-        Serial.println("Error while sending picture");
-      }
+      //read_fifo_burst(myCAM);
+      if(send_image(uploadEndpoint)) Serial.println("Image was sent");
+      else Serial.println("Error while sending image");
       //Clear the capture done flag
       myCAM.clear_fifo_flag();
     }
   }
+  delay(5000);
 }
