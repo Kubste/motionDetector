@@ -1,6 +1,7 @@
 // libraries
 #include <WiFi.h>
 #include <HTTPClient.h>
+#include <WebServer.h>
 #include <Wire.h>
 #include <ArduCAM.h>
 #include <SPI.h>
@@ -16,11 +17,10 @@ const int CS = 5;
 bool is_header = false;
 int mode = 0;
 uint8_t start_capture = 0;
-//uint8_t length = 0, width = 0;
-uint8_t length = 160, width = 120;
 uint8_t chunk_buffer[CHUNK_SIZE];
 
 ArduCAM myCAM(OV2640, CS);
+WebServer server(80);
 
 void read_chunk(uint8_t bytes_to_read) {
   for(uint16_t i = 0; i < bytes_to_read; i++) {
@@ -74,10 +74,36 @@ bool send_image(String endpoint) {
   return true;
 }
 
+void setResolution() {
+  if (server.hasArg("res")) {
+    String res = server.arg("res");
+
+    // generally switch would be better, but string cannot be directly used in C++ switch - helping function needed
+    if(res == "160x120") myCAM.OV2640_set_JPEG_size(OV2640_160x120); 
+    else if(res == "176x144") myCAM.OV2640_set_JPEG_size(OV2640_176x144);
+    else if(res == "320x240") myCAM.OV2640_set_JPEG_size(OV2640_320x240);
+    else if(res == "640x480") myCAM.OV2640_set_JPEG_size(OV2640_640x480);
+    else if(res == "800x600") myCAM.OV2640_set_JPEG_size(OV2640_800x600);
+    else if(res == "1024x768") myCAM.OV2640_set_JPEG_size(OV2640_1024x768);
+    else if(res == "1280x1024") myCAM.OV2640_set_JPEG_size(OV2640_1280x1024);
+    else if(res == "1600x1200") myCAM.OV2640_set_JPEG_size(OV2640_1600x1200);
+    else {
+      server.send(400, "text/plain", "Invalid resolution");
+      return;
+    }
+
+    server.send(200, "text/plain", "Resolution set to " + res);
+  } else server.send(400, "text/plain", "No resolution parameter");
+}
+
 
 void setup() {
   pinMode(CS, OUTPUT);
   digitalWrite(CS, HIGH);
+
+  server.on("/set_resolution", setResolution);
+  server.begin();
+  Serial.println("HTTP server started");
 
   //        sck miso mosi ss
   //SPI.begin(14, 12, 13, 15);    // changed to HSPI pins to avoid conflicts with WiFi library
@@ -140,78 +166,15 @@ void setup() {
 }
 
 void loop() {
-  uint8_t temp = 0xff, temp_last = 0;
+  //receiving setResolution()
+  server.handleClient();
+
   bool is_header = false;
-  Serial.println("Test1");
 
-  //if(Serial.available()) {
-    //temp = Serial.read();
-    temp = 0x10;
-    Serial.println("Test2");
-
-    switch(temp) {
-      case 0x10:
-        mode = 1;
-        temp = 0xff;
-        start_capture = 1;
-        Serial.println(F("ACK CMD CAM start single shoot. END"));
-        break;
-
-      case 0x01:
-        myCAM.OV2640_set_JPEG_size(OV2640_160x120);
-        length = 160;
-        width = 120;
-        break;
-
-      case 0x02:
-        myCAM.OV2640_set_JPEG_size(OV2640_176x144);
-        length = 176;
-        width = 144;
-        break;
-
-      case 0x03:
-        myCAM.OV2640_set_JPEG_size(OV2640_320x240);
-        length = 320;
-        width = 240;
-        break;
-
-      case 0x04:
-        myCAM.OV2640_set_JPEG_size(OV2640_352x288);
-        length = 352;
-        width = 288;
-        break;
-
-      case 0x05:
-        myCAM.OV2640_set_JPEG_size(OV2640_640x480);
-        length = 640;
-        width = 480;
-        break;
-
-      case 0x06:
-        myCAM.OV2640_set_JPEG_size(OV2640_800x600);
-        length = 800;
-        width = 600;
-        break;
-
-      case 0x07:
-        myCAM.OV2640_set_JPEG_size(OV2640_1024x768);
-        length = 1024;
-        width = 768;
-        break;
-
-      case 0x08:
-        myCAM.OV2640_set_JPEG_size(OV2640_1280x1024);
-        length = 1280;
-        width = 1024;
-        break;
-
-      case 0x09:
-        myCAM.OV2640_set_JPEG_size(OV2640_1600x1200);
-        length = 1600;
-        width = 1200;
-        break;
-    }
-  //}
+  mode = 1;
+  start_capture = 1;
+  Serial.println(F("ACK CMD CAM start single shoot. END"));
+  
 
   if(mode == 1) {
     if(start_capture == 1) {
