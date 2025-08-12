@@ -20,6 +20,7 @@ uint8_t chunk_buffer[CHUNK_SIZE];
 ArduCAM myCAM(OV2640, CS);
 WebServer server(80);
 
+// function to send image chunks to the server
 bool send_image() {
   // can overflow int
   uint32_t len = myCAM.read_fifo_length();
@@ -35,6 +36,7 @@ bool send_image() {
     return false;
   }
 
+  // checking connection to server
   WiFiClient client;
   if(!client.connect(serverHost, serverPort)) {
     Serial.println(F("TCP connect failed"));
@@ -42,23 +44,21 @@ bool send_image() {
   }
 
   // building HTTP request
-  client.printf("POST %s HTTP/1.1\r\n", uploadEndpoint);
-  client.printf("Host: %s\r\n", serverHost);
-  client.println("Content-Type: image/jpeg");
-  client.printf("Content-Length: %u\r\n", len);
-  client.println("Connection: close");
-  client.println();
+  client.printf("POST %s HTTP/1.1\r\n", uploadEndpoint);  // HTTP server endpoint address
+  client.printf("Host: %s\r\n", serverHost);              // server address
+  client.println("Content-Type: image/jpeg");             // JPEG image
+  client.printf("Content-Length: %u\r\n", len);           // length of an image
+  client.println("Connection: close");                    // instructs the server to close TCP connection after receiving image data
+  client.println();                                       // end of header
 
   // sending image body chunks
   myCAM.CS_LOW();
   myCAM.set_fifo_burst();
 
   while(len > 0) {
-    int n = min(CHUNK_SIZE, int(len));
-    for(int i = 0; i < n; i++) {
-      chunk_buffer[i] = SPI.transfer(0x00);
-    }
-    client.write(chunk_buffer, n);
+    int n = min(CHUNK_SIZE, int(len));      // chunk size - the last one might be smaller
+    for(int i = 0; i < n; i++) chunk_buffer[i] = SPI.transfer(0x00);
+    client.write(chunk_buffer, n);          // sending image chunks
     len -= n;
   }
   myCAM.CS_HIGH();
@@ -71,6 +71,7 @@ bool send_image() {
   return true;
 }
 
+// function to set the camera resolution
 void setResolution() {
   if (server.hasArg("res")) {
     String res = server.arg("res");
@@ -88,6 +89,7 @@ void setResolution() {
       server.send(400, "text/plain", "Invalid resolution");
       return;
     }
+    Serial.println(String("Resolution changed to: " + res));
 
     server.send(200, "text/plain", "Resolution set to " + res);
   } else server.send(400, "text/plain", "No resolution parameter");
@@ -114,6 +116,7 @@ void setup() {
   }
   Serial.println("Connected to Wi-FI network");
 
+  // setting up HTTP server to receive requests to change camera resolution
   server.on("/set_resolution", setResolution);
   server.begin();
   Serial.println("HTTP server started");
@@ -183,7 +186,7 @@ void loop() {
       start_capture = 0;
       Serial.println("Test3");
     }
-
+    delay(5000);
     if(myCAM.get_bit(ARDUCHIP_TRIG, CAP_DONE_MASK)) {
       Serial.println("Test4");
       Serial.println(F("ACK CMD CAM Capture Done. END"));
@@ -195,5 +198,4 @@ void loop() {
       myCAM.clear_fifo_flag();
     }
   }
-  delay(5000);
 }

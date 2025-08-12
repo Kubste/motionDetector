@@ -1,22 +1,31 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request
+import os
+from datetime import datetime
 
 app = Flask(__name__)
 
-@app.route('/upload', methods=['POST'])
+UPLOAD_FOLDER = "uploads"
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+@app.route("/upload", methods=["POST"])
 def upload_image():
-    # The JPEG data is sent as raw bytes in the body
-    image_data = request.data
-    if not image_data:
-        return jsonify({'error': 'No image data received'}), 400
-    
     try:
-        # Save the image to a file
-        with open('received_image.jpg', 'wb') as f:
+        # Save incoming raw data as a file
+        image_data = request.data
+        if not image_data:
+            return "No image data received", 400
+
+        filename = datetime.now().strftime("%Y%m%d_%H%M%S") + ".jpg"
+        filepath = os.path.join(UPLOAD_FOLDER, filename)
+
+        with open(filepath, "wb") as f:
             f.write(image_data)
+
+        print(f"Image saved: {filepath}")
+        return "Image received", 200
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        print(f"Error: {e}")
+        return "Internal server error", 500
 
-    return jsonify({'message': 'Image received successfully'}), 200
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
