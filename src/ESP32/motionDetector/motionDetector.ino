@@ -15,7 +15,10 @@
 bool is_header = false;
 int mode = 0;
 uint8_t start_capture = 0;
-uint8_t chunk_buffer[CHUNK_SIZE];
+uint8_t chunk_buffer[CHUNK_SIZE];   // image chunk buffer
+
+volatile bool motionDetected = false;
+volatile unsigned long lastCaptured;
 
 ArduCAM myCAM(OV2640, CS);
 WebServer server(80);
@@ -73,7 +76,7 @@ bool send_image() {
 
 // function to set the camera resolution
 void setResolution() {
-  if (server.hasArg("res")) {
+  if(server.hasArg("res")) {
     String res = server.arg("res");
 
     // generally switch would be better, but string cannot be directly used in C++ switch - helping function needed
@@ -95,10 +98,21 @@ void setResolution() {
   } else server.send(400, "text/plain", "No resolution parameter");
 }
 
+// function that will be call by interrupt - IRAM_ATTR - put function code in RAM not flash memory
+// using micros() instead of millis() because millis() should not be used in interrupt functions
+void IRAM_ATTR detectMotion() {
+  if(micros() - lastCaptured > CAPTURE_TIMEOUT * 1000000) {
+    motionDetected = true;
+    lastCaptured = micros();
+  }
+}
 
 void setup() {
   pinMode(CS, OUTPUT);
+  pinMode(PIR_PIN, INPUT);
   digitalWrite(CS, HIGH);
+
+  attachInterrupt(digitalPinToInterrupt(PIR_PIN), detectMotion, RISING);
 
   #if defined(__SAM3X8E__)
     Wire1.begin();
@@ -150,12 +164,10 @@ void setup() {
     myCAM.wrSensorReg8_8(0xff, 0x01);
     myCAM.rdSensorReg8_8(OV2640_CHIPID_HIGH, &vid);
     myCAM.rdSensorReg8_8(OV2640_CHIPID_LOW, &pid);
-    if ((vid != 0x26 ) && (( pid != 0x41 ) || ( pid != 0x42 ))){
+    if((vid != 0x26 ) && (( pid != 0x41 ) || ( pid != 0x42 ))) {
       Serial.println(F("ACK CMD Can't find OV2640 module! END"));
       delay(1000);continue;
-    } else {
-      Serial.println(F("ACK CMD OV2640 detected. END")); break;
-    } 
+    } else Serial.println(F("ACK CMD OV2640 detected. END")); break;
   }
 
   myCAM.set_format(JPEG);
@@ -163,6 +175,8 @@ void setup() {
   myCAM.OV2640_set_JPEG_size(OV2640_1600x1200);
   delay(1000);
   myCAM.clear_fifo_flag();
+
+  lastCaptured = micros();
 }
 
 void loop() {
@@ -171,11 +185,14 @@ void loop() {
 
   is_header = false;
 
-  mode = 1;
-  start_capture = 1;
-  Serial.println(F("ACK CMD CAM start single shoot. END"));
-  
+  if(motionDetected) {
+    mode = 1;
+    start_capture = 1;
+    Serial.println(F("ACK CMD CAM start single shoot. END"));
 
+    motionDetected = false;
+  } 
+  
   if(mode == 1) {
     if(start_capture == 1) {
       myCAM.flush_fifo();
@@ -184,11 +201,9 @@ void loop() {
       //Start capture
       myCAM.start_capture();
       start_capture = 0;
-      Serial.println("Test3");
     }
-    delay(5000);
+    delay(1000);
     if(myCAM.get_bit(ARDUCHIP_TRIG, CAP_DONE_MASK)) {
-      Serial.println("Test4");
       Serial.println(F("ACK CMD CAM Capture Done. END"));
       delay(50);
       //read_fifo_burst(myCAM);
