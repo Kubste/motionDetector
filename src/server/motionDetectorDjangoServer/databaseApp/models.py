@@ -6,6 +6,7 @@ class Camera(models.Model):
     boardName = models.CharField(max_length=32)
     location =models.CharField(max_length=64)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    address = models.GenericIPAddressField(protocol='IPv4', unique=True)
 
     def __str__(self):
         return self.cameraName
@@ -16,7 +17,7 @@ class ImageInfo(models.Model):
     fileType = models.CharField(max_length=16)
     resolution = models.CharField(max_length=16)
     timestamp = models.DateTimeField()
-    camera = models.ForeignKey(Camera, on_delete=models.CASCADE, related_name='images')
+    camera = models.ForeignKey(Camera, on_delete=models.CASCADE, related_name='cameras')
 
     def __str__(self):
         return self.filename
