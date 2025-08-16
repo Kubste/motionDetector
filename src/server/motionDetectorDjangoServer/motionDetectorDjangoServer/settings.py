@@ -15,6 +15,7 @@ from decouple import config     # database config file
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+UPLOAD_FOLDER = os.path.join(BASE_DIR.parent, "uploads")
 
 
 # Quick-start development settings - unsuitable for production
@@ -26,7 +27,7 @@ SECRET_KEY = 'django-insecure-$v@d*xp0$l7p%oqmnf49oyx!nr269mxpxb2evezeb@gikd&wln
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -136,4 +137,3 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'auth_manager.User'
-UPLOAD_FOLDER = os.path.join(BASE_DIR, "uploads")

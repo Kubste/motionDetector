@@ -141,9 +141,11 @@ GitHub.sublime-settings
 .history
 
 # Photos
-*.jpg
+**.jpg
+**.png
 
 # Config file
 config.h
 
+**/uploads
 bib.txt
