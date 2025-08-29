@@ -6,7 +6,6 @@ from .utils import save_file, save_file_metadata, get_client_ip, change_resoluti
 import json
 
 # changing the camera resolution
-@csrf_exempt
 def change_camera_resolution(request):
     # getting POST request from frontend
     if request.method != "POST":
@@ -33,7 +32,6 @@ def change_camera_resolution(request):
 
 
 # uploading new image to filesystem
-@csrf_exempt
 @require_POST
 def upload_image(request):
     try:

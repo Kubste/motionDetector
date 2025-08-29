@@ -1,4 +1,6 @@
 from rest_framework import serializers
+from rest_framework.exceptions import PermissionDenied
+
 from databaseApp.models import *
 
 class CameraSerializer(serializers.ModelSerializer):
@@ -6,10 +8,24 @@ class CameraSerializer(serializers.ModelSerializer):
         model = Camera
         fields = "__all__"
 
+    # only 'admin' can change user
+    def update(self, instance, validated_data):
+        user_role = self.context['request'].user.role
+
+        if 'user' in validated_data and user_role != 'admin':
+            raise PermissionDenied
+
 class ImageInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = ImageInfo
         fields = "__all__"
+
+    # only 'admin' can change file_size, file_type and timestamp
+    def update(self, instance, validated_data):
+        user_role = self.context['request'].user.role
+
+        if ('file_size' in validated_data or 'file_type' in validated_data or 'timestamp' in validated_data) and user_role != 'admin':
+            raise PermissionDenied
 
 class TensorFlowModelSerializer(serializers.ModelSerializer):
     class Meta:

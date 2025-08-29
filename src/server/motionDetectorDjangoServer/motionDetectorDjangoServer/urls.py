@@ -22,4 +22,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('camera/', include('cameraManager.urls', namespace='cameraManager')),
     path('api/', include('api.urls', namespace='api')),
+    path('auth/', include('auth_manager.urls', namespace='auth')),
 ]
