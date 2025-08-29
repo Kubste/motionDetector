@@ -5,7 +5,7 @@ from django.db import models
 class User(AbstractUser):
 
     # fields required for superuser
-    REQUIRED_FIELDS = ['phone_number', 'email', 'role']
+    REQUIRED_FIELDS = ['phone_number', 'email', 'role', 'first_name', 'last_name']
 
     ROLE_CHOICES = [
         ('admin', 'Administrator'),
