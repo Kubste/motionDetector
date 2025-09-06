@@ -1,9 +1,11 @@
-from rest_framework import generics, status
+from knox.views import LogoutAllView
+from rest_framework import generics, status, permissions
 from knox.models import AuthToken
+from knox.auth import TokenAuthentication
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from .serializers import RegisterSerializer
+from .serializers import RegisterSerializer, PasswordChangeSerializer
 from .permissions import IsAdmin
 
 class LoginView(generics.GenericAPIView):
@@ -30,6 +32,22 @@ class RegisterView(generics.CreateAPIView):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)         # using RegisterSerializer
         serializer.is_valid(raise_exception=True)                   # automatically checks token, if wrong -> returns 400
-        user = serializer.save()                                    # calls serializer.create()
+        user = serializer.save()                                    # calls serializer.create() - no instance parameter in .get_serializer()
 
         return Response({"success": True, "user": RegisterSerializer(user).data}, status=status.HTTP_201_CREATED)
+
+class PasswordChangeView(generics.UpdateAPIView):
+    serializer_class = PasswordChangeSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    # getting user object
+    def get_object(self):
+        return self.request.user
+
+    def update(self, request, *args, **kwargs):
+        serializer = self.get_serializer(instance=request.user, data=request.data)  # using PasswordChangeSerializer
+        serializer.is_valid(raise_exception=True)                                   # automatically validates passwords
+        serializer.save()                                                           # calls serializer.update() - given instance parameter in .get_serializer()
+
+        return Response({"success": True, "user_id": request.user.id}, status=status.HTTP_200_OK)
