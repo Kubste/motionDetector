@@ -8,6 +8,7 @@ class User(AbstractUser):
     REQUIRED_FIELDS = ['phone_number', 'email', 'role', 'first_name', 'last_name']
 
     ROLE_CHOICES = [
+        ('sup', 'Superuser'),
         ('admin', 'Administrator'),
         ('user', 'User'),
     ]

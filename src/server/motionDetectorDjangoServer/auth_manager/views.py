@@ -6,7 +6,7 @@ from rest_framework.authtoken.serializers import AuthTokenSerializer
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from .serializers import RegisterSerializer, PasswordChangeSerializer
-from .permissions import IsAdmin
+from .permissions import IsAdmin, IsSuperuser, IsSuperuserOrAdmin
 
 class LoginView(generics.GenericAPIView):
     serializer_class = AuthTokenSerializer
@@ -24,17 +24,24 @@ class LoginView(generics.GenericAPIView):
         token = AuthToken.objects.create(user)[1]                   # getting token as string
         return Response({"user_id": user.id, "token": token}, status=status.HTTP_200_OK)
 
+class LogoutOutAllUsers(generics.GenericAPIView):
+    permission_classes = [IsSuperuser]
+
+    def post(self, request, *args, **kwargs):
+        AuthToken.objects.all().delete()
+        return Response({"detail": "All users have been logged out."}, status=status.HTTP_200_OK)
+
 # generics.CreateAPIView - only POST method allowed
 class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
-    permission_classes = [IsAdmin]                                  # only admin can register
+    permission_classes = [IsSuperuserOrAdmin]                       # only superuser or admin can register
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)         # using RegisterSerializer
         serializer.is_valid(raise_exception=True)                   # automatically checks token, if wrong -> returns 400
         user = serializer.save()                                    # calls serializer.create() - no instance parameter in .get_serializer()
 
-        return Response({"success": True, "user": RegisterSerializer(user).data}, status=status.HTTP_201_CREATED)
+        return Response({"success": True, "user": self.get_serializer(user).data}, status=status.HTTP_201_CREATED)
 
 class PasswordChangeView(generics.UpdateAPIView):
     serializer_class = PasswordChangeSerializer

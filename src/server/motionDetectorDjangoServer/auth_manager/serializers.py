@@ -12,17 +12,42 @@ class RegisterSerializer(serializers.ModelSerializer):
         fields = ['first_name', 'last_name', 'email', 'phone_number', 'password', 'role', 'username']
         
     def create(self, validated_data):
+        role = validated_data.get('role', 'user')       # default 'user' role if not provided
+
+        if role in ['sup', 'admin']:
+            is_staff = True
+        else:
+            is_staff = False
+
+        if role == 'sup':
+            is_superuser = True
+        else:
+            is_superuser = False
+
         user = User(
             first_name=validated_data['first_name'],
             last_name=validated_data['last_name'],
             phone_number=validated_data['phone_number'],
             email=validated_data['email'],
-            role=validated_data.get('role', 'user'),    # default 'user' role
-            username=validated_data['username']
+            role=role,
+            username=validated_data['username'],
+            is_staff=is_staff,
+            is_superuser=is_superuser
         )
         user.set_password(validated_data['password'])   # hash the password
         user.save()
         return user
+
+    def validate(self, attrs):
+        role = self.context['request'].user.role
+
+        if role not in ['sup', 'admin']:
+            raise ValidationError('Only superadmin and administrator can register users')
+
+        if role == 'admin' and attrs['role'] != 'user':
+            raise ValidationError('Administrator can only register users')
+
+        return attrs
 
 class PasswordChangeSerializer(serializers.ModelSerializer):
     # extra only serializer fields that does not exist in User model
