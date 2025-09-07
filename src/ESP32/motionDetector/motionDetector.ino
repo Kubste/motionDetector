@@ -129,6 +129,8 @@ void setup() {
     Serial.println("Cannot connect to Wi-Fi network");
   }
   Serial.println("Connected to Wi-FI network");
+  Serial.print("ESP32 IP address: ");
+  Serial.println(WiFi.localIP());
 
   // setting up HTTP server to receive requests to change camera resolution
   server.on("/set_resolution", setResolution);

@@ -8,11 +8,20 @@ class CameraSerializer(serializers.ModelSerializer):
         model = Camera
         fields = "__all__"
 
-    # only 'admin' can change user
+    def create(self, validated_data):
+        user = self.context['request'].user
+        print(user.id, flush=True)
+
+        if user.id != validated_data['user'].id and user.role not in ['sup', 'admin']:
+            raise PermissionDenied("Only superuser and admin can assign camera to other user")
+
+        return super().create(validated_data)
+
+    # only superuser and admin can change user
     def update(self, instance, validated_data):
         user_role = self.context['request'].user.role
 
-        if 'user' in validated_data and user_role != 'admin':
+        if 'user' in validated_data and user_role not in ['sup', 'admin']:
             raise PermissionDenied
 
 class ImageInfoSerializer(serializers.ModelSerializer):
@@ -20,11 +29,11 @@ class ImageInfoSerializer(serializers.ModelSerializer):
         model = ImageInfo
         fields = "__all__"
 
-    # only 'admin' can change file_size, file_type and timestamp
+    # only superuser and admin can change file_size, file_type and timestamp
     def update(self, instance, validated_data):
         user_role = self.context['request'].user.role
 
-        if ('file_size' in validated_data or 'file_type' in validated_data or 'timestamp' in validated_data) and user_role != 'admin':
+        if ('file_size' in validated_data or 'file_type' in validated_data or 'timestamp' in validated_data) and user_role not in ['sup', 'admin']:
             raise PermissionDenied
 
 class TensorFlowModelSerializer(serializers.ModelSerializer):

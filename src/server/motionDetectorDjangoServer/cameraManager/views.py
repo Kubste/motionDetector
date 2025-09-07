@@ -32,6 +32,7 @@ def change_camera_resolution(request):
 
 
 # uploading new image to filesystem
+@csrf_exempt
 @require_POST
 def upload_image(request):
     try:
@@ -49,8 +50,8 @@ def upload_image(request):
         if not image_data:
             return JsonResponse({"success": False, "error": "No image data received"}, status=400)
 
-        filename, filepath = save_file(request)             # saving image to filesystem
-        save_file_metadata(filename, filepath, camera)      # saving image metadata to database
+        filename, filepath = save_file(request, camera.user_id)         # saving image to filesystem
+        save_file_metadata(filename, filepath, camera)                  # saving image metadata to database
         return JsonResponse({"success": True, "filename": filename}, status=200)
     except Exception as e:
         print(f"Error: {e}")
