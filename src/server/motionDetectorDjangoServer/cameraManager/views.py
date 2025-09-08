@@ -3,7 +3,7 @@ from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
 from databaseApp.models import Camera
 from auth_manager.models import User
-from .utils import save_file, save_file_metadata, get_client_ip, change_resolution, send_email
+from .utils import save_file, save_file_metadata, get_client_ip, change_resolution, send_email, detect_human, save_tensor_flow_output
 import json
 
 # changing the camera resolution
@@ -51,10 +51,17 @@ def upload_image(request):
         if not image_data:
             return JsonResponse({"success": False, "error": "No image data received"}, status=400)
 
-        filename, filepath = save_file(request, camera.user_id)         # saving image to filesystem
-        save_file_metadata(filename, filepath, camera)                  # saving image metadata to database
+        user = User.objects.get(id=camera.user_id)
+        filename, filepath = save_file(request, camera.user_id)  # saving image to filesystem
+        print(filepath, flush=True)
 
-        send_email(User.objects.get(id=camera.user_id).email, camera.id, camera.location)
+        detected_people, confidence = detect_human(filepath, user.confidence_threshold)   # detecting how many people has been detected on image
+
+        if detected_people >= 1:
+
+            image_info = save_file_metadata(filename, filepath, camera)                     # saving image metadata to database
+            save_tensor_flow_output(confidence, detected_people, image_info)                # saving TensorFlow output for an image
+            send_email(user.email, camera.id, camera.location)                              # sending email to user
 
         return JsonResponse({"success": True, "filename": filename}, status=200)
     except Exception as e:

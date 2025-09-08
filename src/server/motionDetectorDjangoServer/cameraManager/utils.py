@@ -1,10 +1,13 @@
 import os
 import requests
 import smtplib, ssl
+import tensorflow as tf
+import tensorflow_hub as hub
+import cv2
 from email.mime.text import MIMEText
 from decouple import config
 from datetime import datetime
-from databaseApp.models import ImageInfo, Storage, Camera
+from databaseApp.models import ImageInfo, Storage, Camera, TensorFlowOutput, TensorFlowModel
 from motionDetectorDjangoServer.settings import UPLOAD_FOLDER
 from PIL import Image
 
@@ -69,6 +72,8 @@ def save_file_metadata(filename, filepath, camera):
         image_info=image_info
     )
 
+    return image_info
+
 def send_email(user_email, camera_id, location):
     EMAIL_SUBJECT = "Motion detected"
     EMAIL_BODY =    f"""WARNING!!!
@@ -89,4 +94,37 @@ Please check your account immediately"""
     except Exception as e:
         print(f"Error: {e}", flush=True)
 
+def detect_human(image_path, confidence):
+    # model will be cached locally after first download
+    model = hub.load("https://tfhub.dev/tensorflow/ssd_mobilenet_v2/2")
 
+    # converting given image to TensorFlow tensor
+    img = cv2.cvtColor(cv2.imread(image_path), cv2.COLOR_BGR2RGB)
+    input_tensor = tf.convert_to_tensor(img, dtype=tf.uint8)
+    input_tensor = tf.expand_dims(input_tensor, 0)
+
+    # detecting objects classes
+    results = model(input_tensor)
+    classes = results["detection_classes"].numpy()[0]
+    scores = results["detection_scores"].numpy()[0]
+
+    # counting people
+    counter = 0
+    max_score = 0
+    for cls, score in zip(classes, scores):         # enumerating each detected object
+        if int(cls) == 1 and score > confidence:    # checking if object is a human and model is confident enough
+            counter += 1
+            if score > max_score:
+                max_score = score
+
+    return counter, max_score
+
+def save_tensor_flow_output(confidence, counter, image_info):
+
+    TensorFlowOutput.objects.create(
+        confidence=confidence,
+        person_count=counter,
+        is_processed=True,
+        image_info=image_info,
+        tensorFlow_model=TensorFlowModel.objects.get(id=1)      # just for testing right now
+    )
