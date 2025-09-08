@@ -17,7 +17,6 @@ class User(AbstractUser):
     phone_validator = RegexValidator(r'^\d{9,11}$', 'Enter an 9 to 11 digit phone number')
     phone_number = models.CharField(max_length=11, unique=True, validators=[phone_validator])
     role = models.CharField(max_length=8, choices=ROLE_CHOICES, default='user')
-    confidence_threshold = models.FloatField(default=0.1, validators=[MinValueValidator(0.0), MaxValueValidator(1.0)])
 
     def set_user_password(self, password):
         self.set_password(password)

@@ -10,6 +10,7 @@ from datetime import datetime
 from databaseApp.models import ImageInfo, Storage, Camera, TensorFlowOutput, TensorFlowModel
 from motionDetectorDjangoServer.settings import UPLOAD_FOLDER
 from PIL import Image
+from django.utils import timezone
 
 # sending request to change camera resolution
 def change_resolution(resolution, address):
@@ -49,7 +50,7 @@ def save_file(request, user_id):
     return filename, filepath
 
 # saving image file metadata to database
-def save_file_metadata(filename, filepath, camera):
+def save_file_metadata(filename, filepath, camera, output):
     with Image.open(filepath) as img:
         width, height = img.size
         file_type = img.format
@@ -57,19 +58,20 @@ def save_file_metadata(filename, filepath, camera):
     resolution = f"{width}x{height}"
     file_size = os.path.getsize(filepath)
 
+    storage = Storage.objects.create(
+        path=filepath,
+        checksum="",  # to be implemented later
+    )
+
     image_info = ImageInfo.objects.create(
         filename=filename,
         file_size=file_size,
         file_type=file_type,
         resolution=resolution,
-        timestamp=datetime.now(),
-        camera=camera
-    )
-
-    Storage.objects.create(
-        path=filepath,
-        checksum="",    # to be implemented later
-        image_info=image_info
+        timestamp=timezone.now(),
+        camera=camera,
+        output=output,
+        storage=storage,
     )
 
     return image_info
@@ -94,9 +96,9 @@ Please check your account immediately"""
     except Exception as e:
         print(f"Error: {e}", flush=True)
 
-def detect_human(image_path, confidence):
+def detect_human(image_path, confidence, model_url):
     # model will be cached locally after first download
-    model = hub.load("https://tfhub.dev/tensorflow/ssd_mobilenet_v2/2")
+    model = hub.load(model_url)
 
     # converting given image to TensorFlow tensor
     img = cv2.cvtColor(cv2.imread(image_path), cv2.COLOR_BGR2RGB)
@@ -119,12 +121,12 @@ def detect_human(image_path, confidence):
 
     return counter, max_score
 
-def save_tensor_flow_output(confidence, counter, image_info):
+def save_tensor_flow_output(confidence, counter):
 
-    TensorFlowOutput.objects.create(
+    tensorflow_output = TensorFlowOutput.objects.create(
         confidence=confidence,
         person_count=counter,
         is_processed=True,
-        image_info=image_info,
-        tensorFlow_model=TensorFlowModel.objects.get(id=1)      # just for testing right now
     )
+
+    return tensorflow_output
