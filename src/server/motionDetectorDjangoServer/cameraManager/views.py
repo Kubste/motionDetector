@@ -2,7 +2,8 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
 from databaseApp.models import Camera
-from .utils import save_file, save_file_metadata, get_client_ip, change_resolution
+from auth_manager.models import User
+from .utils import save_file, save_file_metadata, get_client_ip, change_resolution, send_email
 import json
 
 # changing the camera resolution
@@ -52,6 +53,9 @@ def upload_image(request):
 
         filename, filepath = save_file(request, camera.user_id)         # saving image to filesystem
         save_file_metadata(filename, filepath, camera)                  # saving image metadata to database
+
+        send_email(User.objects.get(id=camera.user_id).email, camera.id, camera.location)
+
         return JsonResponse({"success": True, "filename": filename}, status=200)
     except Exception as e:
         print(f"Error: {e}")

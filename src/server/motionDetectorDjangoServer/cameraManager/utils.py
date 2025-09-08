@@ -1,5 +1,8 @@
 import os
 import requests
+import smtplib, ssl
+from email.mime.text import MIMEText
+from decouple import config
 from datetime import datetime
 from databaseApp.models import ImageInfo, Storage, Camera
 from motionDetectorDjangoServer.settings import UPLOAD_FOLDER
@@ -65,3 +68,25 @@ def save_file_metadata(filename, filepath, camera):
         checksum="",    # to be implemented later
         image_info=image_info
     )
+
+def send_email(user_email, camera_id, location):
+    EMAIL_SUBJECT = "Motion detected"
+    EMAIL_BODY =    f"""WARNING!!!
+Motion has been detected from camera: {camera_id} located at: {location}!
+Please check your account immediately"""
+
+    msg = MIMEText(EMAIL_BODY, "plain")
+    msg['Subject'] = EMAIL_SUBJECT
+    msg['From'] = config('EMAIL')
+    msg['To'] = user_email
+
+    context = ssl.create_default_context()
+
+    try:
+        with smtplib.SMTP_SSL(config('EMAIL_SERVER'), int(config('EMAIL_PORT')), context=context) as server:
+            server.login(config('EMAIL'), config('PASSWORD'))
+            server.sendmail(config('EMAIL'), user_email, msg.as_string())
+    except Exception as e:
+        print(f"Error: {e}", flush=True)
+
+
