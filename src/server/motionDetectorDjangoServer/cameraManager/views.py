@@ -1,10 +1,12 @@
+import cv2
+import json
+import numpy as np
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
 from databaseApp.models import Camera
 from auth_manager.models import User
 from .utils import save_file, save_file_metadata, get_client_ip, change_resolution, send_email, detect_human, save_tensor_flow_output
-import json
 
 # changing the camera resolution
 def change_camera_resolution(request):
@@ -51,15 +53,22 @@ def upload_image(request):
         if not image_data:
             return JsonResponse({"success": False, "error": "No image data received"}, status=400)
 
-        filename, filepath = save_file(request, camera.user_id)  # saving image to filesystem
-        print(filepath, flush=True)
+        img = cv2.imdecode(np.frombuffer(image_data, np.uint8), cv2.IMREAD_COLOR)     # decoding image to analyse using TensorFlow from request
 
-        detected_people, confidence = detect_human(filepath, camera.confidence_threshold, camera.model.model_url)   # detecting how many people has been detected on image
+        if img is None:
+            return JsonResponse({"success": False, "error": "Invalid image data received"}, status=400)
+
+        detected_people, confidence = detect_human(img, camera.confidence_threshold, camera.model.model_url)   # detecting how many people has been detected on image
 
         if detected_people >= 1:
+            filename, filepath = save_file(request, camera.user_id)                             # saving image to filesystem
+            print(f"Image saved: {filepath}", flush=True)                                       # debug info
             output = save_tensor_flow_output(confidence, detected_people)                       # saving TensorFlow output for an image
             save_file_metadata(filename, filepath, camera, output)                              # saving image metadata to database
             send_email(User.objects.get(id=camera.user_id).email, camera.id, camera.location)   # sending email to user
+        else:
+            print("Image not saved - too low confidence", flush=True)                           # debug info
+            return JsonResponse({"success": False, "error": "Image not saved - too low confidence"}, status=422)    # Unprocessable Content HTTP code
 
         return JsonResponse({"success": True, "filename": filename}, status=200)
     except Exception as e:

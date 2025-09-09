@@ -46,7 +46,6 @@ def save_file(request, user_id):
     with open(filepath, "wb") as f:
         f.write(image_data)
 
-    print(f"Image saved: {filepath}")
     return filename, filepath
 
 # saving image file metadata to database
@@ -96,13 +95,12 @@ Please check your account immediately"""
     except Exception as e:
         print(f"Error: {e}", flush=True)
 
-def detect_human(image_path, confidence, model_url):
+def detect_human(img, confidence, model_url):
     # model will be cached locally after first download
     model = hub.load(model_url)
 
     # converting given image to TensorFlow tensor
-    img = cv2.cvtColor(cv2.imread(image_path), cv2.COLOR_BGR2RGB)
-    input_tensor = tf.convert_to_tensor(img, dtype=tf.uint8)
+    input_tensor = tf.convert_to_tensor(cv2.cvtColor(img, cv2.COLOR_BGR2RGB), dtype=tf.uint8)   # converting image to RGB before converting to tensor
     input_tensor = tf.expand_dims(input_tensor, 0)
 
     # detecting objects classes
