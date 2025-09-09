@@ -62,22 +62,37 @@ def save_file_metadata(filename, filepath, camera, output):
         checksum="",  # to be implemented later
     )
 
+    if output is not None:
+        is_processed = True
+    else:
+        is_processed = False
+
     image_info = ImageInfo.objects.create(
         filename=filename,
         file_size=file_size,
         file_type=file_type,
         resolution=resolution,
         timestamp=timezone.now(),
+        is_processed=is_processed,
         camera=camera,
         output=output,
         storage=storage,
+        model=camera.model,
     )
 
     return image_info
 
-def send_email(user_email, camera_id, location):
+def send_email(user_email, camera_id, confidence, model, location, is_processed):
     EMAIL_SUBJECT = "Motion detected"
-    EMAIL_BODY =    f"""WARNING!!!
+
+    if is_processed:
+        EMAIL_BODY =    f"""WARNING!!!
+Motion has been detected from camera: {camera_id} located at: {location}!
+Event confidence: {confidence} processed by model: {model}.
+Please check your account immediately"""
+
+    else:
+        EMAIL_BODY = f"""WARNING!!!
 Motion has been detected from camera: {camera_id} located at: {location}!
 Please check your account immediately"""
 
@@ -124,7 +139,6 @@ def save_tensor_flow_output(confidence, counter):
     tensorflow_output = TensorFlowOutput.objects.create(
         confidence=confidence,
         person_count=counter,
-        is_processed=True,
     )
 
     return tensorflow_output

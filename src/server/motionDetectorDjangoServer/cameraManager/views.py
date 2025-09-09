@@ -40,7 +40,7 @@ def change_camera_resolution(request):
 def upload_image(request):
     try:
         ip_addr = get_client_ip(request)
-        print(ip_addr, flush=True)      # debug info
+        print(f"Request from: {ip_addr}", flush=True)      # debug info
         camera = Camera.objects.get(address=ip_addr)
     except Camera.DoesNotExist:
         return JsonResponse({"success": False, "error": "Unknown camera"}, status=404)
@@ -58,17 +58,24 @@ def upload_image(request):
         if img is None:
             return JsonResponse({"success": False, "error": "Invalid image data received"}, status=400)
 
-        detected_people, confidence = detect_human(img, camera.confidence_threshold, camera.model.model_url)   # detecting how many people has been detected on image
+        if camera.process_image:
+            detected_people, confidence = detect_human(img, camera.confidence_threshold, camera.model.model_url)   # detecting how many people has been detected on image
 
-        if detected_people >= 1:
+            if detected_people >= 1:
+                filename, filepath = save_file(request, camera.user_id)                             # saving image to filesystem
+                print(f"Image saved: {filepath}", flush=True)                                       # debug info
+                output = save_tensor_flow_output(confidence, detected_people)                       # saving TensorFlow output for an image
+                save_file_metadata(filename, filepath, camera, output)                              # saving image metadata to database
+                send_email(User.objects.get(id=camera.user_id).email, camera.id, confidence, camera.model.model_name, camera.location, True)   # sending email to user
+            else:
+                print("Image not saved - too low confidence", flush=True)                           # debug info
+                return JsonResponse({"success": False, "error": "Image not saved - too low confidence"}, status=422)    # Unprocessable Content HTTP code
+
+        else:
             filename, filepath = save_file(request, camera.user_id)                             # saving image to filesystem
             print(f"Image saved: {filepath}", flush=True)                                       # debug info
-            output = save_tensor_flow_output(confidence, detected_people)                       # saving TensorFlow output for an image
-            save_file_metadata(filename, filepath, camera, output)                              # saving image metadata to database
-            send_email(User.objects.get(id=camera.user_id).email, camera.id, camera.location)   # sending email to user
-        else:
-            print("Image not saved - too low confidence", flush=True)                           # debug info
-            return JsonResponse({"success": False, "error": "Image not saved - too low confidence"}, status=422)    # Unprocessable Content HTTP code
+            save_file_metadata(filename, filepath, camera, None)                         # saving image metadata to database
+            send_email(User.objects.get(id=camera.user_id).email, camera.id, camera.location, None, None, False)  # sending email to user
 
         return JsonResponse({"success": True, "filename": filename}, status=200)
     except Exception as e:
