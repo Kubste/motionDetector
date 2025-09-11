@@ -9,8 +9,10 @@ class CameraViewSet(viewsets.ModelViewSet):
     serializer_class = CameraSerializer
 
     def get_queryset(self):
-        if self.request.user.role in ["sup", "admin"]:
+        if self.request.user.role == "sup":
             return Camera.objects.all()
+        elif self.request.user.role == "admin":
+            return Camera.objects.filter(admins=self.request.user)
         else:
             return Camera.objects.filter(user=self.request.user)
 
@@ -72,10 +74,12 @@ class ImageInfoViewSet(viewsets.ModelViewSet):
     serializer_class = ImageInfoSerializer
 
     def get_queryset(self):
-        if self.request.user.role in ["sup", "admin"]:
+        if self.request.user.role == "sup":
             return ImageInfo.objects.all()
+        elif self.request.user.role == "admin":
+            return ImageInfo.objects.filter(camera__admins=self.request.user)
         else:
-            return ImageInfo.objects.filter(user=self.request.user)
+            return ImageInfo.objects.filter(camera__user=self.request.user)
 
 class TensorFlowModelViewSet(viewsets.ModelViewSet):
     queryset = TensorFlowModel.objects.all()
@@ -87,8 +91,10 @@ class TensorFlowOutputViewSet(viewsets.ModelViewSet):
     permission_classes = [AdminWritePermission]     # 'user' role can only use safe methods
 
     def get_queryset(self):
-        if self.request.user.role in ["sup", "admin"]:
+        if self.request.user.role == "sup":
             return TensorFlowOutput.objects.all()
+        elif self.request.user.role == "admin":
+            return TensorFlowOutput.objects.filter(imageinfo__camera__admins=self.request.user)
         else:
             return TensorFlowOutput.objects.filter(imageinfo__camera__user=self.request.user)
 
@@ -97,7 +103,9 @@ class StorageViewSet(viewsets.ModelViewSet):
     permission_classes = [AdminWritePermission]     # 'user' role can only use safe methods
 
     def get_queryset(self):
-        if self.request.user.role in ["sup", "admin"]:
+        if self.request.user.role == "sup":
             return Storage.objects.all()
+        elif self.request.user.role == "admin":
+            return Storage.objects.filter(imageinfo__camera__admins=self.request.user)
         else:
             return Storage.objects.filter(imageinfo__camera__user=self.request.user)
