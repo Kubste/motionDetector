@@ -49,5 +49,13 @@ class ImageInfo(models.Model):
     output = models.OneToOneField(TensorFlowOutput, on_delete=models.CASCADE, null=True, blank=True)
     model = models.ForeignKey(TensorFlowModel, on_delete=models.CASCADE, null=True, blank=True)
 
+    def delete(self, *args, **kwargs):
+        if self.output:
+            self.output.delete()
+        if self.storage:
+            self.storage.delete()
+
+        super().delete(*args, **kwargs)
+
     def __str__(self):
         return self.filename

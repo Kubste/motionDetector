@@ -8,9 +8,10 @@ class CameraSerializer(serializers.ModelSerializer):
         model = Camera
         fields = "__all__"
 
+    # checking if user is trying to assign camera to other user
     def create(self, validated_data):
         user = self.context['request'].user
-        print(user.id, flush=True)
+        print(user.id, flush=True)      # debug info
 
         if user.id != validated_data['user'].id and user.role not in ['sup', 'admin']:
             raise PermissionDenied("Only superuser and admin can assign camera to other user")
