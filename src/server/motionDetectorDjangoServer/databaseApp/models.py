@@ -18,6 +18,7 @@ class Camera(models.Model):
     process_image = models.BooleanField(default=True)
     confidence_threshold = models.FloatField(default=0.1, validators=[MinValueValidator(0.0), MaxValueValidator(1.0)])
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    admins = models.ManyToManyField(User, blank=True, related_name='admins')
     model = models.ForeignKey(TensorFlowModel, on_delete=models.CASCADE)
 
     def __str__(self):

@@ -7,6 +7,7 @@ class CameraSerializer(serializers.ModelSerializer):
     class Meta:
         model = Camera
         fields = "__all__"
+        read_only_fields = ["admins"]       # admins will be ignored by serializer if sent
 
     # checking if user is trying to assign camera to other user
     def create(self, validated_data):
