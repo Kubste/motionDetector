@@ -49,7 +49,7 @@ def save_file(request, user_id):
     return filename, filepath
 
 # saving image file metadata to database
-def save_file_metadata(filename, filepath, camera, output):
+def save_file_metadata(filename, filepath, camera, output, user_directory):
     with Image.open(filepath) as img:
         width, height = img.size
         file_type = img.format
@@ -59,7 +59,7 @@ def save_file_metadata(filename, filepath, camera, output):
 
     storage = Storage.objects.create(
         path=filepath,
-        checksum="",  # to be implemented later
+        user_directory=user_directory,
     )
 
     if output is not None:

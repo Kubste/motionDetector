@@ -1,3 +1,4 @@
+import os
 from rest_framework import viewsets
 from .serializers import *
 from auth_manager.permissions import AdminWritePermission
@@ -109,3 +110,38 @@ class StorageViewSet(viewsets.ModelViewSet):
             return Storage.objects.filter(imageinfo__camera__admins=self.request.user)
         else:
             return Storage.objects.filter(imageinfo__camera__user=self.request.user)
+
+    @action(detail=True, methods=['get'])
+    def get_deleted_files(self, request, pk=None):
+        #user_directory = request.query_params.get('user_directory', None)
+
+        if request.user.role not in ["sup", "admin"]:
+            raise PermissionDenied("Only superuser and admin can synchronize")   # will return 403 Forbidden in response
+
+        storages = Storage.objects.filter(user_directory=pk)    # getting paths objects from user directory
+
+        if storages.count() == 0:
+            return Response({"success": True, "paths": []}, status=status.HTTP_204_NO_CONTENT)
+
+        deleted_files = []
+        for storage in storages:
+            if not os.path.exists(storage.path):
+                deleted_files.append(storage.id)
+
+        return Response({"success": True, "paths": deleted_files}, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['delete'])
+    def synchronize(self, request):
+        ids = request.data.get("ids", [])
+
+        if request.user.role not in ["sup", "admin"]:
+            raise PermissionDenied("Only superuser can remove camera admins")   # will return 403 Forbidden in response
+
+        if ids.count() == 0:
+            return Response({"success": True, "message": "No IDs given"}, status=status.HTTP_204_NO_CONTENT)
+
+        # deleting corresponding TensorFlowOutput record from database
+        TensorFlowOutput.objects.filter(id__in=ImageInfo.objects.filter(storage_id__in=ids).values_list("output_id", flat=True)).delete()
+        Storage.objects.filter(pk__in=ids).delete()
+
+        return Response({"success": True, "message": "files have been deleted"}, status=status.HTTP_200_OK)
