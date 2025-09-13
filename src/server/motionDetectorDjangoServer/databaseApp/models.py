@@ -26,7 +26,7 @@ class Camera(models.Model):
 
 class Storage(models.Model):
     path = models.CharField(max_length=128)
-    user_directory = models.IntegerField()
+    camera_directory = models.IntegerField()
 
     def __str__(self):
         return f"Storage: {self.path}"

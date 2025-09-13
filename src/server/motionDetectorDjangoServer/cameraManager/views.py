@@ -63,19 +63,19 @@ def upload_image(request):
             detected_people, confidence = detect_human(img, camera.confidence_threshold, camera.model.model_url)   # detecting how many people has been detected on image
 
             if detected_people >= 1:
-                filename, filepath = save_file(request, camera.user_id)                             # saving image to filesystem
+                filename, filepath = save_file(request, camera.id)                                  # saving image to filesystem
                 print(f"Image saved: {filepath}", flush=True)                                       # debug info
                 output = save_tensor_flow_output(confidence, detected_people)                       # saving TensorFlow output for an image
-                save_file_metadata(filename, filepath, camera, output, user.id)                     # saving image metadata to database
+                save_file_metadata(filename, filepath, camera, output, camera.id)                   # saving image metadata to database
                 send_email(user.email, camera.id, confidence, camera.model.model_name, camera.location, True)   # sending email to user
             else:
                 print("Image not saved - too low confidence", flush=True)                           # debug info
                 return JsonResponse({"success": False, "error": "Image not saved - too low confidence"}, status=422)    # Unprocessable Content HTTP code
 
         else:
-            filename, filepath = save_file(request, camera.user_id)                             # saving image to filesystem
+            filename, filepath = save_file(request, camera.id)                                  # saving image to filesystem
             print(f"Image saved: {filepath}", flush=True)                                       # debug info
-            save_file_metadata(filename, filepath, camera, None, user.id)                # saving image metadata to database
+            save_file_metadata(filename, filepath, camera, None, camera.id)              # saving image metadata to database
             send_email(user.email, camera.id, camera.location, None, None, False)  # sending email to user
 
         return JsonResponse({"success": True, "filename": filename}, status=200)

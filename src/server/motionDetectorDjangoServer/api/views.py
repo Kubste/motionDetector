@@ -116,15 +116,16 @@ class StorageViewSet(viewsets.ModelViewSet):
         #user_directory = request.query_params.get('user_directory', None)
 
         if request.user.role not in ["sup", "admin"]:
-            raise PermissionDenied("Only superuser and admin can synchronize")   # will return 403 Forbidden in response
+            raise PermissionDenied("Only superuser and admin can synchronize")      # will return 403 Forbidden in response
 
-        storages = Storage.objects.filter(user_directory=pk)    # getting paths objects from user directory
+        storages = Storage.objects.filter(camera_directory=pk)                      # getting paths objects from camera directory
 
         if storages.count() == 0:
             return Response({"success": True, "paths": []}, status=status.HTTP_204_NO_CONTENT)
 
         deleted_files = []
         for storage in storages:
+            print(f"Storage: {storage.path}", flush=True)
             if not os.path.exists(storage.path):
                 deleted_files.append(storage.id)
 
@@ -137,7 +138,7 @@ class StorageViewSet(viewsets.ModelViewSet):
         if request.user.role not in ["sup", "admin"]:
             raise PermissionDenied("Only superuser can remove camera admins")   # will return 403 Forbidden in response
 
-        if ids.count() == 0:
+        if len(ids) == 0:
             return Response({"success": True, "message": "No IDs given"}, status=status.HTTP_204_NO_CONTENT)
 
         # deleting corresponding TensorFlowOutput record from database

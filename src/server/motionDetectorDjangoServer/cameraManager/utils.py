@@ -37,11 +37,11 @@ def get_client_ip(request):
     return ip_addr
 
 # saving image file to filesystem
-def save_file(request, user_id):
-    os.makedirs(os.path.join(UPLOAD_FOLDER, str(user_id)), exist_ok=True)
+def save_file(request, camera_id):
+    os.makedirs(os.path.join(UPLOAD_FOLDER, str(camera_id)), exist_ok=True)
     image_data = request.body
     filename = datetime.now().strftime("%Y%m%d_%H%M%S") + ".jpg"
-    filepath = os.path.join(UPLOAD_FOLDER, str(user_id), filename)
+    filepath = os.path.join(UPLOAD_FOLDER, str(camera_id), filename)
 
     with open(filepath, "wb") as f:
         f.write(image_data)
@@ -49,7 +49,7 @@ def save_file(request, user_id):
     return filename, filepath
 
 # saving image file metadata to database
-def save_file_metadata(filename, filepath, camera, output, user_directory):
+def save_file_metadata(filename, filepath, camera, output, camera_directory):
     with Image.open(filepath) as img:
         width, height = img.size
         file_type = img.format
@@ -59,7 +59,7 @@ def save_file_metadata(filename, filepath, camera, output, user_directory):
 
     storage = Storage.objects.create(
         path=filepath,
-        user_directory=user_directory,
+        camera_directory=camera_directory,
     )
 
     if output is not None:
