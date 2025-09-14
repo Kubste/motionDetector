@@ -116,9 +116,9 @@ class StorageViewSet(viewsets.ModelViewSet):
         #user_directory = request.query_params.get('user_directory', None)
 
         if request.user.role not in ["sup", "admin"]:
-            raise PermissionDenied("Only superuser and admin can synchronize")      # will return 403 Forbidden in response
+            raise PermissionDenied("Only superuser and admin can get deleted files")        # will return 403 Forbidden in response
 
-        storages = Storage.objects.filter(camera_directory=pk)                      # getting paths objects from camera directory
+        storages = Storage.objects.filter(camera_directory=pk)                              # getting paths objects from camera directory
 
         if storages.count() == 0:
             return Response({"success": True, "paths": []}, status=status.HTTP_204_NO_CONTENT)
@@ -131,15 +131,27 @@ class StorageViewSet(viewsets.ModelViewSet):
 
         return Response({"success": True, "paths": deleted_files}, status=status.HTTP_200_OK)
 
-    @action(detail=False, methods=['delete'])
-    def synchronize(self, request):
+    @action(detail=True, methods=['delete'])
+    def synchronize(self, request, pk=None):
         ids = request.data.get("ids", [])
+        user = request.user
 
-        if request.user.role not in ["sup", "admin"]:
-            raise PermissionDenied("Only superuser can remove camera admins")   # will return 403 Forbidden in response
+        if user.role not in ["sup", "admin"]:
+            raise PermissionDenied("Only superuser and admin can synchronize")   # will return 403 Forbidden in response
+
+        if user.role == "admin" and not Camera.objects.get(id=pk).admins.filter(id=user.id).exists():
+            raise PermissionDenied("User does not have admin access to this camera")
 
         if len(ids) == 0:
             return Response({"success": True, "message": "No IDs given"}, status=status.HTTP_204_NO_CONTENT)
+
+        directories = Storage.objects.filter(id__in=ids).values_list("camera_directory", flat=True)
+
+        for directory in directories:
+            print(int(directory), flush=True)
+            print(f"pk: {pk}", flush=True)
+            if int(directory) != int(pk):
+                return Response({"success": False, "error": f"One of the storage objects does not belong to camera: {pk}"}, status=status.HTTP_400_BAD_REQUEST)
 
         # deleting corresponding TensorFlowOutput record from database
         TensorFlowOutput.objects.filter(id__in=ImageInfo.objects.filter(storage_id__in=ids).values_list("output_id", flat=True)).delete()
