@@ -7,8 +7,15 @@ from django.views.decorators.csrf import csrf_exempt
 from databaseApp.models import Camera
 from auth_manager.models import User
 from .utils import save_file, save_file_metadata, get_client_ip, change_resolution, send_email, detect_human, save_tensor_flow_output
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from knox.auth import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+
 
 # changing the camera resolution
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def change_camera_resolution(request):
     # getting POST request from frontend
     if request.method != "POST":

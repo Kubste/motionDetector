@@ -5,6 +5,7 @@
 #include <Wire.h>
 #include <ArduCAM.h>
 #include <SPI.h>
+#include <WiFiClientSecure.h>
 
 // configuration files
 #include "memorysaver.h"
@@ -40,7 +41,9 @@ bool send_image() {
   }
 
   // checking connection to server
-  WiFiClient client;
+  WiFiClientSecure client;
+  client.setCACert(rootCA);
+
   if(!client.connect(serverHost, serverPort)) {
     Serial.println(F("TCP connect failed"));
     return false;
