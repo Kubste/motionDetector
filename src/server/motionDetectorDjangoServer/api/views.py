@@ -148,8 +148,6 @@ class StorageViewSet(viewsets.ModelViewSet):
         directories = Storage.objects.filter(id__in=ids).values_list("camera_directory", flat=True)
 
         for directory in directories:
-            print(int(directory), flush=True)
-            print(f"pk: {pk}", flush=True)
             if int(directory) != int(pk):
                 return Response({"success": False, "error": f"One of the storage objects does not belong to camera: {pk}"}, status=status.HTTP_400_BAD_REQUEST)
 

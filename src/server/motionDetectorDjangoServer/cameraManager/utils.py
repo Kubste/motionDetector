@@ -1,15 +1,13 @@
 import os
 import requests
 import smtplib, ssl
-import tensorflow as tf
-import tensorflow_hub as hub
 import cv2
 from email.mime.text import MIMEText
 from decouple import config
 from datetime import datetime
 from databaseApp.models import ImageInfo, Storage, Camera, TensorFlowOutput, TensorFlowModel
 from auth_manager.models import User
-from motionDetectorDjangoServer.settings import UPLOAD_FOLDER
+from motionDetectorDjangoServer.settings import UPLOAD_FOLDER, MEDIA_ROOT
 from PIL import Image
 from django.utils import timezone
 
@@ -39,10 +37,10 @@ def get_client_ip(request):
 
 # saving image file to filesystem
 def save_file(request, camera_id):
-    os.makedirs(os.path.join(UPLOAD_FOLDER, str(camera_id)), exist_ok=True)
+    os.makedirs(os.path.join(MEDIA_ROOT, str(camera_id)), exist_ok=True)
     image_data = request.body
     filename = datetime.now().strftime("%Y%m%d_%H%M%S") + ".jpg"
-    filepath = os.path.join(UPLOAD_FOLDER, str(camera_id), filename)
+    filepath = os.path.join(MEDIA_ROOT, str(camera_id), filename)
 
     with open(filepath, "wb") as f:
         f.write(image_data)
@@ -122,6 +120,9 @@ Please check your account immediately"""
         print(f"Error: {e}", flush=True)
 
 def detect_human(img, confidence, model_url):
+    import tensorflow as tf         # importing tensorflow library in function - it's slow and it's blocking server
+    import tensorflow_hub as hub
+
     # model will be cached locally after first download
     model = hub.load(model_url)
 
