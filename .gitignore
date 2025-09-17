@@ -10,6 +10,9 @@ media
 **.txt
 !**requirements.txt**
 
+**/media/**
+**/static/**
+
 # Backup files # 
 *.bak 
 

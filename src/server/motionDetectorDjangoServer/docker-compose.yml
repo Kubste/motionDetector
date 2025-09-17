@@ -1,0 +1,37 @@
+services:
+  database:
+    image: postgres:17
+    container_name: database
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    env_file:
+      - ../.env
+
+  backend:
+    build: .
+    container_name: backend
+    depends_on:
+      - database
+    volumes:
+      - ./static:/app/static
+    env_file:
+      - ../.env
+
+  proxy:
+    image: nginx:latest
+    container_name: proxy
+    ports:
+      - "8001:80"
+      - "8443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./static:/static:ro
+      - ./media:/app/media
+      - /etc/ssl/certs/django-selfsigned.crt:/etc/ssl/certs/django-selfsigned.crt:ro
+      - /etc/ssl/private/django-selfsigned.key:/etc/ssl/private/django-selfsigned.key:ro
+    depends_on:
+      - backend
+volumes:
+  postgres_data:
