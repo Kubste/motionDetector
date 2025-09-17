@@ -12,6 +12,7 @@ media
 
 **/media/**
 **/static/**
+**.tar
 
 # Backup files # 
 *.bak 
