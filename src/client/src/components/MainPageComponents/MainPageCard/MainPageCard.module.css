@@ -1,0 +1,21 @@
+.MainPageCard {
+    display: flex;
+    flex-direction: column;  /* stacking description and icon vertically */
+    align-items: center;     /* centering horizontally */
+    justify-content: center; /* centering vertically */
+    padding: 16px;
+    border: 3px solid hsl(0 0% 0%);
+    border-radius: 25px;
+    width: 150px;
+    height: 150px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.5s, background-color 0.5s;
+    background-color: hsl(210, 100%, 50%);
+    color: hsl(0 0% 100%);
+}
+
+.MainPageCard:hover {
+    transform: translateY(-5px);
+    background-color: hsl(210, 100%, 40%);
+}

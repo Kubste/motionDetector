@@ -1,0 +1,15 @@
+.MainPage {
+    display: flex;
+    flex-direction: column;
+    min-height: 95vh;
+}
+
+.CardsContainer {
+    display: flex;
+    flex-wrap: wrap;        /* wrapping cards to next row */
+    gap: 20px;              /* space between cards */
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    margin: auto
+}
