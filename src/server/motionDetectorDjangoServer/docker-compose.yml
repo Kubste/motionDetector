@@ -1,6 +1,7 @@
 services:
   database:
     image: postgres:17
+    platform: linux/arm64
     container_name: database
     ports:
       - "5432:5432"
@@ -11,6 +12,7 @@ services:
 
   backend:
     build: .
+    platform: linux/arm64
     container_name: backend
     depends_on:
       - database
@@ -21,6 +23,7 @@ services:
 
   proxy:
     image: nginx:latest
+    platform: linux/arm64
     container_name: proxy
     ports:
       - "8001:80"
