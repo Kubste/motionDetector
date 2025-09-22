@@ -1,4 +1,4 @@
-import styles from './MainPageBar.module.css';
+import styles from './TopBar.module.css';
 import { CgLogOut } from "react-icons/cg";
 
 function MainPageCard({username}){
