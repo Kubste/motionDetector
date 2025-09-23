@@ -9,14 +9,6 @@ import {useEffect} from "react";
 
 function MainPage() {
     const navigate = useNavigate();
-    const username = sessionStorage.getItem('username');
-
-    const handleLogout = () => {
-        sessionStorage.removeItem('token');
-        sessionStorage.removeItem('username');
-        sessionStorage.removeItem('role');
-        navigate('/login');
-    }
 
     useEffect(() => {
         const token = sessionStorage.getItem('token');
@@ -27,7 +19,7 @@ function MainPage() {
 
     return(
         <div className={styles.MainPage}>
-            <TopBar username={username} isLoggedIn={true} handleLogout={handleLogout}></TopBar>
+            <TopBar isLoggedIn={true}></TopBar>
             <div className={styles.CardsContainer}>
                 <MainPageCard Icon={FaImages} description="Images" onClick={() => navigate("/images")}></MainPageCard>
                 <MainPageCard Icon={FaCamera} description="Camera management" onClick={() => navigate("/camera-management")}></MainPageCard>

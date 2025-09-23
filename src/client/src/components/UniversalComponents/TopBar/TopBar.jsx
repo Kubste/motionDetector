@@ -1,7 +1,17 @@
 import styles from './TopBar.module.css';
 import { CgLogOut } from "react-icons/cg";
+import {useNavigate} from "react-router-dom";
 
-function MainPageCard({username, isLoggedIn, handleLogout}) {
+function TopBar({isLoggedIn}) {
+    const navigate = useNavigate();
+    const username = sessionStorage.getItem("username");
+
+    const handleLogout = () => {
+        sessionStorage.removeItem('token');
+        sessionStorage.removeItem('username');
+        sessionStorage.removeItem('role');
+        navigate('/login');
+    }
 
     return(
         <div className={styles.MainPageBar}>
@@ -16,4 +26,4 @@ function MainPageCard({username, isLoggedIn, handleLogout}) {
     );
 }
 
-export default MainPageCard;
+export default TopBar;
