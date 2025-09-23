@@ -25,7 +25,7 @@ function LoginPage() {
             sessionStorage.setItem('role', response.data.role);
             navigate('/');
         } catch (error) {
-            if(error.response && error.response.data) setError("Invalid username or password");
+            if(error.response && error.response.status === 400) setError("Invalid username or password");
             else setError("Server Error. Please try again.");
 
         } finally {

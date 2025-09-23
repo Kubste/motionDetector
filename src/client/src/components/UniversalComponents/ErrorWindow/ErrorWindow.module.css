@@ -1,0 +1,39 @@
+.ErrorWindow {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.ErrorContent {
+    background: white;
+    padding: 20px 30px;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    text-align: center;
+}
+
+.ErrorContent p {
+    margin-bottom: 20px;
+    color: red;
+    font-weight: bold;
+}
+
+.ErrorContent button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    background: hsl(210,100%,50%);
+    color: white;
+    cursor: pointer;
+}
+
+.ErrorContent button:hover {
+    background: hsl(210,100%,40%);
+}
