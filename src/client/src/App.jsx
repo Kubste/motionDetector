@@ -8,20 +8,21 @@ import LoginPage from "./components/LoginPageComponents/LoginPage/LoginPage.jsx"
 
 function App() {
 
-  // return(
-  //   <Router>
-  //       <Routes>
-  //           <Route path="/" element={<MainPage isLoggedIn={true}></MainPage>}></Route>
-  //           <Route path="/images" element={<ImagesPage></ImagesPage>}></Route>
-  //           <Route path="/camera-management" element={<CameraManagementPage></CameraManagementPage>}></Route>
-  //           <Route path="/my-account" element={<MyAccountPage></MyAccountPage>}></Route>
-  //       </Routes>
-  //   </Router>
-  // );
+  return(
+    <Router>
+        <Routes>
+            <Route path="/login" element={<LoginPage></LoginPage>}></Route>
+            <Route path="/" element={<MainPage isLoggedIn={true}></MainPage>}></Route>
+            <Route path="/images" element={<ImagesPage></ImagesPage>}></Route>
+            <Route path="/camera-management" element={<CameraManagementPage></CameraManagementPage>}></Route>
+            <Route path="/my-account" element={<MyAccountPage></MyAccountPage>}></Route>
+        </Routes>
+    </Router>
+  );
 
-    return(
-        <LoginPage></LoginPage>
-    );
+    // return(
+    //     <LoginPage></LoginPage>
+    // );
 }
 
 export default App

@@ -63,3 +63,10 @@ form {
     background: hsl(210, 100%, 40%);
     transform: translateY(-3px);
 }
+
+.Error {
+    color: red;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 0;
+}

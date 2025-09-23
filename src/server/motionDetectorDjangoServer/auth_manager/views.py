@@ -22,7 +22,7 @@ class LoginView(generics.GenericAPIView):
 
         # creating Knox token
         token = AuthToken.objects.create(user)[1]                   # getting token as string
-        return Response({"user_id": user.id, "token": token}, status=status.HTTP_200_OK)
+        return Response({"user_id": user.id, "username": user.username, "role": user.role, "token": token}, status=status.HTTP_200_OK)
 
 class LogoutOutAllUsers(generics.GenericAPIView):
     permission_classes = [IsSuperuser]

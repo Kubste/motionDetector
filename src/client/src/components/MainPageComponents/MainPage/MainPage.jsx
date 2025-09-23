@@ -5,14 +5,29 @@ import {MdAccountCircle} from "react-icons/md";
 import MainPageCard from "../MainPageCard/MainPageCard.jsx";
 import TopBar from "../../UniversalComponents/TopBar/TopBar.jsx";
 import {useNavigate} from "react-router-dom";
+import {useEffect} from "react";
 
 function MainPage() {
     const navigate = useNavigate();
-    const username = "testUser";
+    const username = sessionStorage.getItem('username');
+
+    const handleLogout = () => {
+        sessionStorage.removeItem('token');
+        sessionStorage.removeItem('username');
+        sessionStorage.removeItem('role');
+        navigate('/login');
+    }
+
+    useEffect(() => {
+        const token = sessionStorage.getItem('token');
+        if(!token) {
+            navigate('/login');
+        }
+    }, [navigate]);
 
     return(
         <div className={styles.MainPage}>
-            <TopBar username={username} isLoggedIn={true}></TopBar>
+            <TopBar username={username} isLoggedIn={true} handleLogout={handleLogout}></TopBar>
             <div className={styles.CardsContainer}>
                 <MainPageCard Icon={FaImages} description="Images" onClick={() => navigate("/images")}></MainPageCard>
                 <MainPageCard Icon={FaCamera} description="Camera management" onClick={() => navigate("/camera-management")}></MainPageCard>
