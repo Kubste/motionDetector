@@ -1,8 +1,8 @@
 .MainPageCard {
     display: flex;
-    flex-direction: column;  /* stacking description and icon vertically */
-    align-items: center;     /* centering horizontally */
-    justify-content: center; /* centering vertically */
+    flex-direction: column;     /* stacking description and icon vertically */
+    align-items: center;        /* centering horizontally */
+    justify-content: center;    /* centering vertically */
     padding: 16px;
     border: 3px solid hsl(0 0% 0%);
     border-radius: 25px;
