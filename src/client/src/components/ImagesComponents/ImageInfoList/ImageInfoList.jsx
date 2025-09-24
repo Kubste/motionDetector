@@ -66,6 +66,7 @@ function ImageInfoList() {
 
     const handleCloseDetails = () => {
         setShowDetails(false);
+        window.location.reload();
     }
 
     return(

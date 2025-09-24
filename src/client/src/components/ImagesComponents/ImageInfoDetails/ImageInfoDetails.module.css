@@ -67,3 +67,49 @@
     transition: background-color 0.5s;
     background-color: hsl(0, 70%, 50%);
 }
+
+.FilenameChangeBox {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+}
+
+.FilenameChangeBox input {
+    flex: 1;
+    padding: 6px 10px;
+    border: 1px solid black;
+    border-radius: 15px;
+}
+
+.FilenameChangeBox button {
+    padding: 6px 12px;
+    font-size: 14px;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+}
+
+.FilenameChangeBox .ConfirmButton {
+    background: hsl(120 60% 40%);
+    color: white;
+}
+
+.FilenameChangeBox .ConfirmButton:hover {
+    transition: background-color 0.5s;
+    background: hsl(120 60% 30%);
+}
+
+.FilenameChangeBox .CancelButton {
+    background: hsl(0, 70%, 60%);
+    color: white;
+}
+
+.FilenameChangeBox .CancelButton:hover {
+    transition: background-color 0.5s;
+    background: hsl(0, 70%, 50%);
+}
+
+.Confirmation {
+    color: green;
+    font-size: 16px;
+}

@@ -87,6 +87,37 @@ class ImageInfoViewSet(viewsets.ModelViewSet):
         else:
             return ImageInfo.objects.filter(camera__user=self.request.user)
 
+    @action(detail=True, methods=['patch'], url_path="change-filename")
+    def change_filename(self, request, pk=None):
+        image = self.get_object()
+        new_filename = request.data.get("filename")
+
+        if not new_filename:
+            return Response({"success": False, "error": "No filename provided"}, status=status.HTTP_400_BAD_REQUEST)
+
+        old_path = image.storage.path
+        directory = os.path.dirname(old_path)
+        new_path = os.path.join(directory, new_filename)
+
+        if os.path.exists(new_path):
+            return Response({"success": False, "error": "File with this name already exists"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            os.rename(old_path, new_path)
+        except FileNotFoundError:
+            return Response({"success": False, "error": "Image does not exist"}, status=status.HTTP_400_BAD_REQUEST)
+        except PermissionError:
+            return Response({"success": False, "error": "Permission denied"}, status=status.HTTP_403_FORBIDDEN)
+        except Exception as e:
+            return Response({"success": False, "error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        image.filename = new_filename
+        image.storage.path = new_path
+        image.save()
+        image.storage.save()
+
+        return Response({"success": True}, status=status.HTTP_200_OK)
+
 class TensorFlowModelViewSet(viewsets.ModelViewSet):
     queryset = TensorFlowModel.objects.all()
     serializer_class = TensorFlowModelSerializer

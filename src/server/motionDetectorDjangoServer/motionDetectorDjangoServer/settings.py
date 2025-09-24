@@ -154,6 +154,7 @@ AUTH_PASSWORD_VALIDATORS = [
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
+    "https://127.0.0.1:5173",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
@@ -182,4 +183,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'auth_manager.User'
 
 # to trust host
-CSRF_TRUSTED_ORIGINS = ["https://192.168.100.7:8443"]
+CSRF_TRUSTED_ORIGINS = ["https://192.168.100.7"]
