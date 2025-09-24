@@ -1,13 +1,16 @@
 import {useState, useEffect} from "react";
 import ErrorWindow from "../../UniversalComponents/ErrorWindow/ErrorWindow.jsx";
+import ImageInfoDetails from "../ImageInfoDetails/ImageInfoDetails.jsx";
 import styles from "./ImageInfoList.module.css";
 import axios from "axios";
 
 function ImageInfoList() {
-    const [imageInfo, setImageInfo] = useState([{}]);
+    const [imageInfo, setImageInfo] = useState([]);
+    const [currentID, setCurrentID] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [showError, setShowError] = useState(false);
+    const [showDetails, setShowDetails] = useState(false);
 
     const token = sessionStorage.getItem("token");
 
@@ -22,9 +25,10 @@ function ImageInfoList() {
                 });
                 setImageInfo(response.data);
 
-            } catch (err) {
-                console.error(err);
-                setError("Failed to load images.");
+            } catch(error) {
+                console.error(error);
+                setError(error.message || "Failed to load images.");
+                setShowError(true);
 
             } finally {
                 setLoading(false);
@@ -50,9 +54,18 @@ function ImageInfoList() {
         })
     }
 
+    const handleShowDetails = (id) => {
+        setShowDetails(true);
+        setCurrentID(id);
+    }
+
     const handleCloseError = () => {
         setError(null);
         setShowError(false);
+    }
+
+    const handleCloseDetails = () => {
+        setShowDetails(false);
     }
 
     return(
@@ -60,16 +73,20 @@ function ImageInfoList() {
             <h1>Captured Images</h1>
             <button className={styles.ReloadButton} onClick={() => {window.location.reload()}}>{loading ? "Reloading images..." : "Reload images"}</button>
             <div className={styles.List}>
-                <ol>
-                    {imageInfo.map((item, index) =>
-                    <li key={index}>
-                        <span className={styles.Filename}>{item.filename}</span>
-                        <button className={styles.DetailsButton}>Details</button>
-                        <button className={styles.DeleteButton} onClick={() => deleteImageInfo(item.id, index)}>Delete</button>
-                    </li>)}
-                </ol>
+                {imageInfo.length > 0 ? (
+                    <ol>
+                        {imageInfo.map((item, index) => (
+                            <li key={index}>
+                                <span className={styles.Filename}>{item.filename}</span>
+                                <button className={styles.DetailsButton} onClick={() => handleShowDetails(item.id)}>Details</button>
+                                <button className={styles.DeleteButton} onClick={() => deleteImageInfo(item.id, index)}>Delete</button>
+                            </li>
+                        ))}
+                    </ol>
+                ) : (<h2>No images found</h2>)}
             </div>
             {showError && <ErrorWindow message={error} onClose={handleCloseError}></ErrorWindow>}
+            {showDetails && <ImageInfoDetails id={currentID} onClose={handleCloseDetails}></ImageInfoDetails>}
         </div>
     );
 }

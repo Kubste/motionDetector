@@ -23,11 +23,11 @@
     background-color: hsl(210, 100%, 50%);
     color: white;
     cursor: pointer;
-    transition: background 0.2s ease;
     font-size: 20px;
 }
 
 .ReloadButton:hover {
+    transition: background-color 0.5s;
     background-color: hsl(210, 100%, 40%);
 }
 
@@ -59,7 +59,7 @@
     font-weight: 500;
     color: black;
     margin-right: 16px;
-    word-break: break-word; /* handle long filenames */
+    word-break: break-word; /* handles long filenames */
 }
 
 .DetailsButton, .DeleteButton {
@@ -69,16 +69,16 @@
     font-size: 14px;
     cursor: pointer;
     margin-left: 8px;
-    transition: background 0.2s ease;
 }
 
 .DetailsButton {
-    background-color: hsl(180, 70%, 60%);
+    background-color: hsl(210, 100%, 60%);
     color: white;
 }
 
 .DetailsButton:hover {
-    background-color: hsl(180, 70%, 50%);
+    transition: background-color 0.5s;
+    background-color: hsl(210, 100%, 50%);
 }
 
 .DeleteButton {
@@ -87,5 +87,6 @@
 }
 
 .DeleteButton:hover {
+    transition: background-color 0.5s;
     background-color: hsl(0, 70%, 50%);
 }

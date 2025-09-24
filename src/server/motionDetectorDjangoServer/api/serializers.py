@@ -44,10 +44,9 @@ class ImageInfoSerializer(BaseImageInfoSerializer):
         model = ImageInfo
         fields = ['id', 'filename']
 
-# serializer for a specific image info record - all fields
-class ImageInfoDetailsSerializer(BaseImageInfoSerializer):
+class TensorFlowOutputSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ImageInfo
+        model = TensorFlowOutput
         fields = "__all__"
 
 class TensorFlowModelSerializer(serializers.ModelSerializer):
@@ -55,9 +54,14 @@ class TensorFlowModelSerializer(serializers.ModelSerializer):
         model = TensorFlowModel
         fields = "__all__"
 
-class TensorFlowOutputSerializer(serializers.ModelSerializer):
+# serializer for a specific image info record - all fields
+class ImageInfoDetailsSerializer(BaseImageInfoSerializer):
+    camera = serializers.SlugRelatedField(read_only=True, slug_field='camera_name')     # getting camera name from foreign key
+    output = TensorFlowOutputSerializer(read_only=True)
+    model = TensorFlowModelSerializer(read_only=True)
+
     class Meta:
-        model = TensorFlowOutput
+        model = ImageInfo
         fields = "__all__"
 
 class StorageSerializer(serializers.ModelSerializer):

@@ -8,6 +8,8 @@ import LoginPage from "./components/LoginPageComponents/LoginPage/LoginPage.jsx"
 
 function App() {
 
+    document.title = "Motion Detector App";
+
   return(
     <Router>
         <Routes>
