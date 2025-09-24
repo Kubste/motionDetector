@@ -9,6 +9,8 @@ function ImageInfoList() {
     const [error, setError] = useState(null);
     const [showError, setShowError] = useState(false);
 
+    const token = sessionStorage.getItem("token");
+
     // called once after render and each time after reload button is clicked
     useEffect(() => {
         const fetchImages = async () => {
@@ -32,7 +34,20 @@ function ImageInfoList() {
         }, []);
 
     function deleteImageInfo(id, index) {
-
+        axios.delete(`https://192.168.100.7/api/image-info/${id}/`, {
+            headers: {
+                Authorization: `Token ${token}`
+            }
+        }).then(() => {
+            const updatedImageInfo = imageInfo.filter((_, i) => i !== index);
+            setImageInfo(updatedImageInfo);
+        }).catch(error => {
+            console.log(error);
+            if(error.response) setError(error.response.data.detail || "Internal Server Error");
+             else if(error.request) setError("Cannot connect to the server.");
+             else setError(error.message);
+            setShowError(true);
+        })
     }
 
     const handleCloseError = () => {
@@ -54,7 +69,7 @@ function ImageInfoList() {
                     </li>)}
                 </ol>
             </div>
-            {showError && <ErrorWindow error={error} onClose={handleCloseError}></ErrorWindow>}
+            {showError && <ErrorWindow message={error} onClose={handleCloseError}></ErrorWindow>}
         </div>
     );
 }
