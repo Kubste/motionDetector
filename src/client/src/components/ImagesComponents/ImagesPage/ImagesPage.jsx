@@ -1,7 +1,9 @@
-import styles from "../../MainPageComponents/MainPage/MainPage.module.css";
+import styles from "./ImagesPage.module.css";
 import TopBar from "../../UniversalComponents/TopBar/TopBar.jsx";
+import ImageInfoList from ".././ImageInfoList/ImageInfoList.jsx";
 import {useEffect} from "react";
 import {useNavigate} from "react-router-dom";
+
 
 function ImagesPage() {
     const navigate = useNavigate();
@@ -17,7 +19,7 @@ function ImagesPage() {
         <div className={styles.ImagesPage}>
             <TopBar isLoggedIn={true}></TopBar>
             <div className={styles.ImagesContainer}>
-                <h1>Images Page</h1>
+                <ImageInfoList></ImageInfoList>
             </div>
         </div>
     );

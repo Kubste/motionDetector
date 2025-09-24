@@ -74,6 +74,11 @@ class CameraViewSet(viewsets.ModelViewSet):
 class ImageInfoViewSet(viewsets.ModelViewSet):
     serializer_class = ImageInfoSerializer
 
+    def get_serializer_class(self):
+        if self.action == "list":
+            return ImageInfoSerializer
+        return ImageInfoDetailsSerializer
+
     def get_queryset(self):
         if self.request.user.role == "sup":
             return ImageInfo.objects.all()

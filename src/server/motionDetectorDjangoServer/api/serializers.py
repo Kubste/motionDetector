@@ -26,10 +26,8 @@ class CameraSerializer(serializers.ModelSerializer):
         if 'user' in validated_data and user_role not in ['sup', 'admin']:
             raise PermissionDenied
 
-class ImageInfoSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ImageInfo
-        fields = "__all__"
+# base serializer for image info - providing update function
+class BaseImageInfoSerializer(serializers.ModelSerializer):
 
     # only superuser and admin can change file_size, file_type and timestamp
     def update(self, instance, validated_data):
@@ -37,6 +35,20 @@ class ImageInfoSerializer(serializers.ModelSerializer):
 
         if ('file_size' in validated_data or 'file_type' in validated_data or 'timestamp' in validated_data) and user_role not in ['sup', 'admin']:
             raise PermissionDenied
+
+        return super().update(instance, validated_data)
+
+# serializer for a list of all image info records - only selected fields
+class ImageInfoSerializer(BaseImageInfoSerializer):
+    class Meta:
+        model = ImageInfo
+        fields = ['id', 'filename']
+
+# serializer for a specific image info record - all fields
+class ImageInfoDetailsSerializer(BaseImageInfoSerializer):
+    class Meta:
+        model = ImageInfo
+        fields = "__all__"
 
 class TensorFlowModelSerializer(serializers.ModelSerializer):
     class Meta:
