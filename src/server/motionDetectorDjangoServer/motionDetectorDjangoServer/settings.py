@@ -17,7 +17,7 @@ import absl.logging
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-UPLOAD_FOLDER = os.path.join(BASE_DIR.parent, "uploads")
+UPLOAD_FOLDER = os.path.join(BASE_DIR, "media")
 
 # disabling tensorflow warnings
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
@@ -49,8 +49,8 @@ ALLOWED_HOSTS = ['*']
 STATIC_URL = config('STATIC_URL')
 STATIC_ROOT = config('STATIC_ROOT')
 
-MEDIA_URL = config('MEDIA_URL')
-MEDIA_ROOT = config('MEDIA_ROOT')
+MEDIA_URL = config('MEDIA_URL', default='/media/')
+MEDIA_ROOT = config('MEDIA_ROOT', default=os.path.join(BASE_DIR, "media"))
 
 
 # Application definition

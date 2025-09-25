@@ -17,6 +17,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.urls import include
+from django.conf.urls.static import static
+from django.urls import path, include
+from motionDetectorDjangoServer import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -24,3 +27,7 @@ urlpatterns = [
     path('api/', include('api.urls', namespace='api')),
     path('auth/', include('auth_manager.urls', namespace='auth')),
 ]
+
+# serving media files directly by django in debug mode - by nginx with debug OFF
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,6 +1,7 @@
 import {useState, useEffect} from "react";
 import ErrorWindow from "../../UniversalComponents/ErrorWindow/ErrorWindow.jsx";
 import ImageInfoDetails from "../ImageInfoDetails/ImageInfoDetails.jsx";
+import ImageWindow from "../ImageWindow/ImageWindow.jsx";
 import styles from "./ImageInfoList.module.css";
 import axios from "axios";
 
@@ -11,6 +12,8 @@ function ImageInfoList() {
     const [error, setError] = useState(null);
     const [showError, setShowError] = useState(false);
     const [showDetails, setShowDetails] = useState(false);
+    const [selectedImage, setSelectedImage] = useState(null);
+    const [showSelectedImage, setShowSelectedImage] = useState(false);
 
     const token = sessionStorage.getItem("token");
 
@@ -69,6 +72,16 @@ function ImageInfoList() {
         window.location.reload();
     }
 
+    const handleShowImage = (item) => {
+        setSelectedImage(item);
+        setShowSelectedImage(true);
+    }
+
+    const handleCloseSelectedImage = () => {
+        setSelectedImage(null);
+        setShowSelectedImage(false);
+    }
+
     return(
         <div className={styles.ImagesContainer}>
             <h1>Captured Images</h1>
@@ -78,7 +91,8 @@ function ImageInfoList() {
                     <ol>
                         {imageInfo.map((item, index) => (
                             <li key={index}>
-                                <span className={styles.Filename}>{item.filename}</span>
+                                <span className={styles.Filename} onClick={() => handleShowImage(item)}>{item.filename}</span>
+                                <button className={styles.ShowImageButton} onClick={() => handleShowImage(item)}>Show Image</button>
                                 <button className={styles.DetailsButton} onClick={() => handleShowDetails(item.id)}>Details</button>
                                 <button className={styles.DeleteButton} onClick={() => deleteImageInfo(item.id, index)}>Delete</button>
                             </li>
@@ -88,6 +102,7 @@ function ImageInfoList() {
             </div>
             {showError && <ErrorWindow message={error} onClose={handleCloseError}></ErrorWindow>}
             {showDetails && <ImageInfoDetails id={currentID} onClose={handleCloseDetails}></ImageInfoDetails>}
+            {showSelectedImage && <ImageWindow filename={selectedImage.filename} path={selectedImage.path} onClose={handleCloseSelectedImage}></ImageWindow>}
         </div>
     );
 }

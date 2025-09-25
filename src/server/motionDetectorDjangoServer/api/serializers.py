@@ -38,11 +38,25 @@ class BaseImageInfoSerializer(serializers.ModelSerializer):
 
         return super().update(instance, validated_data)
 
+class StorageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Storage
+        fields = "__all__"
+
 # serializer for a list of all image info records - only selected fields
 class ImageInfoSerializer(BaseImageInfoSerializer):
+    path = serializers.SerializerMethodField()
+
     class Meta:
         model = ImageInfo
-        fields = ['id', 'filename']
+        fields = ['id', 'filename', 'path']
+
+    # getting file path
+    def get_path(self, instance):
+        if instance.storage and instance.storage.path:
+            path_segments = instance.storage.path.split('/')[-3:]
+            return "/".join(path_segments)
+        return None
 
 class TensorFlowOutputSerializer(serializers.ModelSerializer):
     class Meta:
@@ -62,9 +76,4 @@ class ImageInfoDetailsSerializer(BaseImageInfoSerializer):
 
     class Meta:
         model = ImageInfo
-        fields = "__all__"
-
-class StorageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Storage
         fields = "__all__"

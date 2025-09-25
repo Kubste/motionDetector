@@ -87,6 +87,16 @@ class ImageInfoViewSet(viewsets.ModelViewSet):
         else:
             return ImageInfo.objects.filter(camera__user=self.request.user)
 
+    # deleting corresponding file
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+
+        os.remove(instance.storage.path)
+
+        self.perform_destroy(instance)
+
+        return Response(status=status.HTTP_200_OK)
+
     @action(detail=True, methods=['patch'], url_path="change-filename")
     def change_filename(self, request, pk=None):
         image = self.get_object()
@@ -147,7 +157,7 @@ class StorageViewSet(viewsets.ModelViewSet):
         else:
             return Storage.objects.filter(imageinfo__camera__user=self.request.user)
 
-    @action(detail=True, methods=['get'])
+    @action(detail=True, methods=['get'], url_path="get-deleted-files")
     def get_deleted_files(self, request, pk=None):
         #user_directory = request.query_params.get('user_directory', None)
 
