@@ -17,6 +17,11 @@ class CameraViewSet(viewsets.ModelViewSet):
         else:
             return Camera.objects.filter(user=self.request.user)
 
+    def get_serializer_class(self):
+        if self.action == "list":
+            return CameraSerializer
+        return CameraDetailsSerializer
+
     @action(detail=True, methods=['post'])
     def add_admins(self, request, pk=None):
         camera = self.get_object()

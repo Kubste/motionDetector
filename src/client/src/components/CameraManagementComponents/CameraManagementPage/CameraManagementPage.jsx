@@ -1,7 +1,8 @@
 import {useNavigate} from "react-router-dom";
 import {useEffect} from "react";
-import styles from "../../MainPageComponents/MainPage/MainPage.module.css";
+import styles from "./CameraManagementPage.module.css";
 import TopBar from "../../UniversalComponents/TopBar/TopBar.jsx";
+import CameraList from "../CameraList/CameraList.jsx";
 
 function CameraManagementPage() {
     const navigate = useNavigate();
@@ -16,8 +17,8 @@ function CameraManagementPage() {
     return(
         <div className={styles.CameraManagementPage}>
             <TopBar isLoggedIn={true}></TopBar>
-            <div>
-                <h1>Camera Management Page</h1>
+            <div className={styles.CameraContainer}>
+                <CameraList></CameraList>
             </div>
         </div>
     );
