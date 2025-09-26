@@ -35,6 +35,23 @@ function CameraList() {
         fetchCameras();
     }, []);
 
+    function deleteCamera(id, index) {
+        axios.delete(`https://192.168.100.7/api/cameras/${id}/`, {
+            headers: {
+                Authorization: `Token ${token}`
+            }
+        }).then(() => {
+            const updatedCameras = cameras.filter((_, i) => i !== index);
+            setCameras(updatedCameras);
+        }).catch(error => {
+            console.log(error);
+            if(error.response) setError(error.response.data.detail || "Internal Server Error");
+            else if(error.request) setError("Cannot connect to the server.");
+            else setError(error.message);
+            setShowError(true);
+        })
+    }
+
     const handleCloseError = () => {
         setShowError(false);
         setError(null);
@@ -51,7 +68,7 @@ function CameraList() {
                             <li key={index}>
                                 <span className={styles.CameraName}>{item.camera_name}</span>
                                 <button className={styles.DetailsButton}>Details</button>
-                                <button className={styles.DeleteButton}>Delete</button>
+                                <button className={styles.DeleteButton} onClick={() => deleteCamera(item.id, index)}>Delete</button>
                             </li>
                         ))}
                     </ol>
