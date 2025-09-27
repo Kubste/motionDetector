@@ -27,11 +27,6 @@ function ImageInfoDetails({id, onClose}) {
         })
     }, [id, filename])
 
-    const handleCloseError = () => {
-        setShowError(false);
-        setError(null);
-    }
-
     const handleFilenameChange = () => {
         const token = sessionStorage.getItem('token');
 
@@ -48,6 +43,11 @@ function ImageInfoDetails({id, onClose}) {
             setError(error.response?.data?.error || "Failed to change filename.");
             setShowError(true);
         })
+    }
+
+    const handleCloseError = () => {
+        setShowError(false);
+        setError(null);
     }
 
     return(

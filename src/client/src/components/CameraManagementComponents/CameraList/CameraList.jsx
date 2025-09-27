@@ -1,5 +1,6 @@
 import styles from './CameraList.module.css';
 import ErrorWindow from "../../UniversalComponents/ErrorWindow/ErrorWindow.jsx";
+import CameraDetails from "../CameraDetails/CameraDetails.jsx";
 import {useEffect, useState} from "react";
 import axios from "axios";
 
@@ -8,6 +9,8 @@ function CameraList() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [showError, setShowError] = useState(false);
+    const [showDetails, setShowDetails] = useState(false);
+    const [currentID, setCurrentID] = useState(null);
 
     const token = sessionStorage.getItem("token");
 
@@ -52,6 +55,16 @@ function CameraList() {
         })
     }
 
+    const handleShowCameraDetails = (id) => {
+        setShowDetails(true);
+        setCurrentID(id);
+    }
+
+    const handleCloseCameraDetails = () => {
+        setShowDetails(false);
+        window.location.reload();
+    }
+
     const handleCloseError = () => {
         setShowError(false);
         setError(null);
@@ -67,7 +80,7 @@ function CameraList() {
                         {cameras.map((item, index) => (
                             <li key={index}>
                                 <span className={styles.CameraName}>{item.camera_name}</span>
-                                <button className={styles.DetailsButton}>Details</button>
+                                <button className={styles.DetailsButton} onClick={() => handleShowCameraDetails(item.id)}>Details</button>
                                 <button className={styles.DeleteButton} onClick={() => deleteCamera(item.id, index)}>Delete</button>
                             </li>
                         ))}
@@ -75,6 +88,7 @@ function CameraList() {
                 ) : (<h2>No cameras found</h2>)}
             </div>
             {showError && <ErrorWindow message={error} onClose={handleCloseError}></ErrorWindow>}
+            {showDetails && <CameraDetails id={currentID} onClose={handleCloseCameraDetails}></CameraDetails>}
         </div>
     );
 }

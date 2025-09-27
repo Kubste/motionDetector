@@ -24,6 +24,8 @@ class BaseCameraSerializer(serializers.ModelSerializer):
         if 'user' in validated_data and user_role not in ['sup', 'admin']:
             raise PermissionDenied
 
+        return super().update(instance, validated_data)
+
 class CameraSerializer(BaseCameraSerializer):
     class Meta:
         model = Camera
