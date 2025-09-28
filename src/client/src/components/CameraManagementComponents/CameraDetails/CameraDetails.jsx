@@ -4,10 +4,11 @@ import axios from "axios";
 import ErrorWindow from "../../UniversalComponents/ErrorWindow/ErrorWindow.jsx";
 import ChangeBox from "../ChangeBox/ChangeBox.jsx";
 
-function ImageInfoDetails({id, onClose}) {
+function CameraDetails({id, onClose}) {
     const [details, setDetails] = useState(null);
     const [error, setError] = useState(null);
     const [showError, setShowError] = useState(false);
+    const [models, setModels] = useState([]);
 
     const [cameraName, setCameraName] = useState("");
     const [newCameraName, setNewCameraName] = useState("");
@@ -34,6 +35,11 @@ function ImageInfoDetails({id, onClose}) {
     const [showConfidenceChange, setShowConfidenceChange] = useState(false);
     const [showConfidenceChangeConfirmation, setShowConfidenceChangeConfirmation] = useState(false);
 
+    const [process, setProcess] = useState("");
+    const [newProcess, setNewProcess] = useState("");
+    const [showProcessChange, setShowProcessChange] = useState(false);
+    const [showProcessChangeConfirmation, setShowProcessChangeConfirmation] = useState(false);
+
     useEffect(() => {
         const token = sessionStorage.getItem('token');
 
@@ -44,10 +50,20 @@ function ImageInfoDetails({id, onClose}) {
         }).then(response => {
             setDetails(response.data);
         }).catch(error => {
-            setError(error.message || "Failed to load cameras details.");
+            setError(error.response?.data?.error || "Failed to load cameras details.");
             setShowError(true);
         })
-    }, [id, cameraName, boardName, location, address, confidence])
+
+        axios.get(`https://192.168.100.7/api/tensor-flow-models/${id}/`, {}, {
+            headers: {
+                Authorization: `Token ${token}`
+            }
+        }).then((response) => {
+            setModels(response.data);
+        }).catch(error => {
+            setError(error.response?.data?.error || "Failed to load tensor flow models.");
+        })
+    }, [id, cameraName, boardName, location, address, confidence, process, models])
 
     const handlePatch = (field, fieldValue, valueSetter, confirmationSetter) => {
         const token = sessionStorage.getItem('token');
@@ -67,6 +83,11 @@ function ImageInfoDetails({id, onClose}) {
         })
     }
 
+    const handleProcessingChange = (option) => {
+        setNewProcess(option);
+        setProcess(option);
+    }
+
     const handleCloseError = () => {
         setShowError(false);
         setError(null);
@@ -76,34 +97,41 @@ function ImageInfoDetails({id, onClose}) {
         <div className={styles.Window}>
             <div className={styles.DetailsContainer}>
                 <ChangeBox nameStr="Camera Name" nameValue={details?.camera_name} show={showCameraNameChange} onShowClick={() => setShowCameraNameChange(true)}
-                           showChange={showCameraNameChange} value={newCameraName}
+                           showChange={showCameraNameChange} value={newCameraName} showDropdown={false}
                            onConfirmClick={() => handlePatch("camera_name", newCameraName, setCameraName, setShowCameraNameChangeConfirmation)}
                            onCancelClick={() => {setShowCameraNameChange(false); setShowCameraNameChangeConfirmation(false)}}
                            showConfirmation={showCameraNameChangeConfirmation} onInputChange={(e) => setNewCameraName(e.target.value)}></ChangeBox>
 
                 <ChangeBox nameStr="Board Name" nameValue={details?.board_name} show={showBoardNameChange} onShowClick={() => setShowBoardNameChange(true)}
-                           showChange={showBoardNameChange} value={newBoardName}
+                           showChange={showBoardNameChange} value={newBoardName} showDropdown={false}
                            onConfirmClick={() => handlePatch("board_name", newBoardName, setBoardName, setShowBoardNameChangeConfirmation)}
                            onCancelClick={() => {setShowBoardNameChange(false); setShowBoardNameChangeConfirmation(false)}}
                            showConfirmation={showBoardNameChangeConfirmation} onInputChange={(e) => setNewBoardName(e.target.value)}></ChangeBox>
 
                 <ChangeBox nameStr="Location" nameValue={details?.location} show={showLocationChange} onShowClick={() => setShowLocationChange(true)}
-                           showChange={showLocationChange} value={newLocation}
+                           showChange={showLocationChange} value={newLocation} showDropdown={false}
                            onConfirmClick={() => handlePatch("location", newLocation, setLocation, setShowLocationChangeConfirmation)}
                            onCancelClick={() => {setShowLocationChange(false); setShowLocationChangeConfirmation(false)}}
                            showConfirmation={showLocationChangeConfirmation} onInputChange={(e) => setNewLocation(e.target.value)}></ChangeBox>
 
                 <ChangeBox nameStr="Address" nameValue={details?.address} show={showAddressChange} onShowClick={() => setShowAddressChange(true)}
-                           showChange={showAddressChange} value={newAddress}
+                           showChange={showAddressChange} value={newAddress} showDropdown={false}
                            onConfirmClick={() => handlePatch("address", newAddress, setAddress, setShowAddressChangeConfirmation)}
                            onCancelClick={() => {setShowAddressChange(false); setShowAddressChangeConfirmation(false)}}
                            showConfirmation={showAddressChangeConfirmation} onInputChange={(e) => setNewAddress(e.target.value)}></ChangeBox>
 
                 <ChangeBox nameStr="Confidence Threshold" nameValue={details?.confidence_threshold} show={showConfidenceChange} onShowClick={() => setShowConfidenceChange(true)}
-                           showChange={showConfidenceChange} value={newConfidence}
+                           showChange={showConfidenceChange} value={newConfidence} showDropdown={false}
                            onConfirmClick={() => handlePatch("confidence_threshold", newConfidence, setConfidence, setShowConfidenceChangeConfirmation)}
                            onCancelClick={() => {setShowConfidenceChange(false); setShowConfidenceChangeConfirmation(false)}}
                            showConfirmation={showConfidenceChangeConfirmation} onInputChange={(e) => setNewConfidence(e.target.value)}></ChangeBox>
+
+                <ChangeBox nameStr="Process Image" nameValue={details?.process_image} show={showProcessChange} onShowClick={() => setShowProcessChange(true)}
+                           showChange={showProcessChange} value={newProcess} showDropdown={true} options={[{name: "Enabled", value: true}, {name: "Disabled", value: false}]}
+                           label="Choose option" onChange={handleProcessingChange}
+                           onConfirmClick={() => handlePatch("process_image", newProcess.value, setProcess, setShowProcessChangeConfirmation)}
+                           onCancelClick={() => {setShowProcessChange(false); setShowProcessChangeConfirmation(false)}}
+                           showConfirmation={showProcessChangeConfirmation} onInputChange={(e) => setNewProcess(e.target.value)}></ChangeBox>
 
                 <button className={styles.CloseButton} onClick={onClose}>Close</button>
             </div>
@@ -112,4 +140,4 @@ function ImageInfoDetails({id, onClose}) {
     );
 }
 
-export default ImageInfoDetails;
+export default CameraDetails;
