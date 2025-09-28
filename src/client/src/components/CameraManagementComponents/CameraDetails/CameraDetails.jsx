@@ -40,6 +40,11 @@ function CameraDetails({id, onClose}) {
     const [showProcessChange, setShowProcessChange] = useState(false);
     const [showProcessChangeConfirmation, setShowProcessChangeConfirmation] = useState(false);
 
+    const [model, setModel] = useState(null);
+    const [newModel, setNewModel] = useState(null);
+    const [showModelChange, setShowModelChange] = useState(false);
+    const [showModelChangeConfirmation, setShowModelChangeConfirmation] = useState(false);
+
     useEffect(() => {
         const token = sessionStorage.getItem('token');
 
@@ -49,24 +54,32 @@ function CameraDetails({id, onClose}) {
             },
         }).then(response => {
             setDetails(response.data);
+            console.log("Response:", response.data);
         }).catch(error => {
             setError(error.response?.data?.error || "Failed to load cameras details.");
             setShowError(true);
         })
 
-        axios.get(`https://192.168.100.7/api/tensor-flow-models/${id}/`, {}, {
+    }, [id, cameraName, boardName, location, address, confidence, process, model])
+
+    const handleFetchModels = () => {
+        const token = sessionStorage.getItem('token');
+
+        axios.get(`https://192.168.100.7/api/tensor-flow-models/`,  {
             headers: {
                 Authorization: `Token ${token}`
             }
         }).then((response) => {
             setModels(response.data);
+            console.log("Models API response:", response.data);
         }).catch(error => {
             setError(error.response?.data?.error || "Failed to load tensor flow models.");
         })
-    }, [id, cameraName, boardName, location, address, confidence, process, models])
+    }
 
     const handlePatch = (field, fieldValue, valueSetter, confirmationSetter) => {
         const token = sessionStorage.getItem('token');
+        console.log("Model key:", newModel.value)
 
         axios.patch(`https://192.168.100.7/api/cameras/${id}/`, {
             [field]: fieldValue
@@ -88,6 +101,11 @@ function CameraDetails({id, onClose}) {
         setProcess(option);
     }
 
+    const handleModelChange = (option) => {
+        setNewModel(option);
+        setModel(option);
+    }
+
     const handleCloseError = () => {
         setShowError(false);
         setError(null);
@@ -96,42 +114,86 @@ function CameraDetails({id, onClose}) {
     return(
         <div className={styles.Window}>
             <div className={styles.DetailsContainer}>
-                <ChangeBox nameStr="Camera Name" nameValue={details?.camera_name} show={showCameraNameChange} onShowClick={() => setShowCameraNameChange(true)}
-                           showChange={showCameraNameChange} value={newCameraName} showDropdown={false}
+                <ChangeBox nameStr="Camera Name"
+                           nameValue={details?.camera_name}
+                           show={showCameraNameChange}
+                           onShowClick={() => setShowCameraNameChange(true)}
+                           showChange={showCameraNameChange}
+                           value={newCameraName}
+                           showDropdown={false}
                            onConfirmClick={() => handlePatch("camera_name", newCameraName, setCameraName, setShowCameraNameChangeConfirmation)}
                            onCancelClick={() => {setShowCameraNameChange(false); setShowCameraNameChangeConfirmation(false)}}
                            showConfirmation={showCameraNameChangeConfirmation} onInputChange={(e) => setNewCameraName(e.target.value)}></ChangeBox>
 
-                <ChangeBox nameStr="Board Name" nameValue={details?.board_name} show={showBoardNameChange} onShowClick={() => setShowBoardNameChange(true)}
-                           showChange={showBoardNameChange} value={newBoardName} showDropdown={false}
+                <ChangeBox nameStr="Board Name"
+                           nameValue={details?.board_name}
+                           show={showBoardNameChange} onShowClick={() => setShowBoardNameChange(true)}
+                           showChange={showBoardNameChange}
+                           value={newBoardName}
+                           showDropdown={false}
                            onConfirmClick={() => handlePatch("board_name", newBoardName, setBoardName, setShowBoardNameChangeConfirmation)}
                            onCancelClick={() => {setShowBoardNameChange(false); setShowBoardNameChangeConfirmation(false)}}
                            showConfirmation={showBoardNameChangeConfirmation} onInputChange={(e) => setNewBoardName(e.target.value)}></ChangeBox>
 
-                <ChangeBox nameStr="Location" nameValue={details?.location} show={showLocationChange} onShowClick={() => setShowLocationChange(true)}
-                           showChange={showLocationChange} value={newLocation} showDropdown={false}
+                <ChangeBox nameStr="Location"
+                           nameValue={details?.location}
+                           show={showLocationChange}
+                           onShowClick={() => setShowLocationChange(true)}
+                           showChange={showLocationChange}
+                           value={newLocation}
+                           showDropdown={false}
                            onConfirmClick={() => handlePatch("location", newLocation, setLocation, setShowLocationChangeConfirmation)}
                            onCancelClick={() => {setShowLocationChange(false); setShowLocationChangeConfirmation(false)}}
                            showConfirmation={showLocationChangeConfirmation} onInputChange={(e) => setNewLocation(e.target.value)}></ChangeBox>
 
-                <ChangeBox nameStr="Address" nameValue={details?.address} show={showAddressChange} onShowClick={() => setShowAddressChange(true)}
-                           showChange={showAddressChange} value={newAddress} showDropdown={false}
+                <ChangeBox nameStr="Address"
+                           nameValue={details?.address} show={showAddressChange} onShowClick={() => setShowAddressChange(true)}
+                           showChange={showAddressChange}
+                           value={newAddress}
+                           showDropdown={false}
                            onConfirmClick={() => handlePatch("address", newAddress, setAddress, setShowAddressChangeConfirmation)}
                            onCancelClick={() => {setShowAddressChange(false); setShowAddressChangeConfirmation(false)}}
                            showConfirmation={showAddressChangeConfirmation} onInputChange={(e) => setNewAddress(e.target.value)}></ChangeBox>
 
-                <ChangeBox nameStr="Confidence Threshold" nameValue={details?.confidence_threshold} show={showConfidenceChange} onShowClick={() => setShowConfidenceChange(true)}
-                           showChange={showConfidenceChange} value={newConfidence} showDropdown={false}
+                <ChangeBox nameStr="Confidence Threshold"
+                           nameValue={details?.confidence_threshold}
+                           show={showConfidenceChange}
+                           onShowClick={() => setShowConfidenceChange(true)}
+                           showChange={showConfidenceChange}
+                           value={newConfidence}
+                           showDropdown={false}
                            onConfirmClick={() => handlePatch("confidence_threshold", newConfidence, setConfidence, setShowConfidenceChangeConfirmation)}
                            onCancelClick={() => {setShowConfidenceChange(false); setShowConfidenceChangeConfirmation(false)}}
                            showConfirmation={showConfidenceChangeConfirmation} onInputChange={(e) => setNewConfidence(e.target.value)}></ChangeBox>
 
-                <ChangeBox nameStr="Process Image" nameValue={details?.process_image} show={showProcessChange} onShowClick={() => setShowProcessChange(true)}
-                           showChange={showProcessChange} value={newProcess} showDropdown={true} options={[{name: "Enabled", value: true}, {name: "Disabled", value: false}]}
-                           label="Choose option" onChange={handleProcessingChange}
+                <ChangeBox nameStr="Process Image"
+                           nameValue={details?.process_image}
+                           show={showProcessChange} onShowClick={() => setShowProcessChange(true)}
+                           showChange={showProcessChange}
+                           value={newProcess}
+                           showDropdown={true}
+                           options={[{name: "Enabled", value: true}, {name: "Disabled", value: false}]}
+                           label="Choose option"
+                           onChange={handleProcessingChange}
                            onConfirmClick={() => handlePatch("process_image", newProcess.value, setProcess, setShowProcessChangeConfirmation)}
                            onCancelClick={() => {setShowProcessChange(false); setShowProcessChangeConfirmation(false)}}
                            showConfirmation={showProcessChangeConfirmation} onInputChange={(e) => setNewProcess(e.target.value)}></ChangeBox>
+
+                <ChangeBox
+                            nameStr="Tensor flow model"
+                            nameValue={details?.model?.model_name + " " + details?.model?.model_version}
+                            show={showModelChange}
+                            onShowClick={() => {setShowModelChange(true); handleFetchModels();}}
+                            showChange={showModelChange}
+                            value={newModel}
+                            showDropdown={true}
+                            options={models.map(m => ({name: m.model_name + " " + m.model_version, value: m.id}))}
+                            label="Choose option"
+                            onChange={handleModelChange}
+                            onConfirmClick={() => handlePatch("model_id", newModel.value, setModel, setShowModelChangeConfirmation)}
+                            onCancelClick={() => {setShowModelChange(false); setShowModelChangeConfirmation(false);}}
+                            showConfirmation={showModelChangeConfirmation}
+                            onInputChange={(e) => setNewModel(e.target.value)}></ChangeBox>
 
                 <button className={styles.CloseButton} onClick={onClose}>Close</button>
             </div>

@@ -9,9 +9,10 @@ function ChangeBox({nameStr, nameValue, show, onShowClick, showChange, value, on
             <div className={styles.NameContainer}>
                 <p>
                     {nameStr}:
-                    {nameValue === true ? " true"
-                    : nameValue === false ? " false"
-                    : `${nameValue ?? "N/A"}`}
+                    {nameValue === true ? " enabled"
+                    : nameValue === false ? " disabled"
+                    : nameValue !== null ? " " + nameValue
+                    : "N/A"}
                 </p>
                 {!show && <button onClick={onShowClick}>Change</button>}
             </div>

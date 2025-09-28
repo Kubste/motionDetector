@@ -1,7 +1,11 @@
 from rest_framework import serializers
 from rest_framework.exceptions import PermissionDenied
-
 from databaseApp.models import *
+
+class TensorFlowModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TensorFlowModel
+        fields = "__all__"
 
 class BaseCameraSerializer(serializers.ModelSerializer):
     class Meta:
@@ -29,12 +33,21 @@ class BaseCameraSerializer(serializers.ModelSerializer):
 class CameraSerializer(BaseCameraSerializer):
     class Meta:
         model = Camera
-        fields = ['id', 'camera_name']
+        fields = ['id', 'camera_name', 'model']
 
 class CameraDetailsSerializer(BaseCameraSerializer):
+    model = TensorFlowModelSerializer(read_only=True)
+
     class Meta:
         model = Camera
         fields = "__all__"
+
+    # updating model foreign key
+    def update(self, instance, validated_data):
+        model_id = self.context['request'].data.get('model_id')
+        if model_id is not None:
+            instance.model_id = model_id
+        return super().update(instance, validated_data)
 
 # base serializer for image info - providing update function
 class BaseImageInfoSerializer(serializers.ModelSerializer):
@@ -71,11 +84,6 @@ class ImageInfoSerializer(BaseImageInfoSerializer):
 class TensorFlowOutputSerializer(serializers.ModelSerializer):
     class Meta:
         model = TensorFlowOutput
-        fields = "__all__"
-
-class TensorFlowModelSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = TensorFlowModel
         fields = "__all__"
 
 # serializer for a specific image info record - all fields
