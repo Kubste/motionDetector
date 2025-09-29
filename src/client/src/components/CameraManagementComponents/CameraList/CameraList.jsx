@@ -3,7 +3,7 @@ import ErrorWindow from "../../UniversalComponents/ErrorWindow/ErrorWindow.jsx";
 import CameraDetails from "../CameraDetails/CameraDetails.jsx";
 import AddCamera from "../AddCamera/AddCamera.jsx";
 import {useEffect, useState} from "react";
-import axios from "axios";
+import api from "../../UniversalComponents/api.jsx";
 
 function CameraList() {
     const [cameras, setCameras] = useState([]);
@@ -22,7 +22,7 @@ function CameraList() {
             const token = sessionStorage.getItem("token");
             setLoading(true);
             try {
-                const response = await axios.get("https://192.168.100.7/api/cameras/", {
+                const response = await api.get("/api/cameras/", {
                     headers: { 'Authorization': `Token ${token}` }
                 });
                 console.log(response.data);
@@ -41,7 +41,7 @@ function CameraList() {
     }, []);
 
     function deleteCamera(id, index) {
-        axios.delete(`https://192.168.100.7/api/cameras/${id}/`, {
+        api.delete(`/api/cameras/${id}/`, {
             headers: {
                 Authorization: `Token ${token}`
             }

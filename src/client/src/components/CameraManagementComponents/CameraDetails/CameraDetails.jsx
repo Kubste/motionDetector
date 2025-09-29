@@ -1,6 +1,6 @@
 import styles from './CameraDetails.module.css';
 import {useState, useEffect} from "react";
-import axios from "axios";
+import api from "../../UniversalComponents/api.jsx";
 import ErrorWindow from "../../UniversalComponents/ErrorWindow/ErrorWindow.jsx";
 import ChangeBox from "../ChangeBox/ChangeBox.jsx";
 
@@ -48,7 +48,7 @@ function CameraDetails({id, onClose}) {
     useEffect(() => {
         const token = sessionStorage.getItem('token');
 
-        axios.get(`https://192.168.100.7/api/cameras/${id}/`, {
+        api.get(`/api/cameras/${id}/`, {
             headers: {
                 Authorization: `Token ${token}`,
             },
@@ -64,7 +64,7 @@ function CameraDetails({id, onClose}) {
     const handleFetchModels = () => {
         const token = sessionStorage.getItem('token');
 
-        axios.get(`https://192.168.100.7/api/tensor-flow-models/`,  {
+        api.get(`/api/tensor-flow-models/`,  {
             headers: {
                 Authorization: `Token ${token}`
             }
@@ -84,7 +84,7 @@ function CameraDetails({id, onClose}) {
             return;
         }
 
-        axios.patch(`https://192.168.100.7/api/cameras/${id}/`, {
+        api.patch(`/api/cameras/${id}/`, {
             [field]: fieldValue
         }, {headers: {
                 Authorization: `Token ${token}`

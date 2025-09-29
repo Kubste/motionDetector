@@ -2,7 +2,7 @@ import styles from './LoginPage.module.css';
 import TopBar from '../../UniversalComponents/TopBar/TopBar.jsx';
 import {useState} from "react";
 import {useNavigate} from "react-router-dom";
-import axios from 'axios';
+import api from "../../UniversalComponents/api.jsx";
 
 function LoginPage() {
     const [username, setUsername] = useState('');
@@ -18,7 +18,7 @@ function LoginPage() {
         setError(null);
 
         try {
-            const response = await axios.post('https://192.168.100.7/auth/login/', {username, password});
+            const response = await api.post('/auth/login/', {username, password});
 
             sessionStorage.setItem('token', response.data.token);
             sessionStorage.setItem('username', response.data.username);

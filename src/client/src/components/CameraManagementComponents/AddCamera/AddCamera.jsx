@@ -2,7 +2,7 @@ import styles from './AddCamera.module.css'
 import ErrorWindow from '../../UniversalComponents/ErrorWindow/ErrorWindow.jsx';
 import DropBar from "../../UniversalComponents/DropBar/DropBar.jsx";
 import {useEffect, useState} from "react";
-import axios from "axios";
+import api from "../../UniversalComponents/api.jsx";
 
 function AddCamera({onClose}) {
 
@@ -26,7 +26,7 @@ function AddCamera({onClose}) {
 
         const token = sessionStorage.getItem('token');
 
-        await axios.post(`https://192.168.100.7/api/cameras/`, {
+        await api.post(`/api/cameras/`, {
             "camera_name": cameraName,
             "board_name": boardName,
             "location": location,
@@ -50,7 +50,7 @@ function AddCamera({onClose}) {
     useEffect(() => {
         const token = sessionStorage.getItem('token');
 
-        axios.get(`https://192.168.100.7/api/tensor-flow-models/`,  {
+        api.get(`/api/tensor-flow-models/`,  {
             headers: {
                 Authorization: `Token ${token}`
             }

@@ -3,7 +3,7 @@ import ErrorWindow from "../../UniversalComponents/ErrorWindow/ErrorWindow.jsx";
 import ImageInfoDetails from "../ImageInfoDetails/ImageInfoDetails.jsx";
 import ImageWindow from "../ImageWindow/ImageWindow.jsx";
 import styles from "./ImageInfoList.module.css";
-import axios from "axios";
+import api from "../../UniversalComponents/api.jsx";
 
 function ImageInfoList() {
     const [imageInfo, setImageInfo] = useState([]);
@@ -23,7 +23,7 @@ function ImageInfoList() {
             const token = sessionStorage.getItem("token");
             setLoading(true);
             try {
-                const response = await axios.get("https://192.168.100.7/api/image-info/", {
+                const response = await api.get("/api/image-info/", {
                     headers: { 'Authorization': `Token ${token}` }
                 });
                 setImageInfo(response.data);
@@ -41,7 +41,7 @@ function ImageInfoList() {
         }, []);
 
     function deleteImageInfo(id, index) {
-        axios.delete(`https://192.168.100.7/api/image-info/${id}/`, {
+        api.delete(`/api/image-info/${id}/`, {
             headers: {
                 Authorization: `Token ${token}`
             }

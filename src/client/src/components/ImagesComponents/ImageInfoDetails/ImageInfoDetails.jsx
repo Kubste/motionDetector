@@ -1,6 +1,6 @@
 import styles from './ImageInfoDetails.module.css';
 import {useState, useEffect} from "react";
-import axios from "axios";
+import api from "../../UniversalComponents/api.jsx";
 import ErrorWindow from "../../UniversalComponents/ErrorWindow/ErrorWindow.jsx";
 
 function ImageInfoDetails({id, onClose}) {
@@ -15,7 +15,7 @@ function ImageInfoDetails({id, onClose}) {
     useEffect(() => {
         const token = sessionStorage.getItem('token');
 
-        axios.get(`https://192.168.100.7/api/image-info/${id}/`, {
+        api.get(`/api/image-info/${id}/`, {
             headers: {
                 Authorization: `Token ${token}`,
             },
@@ -30,7 +30,7 @@ function ImageInfoDetails({id, onClose}) {
     const handleFilenameChange = () => {
         const token = sessionStorage.getItem('token');
 
-        axios.patch(`https://192.168.100.7/api/image-info/${id}/change-filename/`, {
+        api.patch(`/api/image-info/${id}/change-filename/`, {
             filename: newFilename
         }, {headers: {
                 Authorization: `Token ${token}`

@@ -2,7 +2,7 @@ import styles from './TopBar.module.css';
 import { CgLogOut } from "react-icons/cg";
 import {useNavigate} from "react-router-dom";
 import ErrorWindow from "../ErrorWindow/ErrorWindow.jsx";
-import axios from 'axios';
+import api from "../../UniversalComponents/api.jsx";
 import {useState} from "react";
 
 function TopBar({isLoggedIn}) {
@@ -15,7 +15,26 @@ function TopBar({isLoggedIn}) {
         try {
             const token = sessionStorage.getItem("token");
 
-            await axios.post('https://192.168.100.7/auth/logout-all/', {}, {
+            await api.post('/auth/logout-all/', {}, {
+                headers: {
+                    'Authorization': `Token ${token}`,
+                }
+            });
+            sessionStorage.removeItem('token');
+            sessionStorage.removeItem('username');
+            sessionStorage.removeItem('role');
+            navigate('/login');
+        } catch (error) {
+            setError(error);
+            setShowError(true);
+        }
+    }
+
+    const handleLogoutAll = async () => {
+        try {
+            const token = sessionStorage.getItem("token");
+
+            await api.post('/auth/logout-all-users/', {}, {
                 headers: {
                     'Authorization': `Token ${token}`,
                 }
@@ -35,16 +54,32 @@ function TopBar({isLoggedIn}) {
         setShowError(false);
     }
 
-    return(
+    return (
         <div className={styles.TopBar}>
-            {isLoggedIn ? <h3>Motion Detector App, {'\u00A0\u00A0'} Hi {username}!</h3> : <h3>Motion Detector App</h3>}
-            {isLoggedIn &&
-                <button onClick={handleLogout}>
-                    <CgLogOut size={20}></CgLogOut>
-                    Logout
-                </button>
-            }
-            {showError && <ErrorWindow message="Error while trying to log out" onClose={handleCloseError}></ErrorWindow>}
+            <h3 onClick={() => navigate("/")}>Motion Detector App {isLoggedIn && `\u00A0\u00A0 Hi ${username}!`}</h3>
+
+            {isLoggedIn && (
+                <div className={styles.ButtonGroup}>
+                    {sessionStorage.getItem('role') === "sup" && (
+                        <button onClick={handleLogoutAll}>
+                            <CgLogOut size={20} />
+                            Logout all users
+                        </button>
+                    )}
+
+                    <button onClick={handleLogout}>
+                        <CgLogOut size={20} />
+                        Logout
+                    </button>
+                </div>
+            )}
+
+            {showError && (
+                <ErrorWindow
+                    message="Error while trying to log out"
+                    onClose={handleCloseError}
+                />
+            )}
         </div>
     );
 }
