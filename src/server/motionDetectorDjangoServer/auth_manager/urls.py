@@ -1,10 +1,17 @@
-from django.urls import path
+from django.urls import include, path
 from knox import views as knox_views
-from .views import LoginView, RegisterView, PasswordChangeView, LogoutOutAllUsers
+from rest_framework.routers import DefaultRouter
+
+from .views import LoginView, RegisterView, PasswordChangeView, LogoutOutAllUsers, AuthManagerView
 
 app_name = 'auth_manager'
 
+router = DefaultRouter()
+router.register(r'auth-manager', AuthManagerView, basename='auth-manager')
+
 urlpatterns = [
+    path('', include(router.urls)),
+    path('login/', LoginView.as_view(), name='login'),
     path('login/', LoginView.as_view(), name='login'),
     path('logout/', knox_views.LogoutView.as_view(), name='knox_logout'),               # pre-made view - logging out user session
     path('logout-all/', knox_views.LogoutAllView.as_view(), name='knox_logoutall'),     # pre-made view - logging out user for all his sessions

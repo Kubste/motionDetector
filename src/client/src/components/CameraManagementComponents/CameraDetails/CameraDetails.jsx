@@ -2,7 +2,7 @@ import styles from './CameraDetails.module.css';
 import {useState, useEffect} from "react";
 import api from "../../UniversalComponents/api.jsx";
 import ErrorWindow from "../../UniversalComponents/ErrorWindow/ErrorWindow.jsx";
-import ChangeBox from "../ChangeBox/ChangeBox.jsx";
+import ChangeBox from "../../UniversalComponents/ChangeBox/ChangeBox.jsx";
 
 function CameraDetails({id, onClose}) {
     const [details, setDetails] = useState(null);

@@ -77,3 +77,9 @@ class PasswordChangeSerializer(serializers.ModelSerializer):
         instance.set_password(validated_data['new_password'])
         instance.save()
         return instance
+
+class AuthManagerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['username', 'first_name', 'last_name', 'email', 'phone_number', 'role']
+        read_only_fields = ['role']

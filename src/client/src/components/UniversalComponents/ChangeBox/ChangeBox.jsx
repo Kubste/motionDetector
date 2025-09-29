@@ -1,5 +1,5 @@
 import styles from "./ChangeBox.module.css";
-import DropBar from "../../UniversalComponents/DropBar/DropBar.jsx";
+import DropBar from "../DropBar/DropBar.jsx";
 
 function ChangeBox({nameStr, nameValue, show, onShowClick, showChange, value, onConfirmClick, onCancelClick,
                        showConfirmation, onInputChange, showDropdown, label, options, onChange}) {

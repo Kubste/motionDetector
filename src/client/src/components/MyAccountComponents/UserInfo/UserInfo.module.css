@@ -1,0 +1,39 @@
+.InfoContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 24px;
+    margin: 20px auto;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 600px;          /* fixed max width */
+    max-width: 90%;        /* responsive */
+    color: black;
+}
+
+.InfoContainer h2 {
+    margin: 0 0 16px 0;
+    font-size: 22px;
+    font-weight: 700;
+    color: black;
+    align-self: center;
+}
+
+.ChangeContainer {
+    padding: 12px 0;
+    border-bottom: 1px solid black;
+}
+
+.ChangeContainer > * {      /* every child in ChangeContainer */
+    margin-bottom: 16px;
+}
+
+.ChangeContainer:last-child {
+    border-bottom: none; /* no border on last item */
+}
+
+.RoleParagraph {
+    margin: 0;
+    font-weight: 800;
+}

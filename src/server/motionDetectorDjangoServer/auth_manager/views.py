@@ -1,11 +1,12 @@
 from knox.views import LogoutAllView
-from rest_framework import generics, status, permissions
+from rest_framework import generics, status, permissions, viewsets
 from knox.models import AuthToken
 from knox.auth import TokenAuthentication
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from .serializers import RegisterSerializer, PasswordChangeSerializer
+from .models import User
+from .serializers import RegisterSerializer, PasswordChangeSerializer, AuthManagerSerializer
 from .permissions import IsAdmin, IsSuperuser, IsSuperuserOrAdmin
 
 class LoginView(generics.GenericAPIView):
@@ -58,3 +59,9 @@ class PasswordChangeView(generics.UpdateAPIView):
         serializer.save()                                                           # calls serializer.update() - given instance parameter in .get_serializer()
 
         return Response({"success": True, "user_id": request.user.id}, status=status.HTTP_200_OK)
+
+class AuthManagerView(viewsets.ModelViewSet):
+    serializer_class = AuthManagerSerializer
+
+    def get_queryset(self):
+        return User.objects.filter(id=self.request.user.id)

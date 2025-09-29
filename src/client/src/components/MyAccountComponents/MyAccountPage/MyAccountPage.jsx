@@ -1,7 +1,8 @@
 import {useNavigate} from "react-router-dom";
 import {useEffect} from "react";
-import styles from "../../MainPageComponents/MainPage/MainPage.module.css";
+import styles from "./MyAccountPage.module.css";
 import TopBar from "../../UniversalComponents/TopBar/TopBar.jsx";
+import UserInfo from "../UserInfo/UserInfo.jsx"
 
 function MyAccountPage() {
     const navigate = useNavigate();
@@ -17,7 +18,7 @@ function MyAccountPage() {
         <div className={styles.MyAccountPage}>
             <TopBar isLoggedIn={true}></TopBar>
             <div>
-                <h1>My account</h1>
+                <UserInfo></UserInfo>
             </div>
         </div>
     );
