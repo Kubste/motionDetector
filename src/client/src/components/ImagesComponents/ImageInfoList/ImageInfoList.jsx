@@ -20,12 +20,10 @@ function ImageInfoList() {
     // called once after render and each time after reload button is clicked
     useEffect(() => {
         const fetchImages = async () => {
-            const token = sessionStorage.getItem("token");
             setLoading(true);
+
             try {
-                const response = await api.get("/api/image-info/", {
-                    headers: { 'Authorization': `Token ${token}` }
-                });
+                const response = await api.get("/api/image-info/");
                 setImageInfo(response.data);
 
             } catch(error) {

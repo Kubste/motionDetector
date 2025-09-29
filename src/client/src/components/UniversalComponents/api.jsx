@@ -4,6 +4,18 @@ const api = axios.create({
     baseURL: 'https://192.168.100.7',
 });
 
+// adding token globally to all requests
+api.interceptors.request.use(
+    (config) => {
+        const token = sessionStorage.getItem("token");
+        if (token) {
+            config.headers.Authorization = `Token ${token}`;
+        }
+        return config;
+    },
+    (error) => Promise.reject(error)
+);
+
 // logging out user if get 401
 api.interceptors.response.use(
     response => response,

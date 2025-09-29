@@ -46,13 +46,9 @@ function CameraDetails({id, onClose}) {
     const [showModelChangeConfirmation, setShowModelChangeConfirmation] = useState(false);
 
     useEffect(() => {
-        const token = sessionStorage.getItem('token');
 
-        api.get(`/api/cameras/${id}/`, {
-            headers: {
-                Authorization: `Token ${token}`,
-            },
-        }).then(response => {
+        api.get(`/api/cameras/${id}/`
+        ).then(response => {
             setDetails(response.data);
         }).catch(error => {
             setError(error.response?.data?.error || "Failed to load cameras details.");

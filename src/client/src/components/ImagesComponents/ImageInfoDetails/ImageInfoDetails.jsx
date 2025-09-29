@@ -28,13 +28,9 @@ function ImageInfoDetails({id, onClose}) {
     }, [id, filename])
 
     const handleFilenameChange = () => {
-        const token = sessionStorage.getItem('token');
 
         api.patch(`/api/image-info/${id}/change-filename/`, {
             filename: newFilename
-        }, {headers: {
-                Authorization: `Token ${token}`
-            }
         }).then(() => {
             //window.location.reload();
             setFilename(newFilename);

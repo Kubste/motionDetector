@@ -12,14 +12,9 @@ function TopBar({isLoggedIn}) {
     const [showError, setShowError] = useState(false);
 
     const handleLogout = async () => {
+        
         try {
-            const token = sessionStorage.getItem("token");
-
-            await api.post('/auth/logout-all/', {}, {
-                headers: {
-                    'Authorization': `Token ${token}`,
-                }
-            });
+            await api.post('/auth/logout-all/', {});
             sessionStorage.removeItem('token');
             sessionStorage.removeItem('username');
             sessionStorage.removeItem('role');

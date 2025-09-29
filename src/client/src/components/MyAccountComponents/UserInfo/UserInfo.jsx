@@ -45,14 +45,10 @@ function UserInfo() {
 
 
     useEffect(() => {
-        const token = sessionStorage.getItem('token');
         const user_id = sessionStorage.getItem('user_id');
 
-        api.get(`/auth/auth-manager/${user_id}/`, {
-            headers: {
-                Authorization: `Token ${token}`,
-            },
-        }).then(response => {
+        api.get(`/auth/auth-manager/${user_id}/`
+        ).then(response => {
             setDetails(response.data);
         }).catch(error => {
             setError(error.response?.data?.error || "Failed to load cameras details.");

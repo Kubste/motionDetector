@@ -19,12 +19,10 @@ function CameraList() {
     // called once after render and each time after reload button is clicked
     useEffect(() => {
         const fetchCameras = async () => {
-            const token = sessionStorage.getItem("token");
             setLoading(true);
+
             try {
-                const response = await api.get("/api/cameras/", {
-                    headers: { 'Authorization': `Token ${token}` }
-                });
+                const response = await api.get("/api/cameras/");
                 console.log(response.data);
                 setCameras(response.data);
 

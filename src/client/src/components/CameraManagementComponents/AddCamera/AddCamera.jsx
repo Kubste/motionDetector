@@ -24,8 +24,6 @@ function AddCamera({onClose}) {
         setLoading(true);
         setError(null);
 
-        const token = sessionStorage.getItem('token');
-
         await api.post(`/api/cameras/`, {
             "camera_name": cameraName,
             "board_name": boardName,
@@ -35,10 +33,6 @@ function AddCamera({onClose}) {
             "user": sessionStorage.getItem('user_id'),
             "model_id": model.value,
             "process_image": process.value
-        }, {
-            headers: {
-                Authorization: `Token ${token}`
-            }
         }).then(() => {
             window.location.reload();
         }).catch(error => {
