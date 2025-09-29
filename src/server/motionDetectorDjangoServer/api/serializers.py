@@ -42,6 +42,13 @@ class CameraDetailsSerializer(BaseCameraSerializer):
         model = Camera
         fields = "__all__"
 
+    # creating new camera
+    def create(self, validated_data):
+        model_id = self.context['request'].data.get('model_id')
+        if model_id:
+            validated_data['model_id'] = model_id
+        return super().create(validated_data)
+
     # updating model foreign key
     def update(self, instance, validated_data):
         model_id = self.context['request'].data.get('model_id')

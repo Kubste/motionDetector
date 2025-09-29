@@ -18,7 +18,9 @@ function ChangeBox({nameStr, nameValue, show, onShowClick, showChange, value, on
             </div>
             {showChange && (
                 <div className={styles.ChangeBox}>
-                    {!showDropdown ? <input type="text" value={value} placeholder={`Enter new ${nameStr}`} onChange={onInputChange}/> :
+                    {!showDropdown ? (
+                        nameStr === "Confidence Threshold" ? <input type="number" value={value} placeholder={`Enter new ${nameStr}`} onChange={onInputChange} min="0" max="1" step="0.01"/> :
+                            <input type="text" value={value} placeholder={`Enter new ${nameStr}`} onChange={onInputChange}/>) :
                         <DropBar label={label} options={options} onChange={onChange} selectedOption={value}></DropBar>
                     }
                     <button className={styles.ConfirmButton} onClick={onConfirmClick}>Confirm</button>

@@ -54,7 +54,6 @@ function CameraDetails({id, onClose}) {
             },
         }).then(response => {
             setDetails(response.data);
-            console.log("Response:", response.data);
         }).catch(error => {
             setError(error.response?.data?.error || "Failed to load cameras details.");
             setShowError(true);
@@ -71,7 +70,6 @@ function CameraDetails({id, onClose}) {
             }
         }).then((response) => {
             setModels(response.data);
-            console.log("Models API response:", response.data);
         }).catch(error => {
             setError(error.response?.data?.error || "Failed to load tensor flow models.");
         })
@@ -79,7 +77,12 @@ function CameraDetails({id, onClose}) {
 
     const handlePatch = (field, fieldValue, valueSetter, confirmationSetter) => {
         const token = sessionStorage.getItem('token');
-        console.log("Model key:", newModel.value)
+
+        if(field === 'confidence_threshold' && (Number(fieldValue) < 0 || Number(fieldValue) > 1)) {
+            setError("Confidence threshold must be a number in range [0, 1]");
+            setShowError(true);
+            return;
+        }
 
         axios.patch(`https://192.168.100.7/api/cameras/${id}/`, {
             [field]: fieldValue
@@ -147,7 +150,8 @@ function CameraDetails({id, onClose}) {
                            showConfirmation={showLocationChangeConfirmation} onInputChange={(e) => setNewLocation(e.target.value)}></ChangeBox>
 
                 <ChangeBox nameStr="Address"
-                           nameValue={details?.address} show={showAddressChange} onShowClick={() => setShowAddressChange(true)}
+                           nameValue={details?.address}
+                           show={showAddressChange} onShowClick={() => setShowAddressChange(true)}
                            showChange={showAddressChange}
                            value={newAddress}
                            showDropdown={false}

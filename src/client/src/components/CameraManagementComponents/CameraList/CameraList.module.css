@@ -14,10 +14,9 @@
     color: black;
 }
 
-.ReloadButton {
+.ReloadButton, .AddButton {
     width: 200px;
     padding: 8px 16px;
-    margin: 0 auto 50px auto;
     border: none;
     border-radius: 25px;
     background-color: hsl(210, 100%, 50%);
@@ -26,9 +25,23 @@
     font-size: 20px;
 }
 
+.ReloadButton {
+    margin: 0 auto 10px auto;
+}
+
 .ReloadButton:hover {
     transition: background-color 0.5s;
     background-color: hsl(210, 100%, 40%);
+}
+
+.AddButton {
+    margin: 0 auto 50px auto;
+    background-color: hsl(120 60% 40%);
+}
+
+.AddButton:hover {
+    transition: background-color 0.5s;
+    background-color: hsl(120 60% 30%);
 }
 
 .List ol {

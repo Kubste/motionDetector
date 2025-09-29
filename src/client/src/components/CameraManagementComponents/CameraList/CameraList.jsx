@@ -1,6 +1,7 @@
 import styles from './CameraList.module.css';
 import ErrorWindow from "../../UniversalComponents/ErrorWindow/ErrorWindow.jsx";
 import CameraDetails from "../CameraDetails/CameraDetails.jsx";
+import AddCamera from "../AddCamera/AddCamera.jsx";
 import {useEffect, useState} from "react";
 import axios from "axios";
 
@@ -10,6 +11,7 @@ function CameraList() {
     const [error, setError] = useState(null);
     const [showError, setShowError] = useState(false);
     const [showDetails, setShowDetails] = useState(false);
+    const [showAddCamera, setShowAddCamera] = useState(false);
     const [currentID, setCurrentID] = useState(null);
 
     const token = sessionStorage.getItem("token");
@@ -65,6 +67,14 @@ function CameraList() {
         window.location.reload();
     }
 
+    const handleShowAddCamera = () => {
+        setShowAddCamera(true);
+    }
+
+    const handleCloseAddCamera = () => {
+        setShowAddCamera(false);
+    }
+
     const handleCloseError = () => {
         setShowError(false);
         setError(null);
@@ -74,6 +84,7 @@ function CameraList() {
         <div className={styles.CameraContainer}>
             <h1>Your cameras</h1>
             <button className={styles.ReloadButton} onClick={() => {window.location.reload()}}>{loading ? "Reloading cameras..." : "Reload cameras"}</button>
+            <button className={styles.AddButton} onClick={handleShowAddCamera}>Add new camera</button>
             <div className={styles.List}>
                 {cameras.length > 0 ? (
                     <ol>
@@ -89,6 +100,7 @@ function CameraList() {
             </div>
             {showError && <ErrorWindow message={error} onClose={handleCloseError}></ErrorWindow>}
             {showDetails && <CameraDetails id={currentID} onClose={handleCloseCameraDetails}></CameraDetails>}
+            {showAddCamera && <AddCamera onClose={handleCloseAddCamera}></AddCamera>}
         </div>
     );
 }

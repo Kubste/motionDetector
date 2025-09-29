@@ -11,7 +11,7 @@ function DropBar({label, options, onChange, selectedOption}) {
 
     return(
         <div className={styles.Container}>
-            <button onClick={() => setIsOpen(!isOpen)}>{selectedOption?.name || label}</button>
+            <button type="button" onClick={() => setIsOpen(!isOpen)}>{selectedOption?.name || label}</button>
             {isOpen &&
                 <ul className={styles.List}>
                     {options.map((item, index) => (

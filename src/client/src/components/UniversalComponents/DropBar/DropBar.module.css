@@ -2,13 +2,14 @@
     position: relative;
     flex: 1 1 auto;
     min-width: 0;
+    width: 100%;
 }
 
 .Container button {
     width: 100%;
     padding: 8px 12px;
     border: 1px solid black;
-    border-radius: 12px;
+    border-radius: 25px;
     background-color: white;
     color: black;
     font-size: 14px;
@@ -37,6 +38,7 @@
     z-index: 100;
     max-height: 200px;
     overflow-y: auto;
+    width: 100%;
 }
 
 .List li {

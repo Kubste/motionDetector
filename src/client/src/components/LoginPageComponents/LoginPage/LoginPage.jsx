@@ -22,6 +22,7 @@ function LoginPage() {
 
             sessionStorage.setItem('token', response.data.token);
             sessionStorage.setItem('username', response.data.username);
+            sessionStorage.setItem('user_id', response.data.user_id);
             sessionStorage.setItem('role', response.data.role);
             navigate('/');
         } catch (error) {
