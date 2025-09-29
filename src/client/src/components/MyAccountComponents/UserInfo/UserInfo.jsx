@@ -8,6 +8,8 @@ function UserInfo() {
     const [details, setDetails] = useState({});
     const [error, setError] = useState("");
     const [showError, setShowError] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [showPasswordChangeConfirmation, setShowPasswordChangeConfirmation] = useState(false);
 
     const [userName, setUsername] = useState("");
     const [newUsername, setNewUsername] = useState("");
@@ -36,6 +38,10 @@ function UserInfo() {
     const [newPhoneNumber, setNewPhoneNumber] = useState("");
     const [showPhoneNumberChange, setShowPhoneNumberChange] = useState(false);
     const [showPhoneNumberChangeConfirmation, setShowPhoneNumberChangeConfirmation] = useState(false);
+
+    const [oldPassword, setOldPassword] = useState("");
+    const [newPassword, setNewPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
 
 
     useEffect(() => {
@@ -78,6 +84,42 @@ function UserInfo() {
             setError(error.response?.data?.error || "Failed to change field");
             setShowError(true);
         })
+    }
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        setLoading(true);
+        setError(null);
+        const token = sessionStorage.getItem('token');
+
+        if(newPassword !== confirmPassword) {
+            setNewPassword("");
+            setConfirmPassword("");
+            setError("Passwords don't match");
+            setLoading(false);
+            setShowError(true);
+            return;
+        }
+
+        try {
+            await api.put('/auth/password-change/', {old_password: oldPassword, new_password: newPassword}, {
+                headers: {
+                    Authorization: `Token ${token}`
+                }
+            }).then(() => {
+                setShowPasswordChangeConfirmation(true)
+                setOldPassword("");
+                setNewFirstName("");
+                setConfirmPassword("");
+            });
+
+        } catch(error) {
+            setError(error.response?.data?.error || "Failed to change field");
+            setShowError(true);
+
+        } finally {
+            setLoading(false);
+        }
     }
 
     const handleCloseError = () => {
@@ -152,6 +194,17 @@ function UserInfo() {
                 <p className={styles.RoleParagraph}>
                     Role: {details?.role}
                 </p>
+
+                <div className={styles.PasswordContainer}>
+                    <form onSubmit={handleSubmit}>
+                        <p>Change your password</p>
+                        <input type="password" placeholder="Old password" value={oldPassword} onChange={(event) => setOldPassword(event.target.value)} required={true}/>
+                        <input type="password" placeholder="New password" value={newPassword} onChange={(event) => setNewPassword(event.target.value)} required={true}/>
+                        <input type="password" placeholder="Confirm password" value={confirmPassword} onChange={(event) => setConfirmPassword(event.target.value)} required={true}/>
+                        <button className={styles.SubmitButton} type="submit" disabled={loading}>{loading ? "Submitting" : "Submit"}</button>
+                        {showPasswordChangeConfirmation && <p className={styles.PasswordChangeConfirmation}>Password has been changed</p>}
+                    </form>
+                </div>
             </div>
             {showError && <ErrorWindow message={error} onClose={handleCloseError}></ErrorWindow>}
         </div>

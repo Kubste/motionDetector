@@ -37,3 +37,69 @@
     margin: 0;
     font-weight: 800;
 }
+
+.PasswordContainer {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.PasswordContainer p {
+    margin: 0;
+    font-weight: 600;
+    font-size: 16px;
+    color: black;
+    text-align: center;
+}
+
+.PasswordContainer form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    max-width: 350px;
+}
+
+.PasswordContainer input {
+    padding: 10px;
+    border-radius: 25px;
+    border: 1px solid grey;
+    font-size: 14px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.PasswordContainer input:focus {
+    border-color: hsl(210, 100%, 50%);
+    outline: none;
+    box-shadow: 0 0 3px rgba(0, 120, 255, 0.4);
+}
+
+.SubmitButton {
+    padding: 10px 14px;
+    border: none;
+    border-radius: 25px;
+    background-color: hsl(210, 100%, 50%);
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 6px;
+}
+
+.SubmitButton:hover:not(:disabled) {
+    background-color: hsl(210, 100%, 40%);
+}
+
+.SubmitButton:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.PasswordChangeConfirmation {
+    font-size: 16px;
+    font-weight: 600;
+}
