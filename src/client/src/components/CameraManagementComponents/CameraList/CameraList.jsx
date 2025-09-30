@@ -1,5 +1,6 @@
 import styles from './CameraList.module.css';
 import ErrorWindow from "../../UniversalComponents/ErrorWindow/ErrorWindow.jsx";
+import ConfirmWindow from "../../UniversalComponents/ConfirmWindow/ConfirmWindow.jsx";
 import CameraDetails from "../CameraDetails/CameraDetails.jsx";
 import AddCamera from "../AddCamera/AddCamera.jsx";
 import {useEffect, useState} from "react";
@@ -13,6 +14,9 @@ function CameraList() {
     const [showDetails, setShowDetails] = useState(false);
     const [showAddCamera, setShowAddCamera] = useState(false);
     const [currentID, setCurrentID] = useState(null);
+    const [showConfirmation, setShowConfirmation] = useState(false);
+    const [selectedItem, setSelectedItem] = useState({});
+    const [selectedIndex, setSelectedIndex] = useState(null);
 
     const token = sessionStorage.getItem("token");
 
@@ -78,6 +82,19 @@ function CameraList() {
         setError(null);
     }
 
+    const handleCancelConfirmation = () => {
+        setShowConfirmation(false);
+        setSelectedItem({});
+        setSelectedIndex(null);
+    }
+
+    const handleConfirmConfirmation = () => {
+        deleteCamera(selectedItem.id, selectedIndex);
+        setShowConfirmation(false);
+        setSelectedItem({});
+        setSelectedIndex(null);
+    }
+
     return(
         <div className={styles.CameraContainer}>
             <h1>Your cameras</h1>
@@ -90,7 +107,7 @@ function CameraList() {
                             <li key={index}>
                                 <span className={styles.CameraName}>{item.camera_name}</span>
                                 <button className={styles.DetailsButton} onClick={() => handleShowCameraDetails(item.id)}>Details</button>
-                                <button className={styles.DeleteButton} onClick={() => deleteCamera(item.id, index)}>Delete</button>
+                                <button className={styles.DeleteButton} onClick={() => {setSelectedItem(item); setSelectedIndex(index); setShowConfirmation(true);}}>Delete</button>
                             </li>
                         ))}
                     </ol>
@@ -99,6 +116,7 @@ function CameraList() {
             {showError && <ErrorWindow message={error} onClose={handleCloseError}></ErrorWindow>}
             {showDetails && <CameraDetails id={currentID} onClose={handleCloseCameraDetails}></CameraDetails>}
             {showAddCamera && <AddCamera onClose={handleCloseAddCamera}></AddCamera>}
+            {showConfirmation && <ConfirmWindow message={`delete ${selectedItem.camera_name}`} onClose={handleCancelConfirmation} onConfirm={handleConfirmConfirmation}></ConfirmWindow>}
         </div>
     );
 }

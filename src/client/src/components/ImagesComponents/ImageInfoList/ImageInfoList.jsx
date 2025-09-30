@@ -1,5 +1,6 @@
 import {useState, useEffect} from "react";
 import ErrorWindow from "../../UniversalComponents/ErrorWindow/ErrorWindow.jsx";
+import ConfirmWindow from "../../UniversalComponents/ConfirmWindow/ConfirmWindow.jsx";
 import ImageInfoDetails from "../ImageInfoDetails/ImageInfoDetails.jsx";
 import ImageWindow from "../ImageWindow/ImageWindow.jsx";
 import styles from "./ImageInfoList.module.css";
@@ -14,6 +15,9 @@ function ImageInfoList() {
     const [showDetails, setShowDetails] = useState(false);
     const [selectedImage, setSelectedImage] = useState(null);
     const [showSelectedImage, setShowSelectedImage] = useState(false);
+    const [selectedItem, setSelectedItem] = useState({});
+    const [selectedIndex, setSelectedIndex] = useState(null);
+    const [showConfirmation, setShowConfirmation] = useState(false);
 
     const token = sessionStorage.getItem("token");
 
@@ -80,6 +84,19 @@ function ImageInfoList() {
         setShowSelectedImage(false);
     }
 
+    const handleCancelConfirmation = () => {
+        setShowConfirmation(false);
+        setSelectedItem({});
+        setSelectedIndex(null);
+    }
+
+    const handleConfirmConfirmation = () => {
+        deleteImageInfo(selectedItem.id, selectedIndex);
+        setShowConfirmation(false);
+        setSelectedItem({});
+        setSelectedIndex(null);
+    }
+
     return(
         <div className={styles.ImagesContainer}>
             <h1>Captured Images</h1>
@@ -92,7 +109,7 @@ function ImageInfoList() {
                                 <span className={styles.Filename} onClick={() => handleShowImage(item)}>{item.filename}</span>
                                 <button className={styles.ShowImageButton} onClick={() => handleShowImage(item)}>Show Image</button>
                                 <button className={styles.DetailsButton} onClick={() => handleShowDetails(item.id)}>Details</button>
-                                <button className={styles.DeleteButton} onClick={() => deleteImageInfo(item.id, index)}>Delete</button>
+                                <button className={styles.DeleteButton} onClick={() => {setSelectedItem(item); setSelectedIndex(index); setShowConfirmation(true)}}>Delete</button>
                             </li>
                         ))}
                     </ol>
@@ -101,6 +118,7 @@ function ImageInfoList() {
             {showError && <ErrorWindow message={error} onClose={handleCloseError}></ErrorWindow>}
             {showDetails && <ImageInfoDetails id={currentID} onClose={handleCloseDetails}></ImageInfoDetails>}
             {showSelectedImage && <ImageWindow filename={selectedImage.filename} path={selectedImage.path} onClose={handleCloseSelectedImage}></ImageWindow>}
+            {showConfirmation && <ConfirmWindow message={`delete ${selectedItem.filename}`} onClose={handleCancelConfirmation} onConfirm={handleConfirmConfirmation}></ConfirmWindow>}
         </div>
     );
 }

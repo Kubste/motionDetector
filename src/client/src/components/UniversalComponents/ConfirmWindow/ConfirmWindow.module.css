@@ -1,0 +1,59 @@
+.ConfirmWindow {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.ConfirmContent {
+    background: white;
+    padding: 20px 30px;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    text-align: center;
+}
+
+.ConfirmContent p {
+    margin-bottom: 20px;
+    color: black;
+    font-weight: bold;
+}
+
+.ButtonsContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.ButtonsContainer .CancelButton {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    background: hsl(0, 70%, 60%);
+    color: white;
+    cursor: pointer;
+}
+
+.ButtonsContainer .CancelButton:hover {
+    background-color: hsl(0, 70%, 50%);
+}
+
+.ButtonsContainer .ConfirmButton {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    background: hsl(120, 60%, 40%);
+    color: white;
+    cursor: pointer;
+}
+
+.ButtonsContainer .ConfirmButton:hover {
+    background-color: hsl(120, 60%, 30%);
+}

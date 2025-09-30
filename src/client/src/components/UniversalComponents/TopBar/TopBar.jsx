@@ -2,6 +2,7 @@ import styles from './TopBar.module.css';
 import { CgLogOut } from "react-icons/cg";
 import {useNavigate} from "react-router-dom";
 import ErrorWindow from "../ErrorWindow/ErrorWindow.jsx";
+import ConfirmWindow from "../ConfirmWindow/ConfirmWindow.jsx";
 import api from "../../UniversalComponents/api.jsx";
 import {useState} from "react";
 
@@ -10,6 +11,7 @@ function TopBar({isLoggedIn}) {
     const username = sessionStorage.getItem("username");
     const [error, setError] = useState(null);
     const [showError, setShowError] = useState(false);
+    const [showConfirmation, setShowConfirmation] = useState(false);
 
     const handleLogout = async () => {
         
@@ -49,6 +51,10 @@ function TopBar({isLoggedIn}) {
         setShowError(false);
     }
 
+    const handleCloseConfirmation = () => {
+        setShowConfirmation(false);
+    }
+
     return (
         <div className={styles.TopBar}>
             <h3 onClick={() => navigate("/")}>Motion Detector App {isLoggedIn && `\u00A0\u00A0 Hi ${username}!`}</h3>
@@ -56,7 +62,7 @@ function TopBar({isLoggedIn}) {
             {isLoggedIn && (
                 <div className={styles.ButtonGroup}>
                     {sessionStorage.getItem('role') === "sup" && (
-                        <button onClick={handleLogoutAll}>
+                        <button onClick={() => setShowConfirmation(true)}>
                             <CgLogOut size={20} />
                             Logout all users
                         </button>
@@ -69,12 +75,8 @@ function TopBar({isLoggedIn}) {
                 </div>
             )}
 
-            {showError && (
-                <ErrorWindow
-                    message="Error while trying to log out"
-                    onClose={handleCloseError}
-                />
-            )}
+            {showError && <ErrorWindow message="Error while trying to log out" onClose={handleCloseError}/>}
+            {showConfirmation && <ConfirmWindow message="log out all users" onClose={handleCloseConfirmation} onConfirm={handleLogoutAll}></ConfirmWindow>}
         </div>
     );
 }
