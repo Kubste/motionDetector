@@ -90,7 +90,14 @@ function CameraDetails({id, onClose}) {
             valueSetter(fieldValue);
             confirmationSetter(true);
         }).catch(error => {
-            setError(error.response?.data?.error || "Failed to change field");
+            const errorData = error.response?.data;
+
+            if(errorData.non_field_errors?.[0]) setError(errorData.non_field_errors?.[0]);
+            else {
+                // finding the right key in errorData - finding sublist with length is greater than 0
+                const fieldKey = Object.keys(errorData).find(key => Array.isArray(errorData[key]) && errorData[key].length > 0);
+                if(fieldKey) setError(errorData[fieldKey][0] || "Failed to change field");
+            }
             setShowError(true);
         })
     }

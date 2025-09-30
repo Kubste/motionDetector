@@ -110,6 +110,9 @@ class ImageInfoViewSet(viewsets.ModelViewSet):
         if not new_filename:
             return Response({"success": False, "error": "No filename provided"}, status=status.HTTP_400_BAD_REQUEST)
 
+        if len(new_filename) > 128:
+            return Response({"success": False, "error": "Ensure filename has no more than 128 characters."}, status=status.HTTP_400_BAD_REQUEST)
+
         old_path = image.storage.path
         directory = os.path.dirname(old_path)
         new_path = os.path.join(directory, new_filename)

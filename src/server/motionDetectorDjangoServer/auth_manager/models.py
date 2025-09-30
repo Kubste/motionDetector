@@ -16,6 +16,9 @@ class User(AbstractUser):
     # validates phone number - \d -> digit
     phone_validator = RegexValidator(r'^\d{9,11}$', 'Enter an 9 to 11 digit phone number')
     phone_number = models.CharField(max_length=11, unique=True, validators=[phone_validator])
+    username = models.CharField(max_length=64, unique=True)
+    first_name = models.CharField(max_length=64)
+    last_name = models.CharField(max_length=64)
     role = models.CharField(max_length=8, choices=ROLE_CHOICES, default='user')
 
     def set_user_password(self, password):
