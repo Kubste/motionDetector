@@ -127,7 +127,7 @@ function CameraDetails({id, onClose}) {
                            showChange={showCameraNameChange}
                            value={newCameraName}
                            showDropdown={false}
-                           onConfirmClick={() => handlePatch("camera_name", newCameraName, setCameraName, setShowCameraNameChangeConfirmation)}
+                           onConfirmClick={() => {handlePatch("camera_name", newCameraName, setCameraName, setShowCameraNameChangeConfirmation); setNewCameraName("")}}
                            onCancelClick={() => {setShowCameraNameChange(false); setShowCameraNameChangeConfirmation(false)}}
                            showConfirmation={showCameraNameChangeConfirmation} onInputChange={(e) => setNewCameraName(e.target.value)}></ChangeBox>
 
@@ -137,7 +137,7 @@ function CameraDetails({id, onClose}) {
                            showChange={showBoardNameChange}
                            value={newBoardName}
                            showDropdown={false}
-                           onConfirmClick={() => handlePatch("board_name", newBoardName, setBoardName, setShowBoardNameChangeConfirmation)}
+                           onConfirmClick={() => {handlePatch("board_name", newBoardName, setBoardName, setShowBoardNameChangeConfirmation); setNewBoardName("");}}
                            onCancelClick={() => {setShowBoardNameChange(false); setShowBoardNameChangeConfirmation(false)}}
                            showConfirmation={showBoardNameChangeConfirmation} onInputChange={(e) => setNewBoardName(e.target.value)}></ChangeBox>
 
@@ -148,7 +148,7 @@ function CameraDetails({id, onClose}) {
                            showChange={showLocationChange}
                            value={newLocation}
                            showDropdown={false}
-                           onConfirmClick={() => handlePatch("location", newLocation, setLocation, setShowLocationChangeConfirmation)}
+                           onConfirmClick={() => {handlePatch("location", newLocation, setLocation, setShowLocationChangeConfirmation); setNewLocation("");}}
                            onCancelClick={() => {setShowLocationChange(false); setShowLocationChangeConfirmation(false)}}
                            showConfirmation={showLocationChangeConfirmation} onInputChange={(e) => setNewLocation(e.target.value)}></ChangeBox>
 
@@ -158,7 +158,7 @@ function CameraDetails({id, onClose}) {
                            showChange={showAddressChange}
                            value={newAddress}
                            showDropdown={false}
-                           onConfirmClick={() => handlePatch("address", newAddress, setAddress, setShowAddressChangeConfirmation)}
+                           onConfirmClick={() => {handlePatch("address", newAddress, setAddress, setShowAddressChangeConfirmation); setNewAddress("");}}
                            onCancelClick={() => {setShowAddressChange(false); setShowAddressChangeConfirmation(false)}}
                            showConfirmation={showAddressChangeConfirmation} onInputChange={(e) => setNewAddress(e.target.value)}></ChangeBox>
 
@@ -169,7 +169,7 @@ function CameraDetails({id, onClose}) {
                            showChange={showConfidenceChange}
                            value={newConfidence}
                            showDropdown={false}
-                           onConfirmClick={() => handlePatch("confidence_threshold", newConfidence, setConfidence, setShowConfidenceChangeConfirmation)}
+                           onConfirmClick={() => {handlePatch("confidence_threshold", newConfidence, setConfidence, setShowConfidenceChangeConfirmation); setNewConfidence("");}}
                            onCancelClick={() => {setShowConfidenceChange(false); setShowConfidenceChangeConfirmation(false)}}
                            showConfirmation={showConfidenceChangeConfirmation} onInputChange={(e) => setNewConfidence(e.target.value)}></ChangeBox>
 
@@ -182,7 +182,7 @@ function CameraDetails({id, onClose}) {
                            options={[{name: "Enabled", value: true}, {name: "Disabled", value: false}]}
                            label="Choose option"
                            onChange={handleProcessingChange}
-                           onConfirmClick={() => handlePatch("process_image", newProcess.value, setProcess, setShowProcessChangeConfirmation)}
+                           onConfirmClick={() => {handlePatch("process_image", newProcess.value, setProcess, setShowProcessChangeConfirmation); setNewProcess(null);}}
                            onCancelClick={() => {setShowProcessChange(false); setShowProcessChangeConfirmation(false)}}
                            showConfirmation={showProcessChangeConfirmation} onInputChange={(e) => setNewProcess(e.target.value)}></ChangeBox>
 
@@ -197,7 +197,7 @@ function CameraDetails({id, onClose}) {
                             options={models.map(m => ({name: m.model_name + " " + m.model_version, value: m.id}))}
                             label="Choose option"
                             onChange={handleModelChange}
-                            onConfirmClick={() => handlePatch("model_id", newModel.value, setModel, setShowModelChangeConfirmation)}
+                            onConfirmClick={() => {handlePatch("model_id", newModel.value, setModel, setShowModelChangeConfirmation); setNewModel(null)}}
                             onCancelClick={() => {setShowModelChange(false); setShowModelChangeConfirmation(false);}}
                             showConfirmation={showModelChangeConfirmation}
                             onInputChange={(e) => setNewModel(e.target.value)}></ChangeBox>

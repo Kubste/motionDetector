@@ -30,7 +30,7 @@ function ImageInfoDetails({id, onClose}) {
     const handleFilenameChange = () => {
 
         api.patch(`/api/image-info/${id}/change-filename/`, {
-            filename: newFilename
+            filename: newFilename + ".jpg"
         }).then(() => {
             //window.location.reload();
             setFilename(newFilename);
@@ -39,6 +39,19 @@ function ImageInfoDetails({id, onClose}) {
             setError(error.response?.data?.error || "Failed to change filename.");
             setShowError(true);
         })
+    }
+
+    const handleConvertTimestamp = () => {
+        const date = new Date(details?.timestamp);
+        if(date) {
+            return date.toLocaleString(undefined, {     // undefined - default browser settings
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit"
+            });
+        } else return "N/A";
     }
 
     const handleCloseError = () => {
@@ -63,13 +76,14 @@ function ImageInfoDetails({id, onClose}) {
                     )}
                 </div>
                 {showFilenameChangeConfirmation && <p className={styles.Confirmation}>Filename was changed</p>}
-                <p>File size: {details ? details.file_size + " kB" : "N/A"}</p>
+                <p>File size: {details ? details.file_size / 1000 + " kB" : "N/A"}</p>
                 <p>File type: {details?.file_type || "N/A"}</p>
                 <p>Resolution: {details?.resolution || "N/A"}</p>
-                <p>Timestamp: {details?.timestamp || "N/A"}</p>
+                <p>Timestamp: {handleConvertTimestamp()}</p>
                 <p>Camera: {details?.camera || "N/A"}</p>
-                <p>Model: {details ? details.model.model_name + " " + details.model.model_version : "N/A"}</p>
-                <p>Confidence: {details?.output?.confidence || "N/A"}</p>
+                <p>Model: {details ? details.model.model_name + " version: " + details.model.model_version : "N/A"}</p>
+                <p>Confidence: {Math.round(details?.output?.confidence * 1000) / 1000 || "N/A"}</p>
+                <p>Was processed: {details?.is_processed != null ? (details?.is_processed ? "yes" : "no") : "N/A"}</p>
                 <p>Person Count: {details?.output?.person_count || "N/A"}</p>
                 <button className={styles.CloseButton} onClick={onClose}>Close</button>
             </div>

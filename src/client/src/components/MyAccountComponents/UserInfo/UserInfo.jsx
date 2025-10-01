@@ -143,7 +143,7 @@ function UserInfo() {
                            showChange={showUsernameChange}
                            value={newUsername}
                            showDropdown={false}
-                           onConfirmClick={() => handlePatch("username", newUsername, setUsername, setShowUsernameChangeConfirmation)}
+                           onConfirmClick={() => {handlePatch("username", newUsername, setUsername, setShowUsernameChangeConfirmation); setNewUsername("")}}
                            onCancelClick={() => {setShowUsernameChange(false); setShowUsernameChangeConfirmation(false);}}
                            showConfirmation={showUsernameChangeConfirmation}
                            onInputChange={(e) => setNewUsername(e.target.value)}></ChangeBox>
@@ -155,7 +155,7 @@ function UserInfo() {
                            showChange={showFirstNameChange}
                            value={newFirstName}
                            showDropdown={false}
-                           onConfirmClick={() => handlePatch("first_name", newFirstName, setFirstName, setShowFirstNameChangeConfirmation)}
+                           onConfirmClick={() => {handlePatch("first_name", newFirstName, setFirstName, setShowFirstNameChangeConfirmation); setNewFirstName("")}}
                            onCancelClick={() => {setShowFirstNameChange(false); setShowFirstNameChangeConfirmation(false);}}
                            showConfirmation={showFirstNameChangeConfirmation}
                            onInputChange={(e) => setNewFirstName(e.target.value)}></ChangeBox>
@@ -167,7 +167,7 @@ function UserInfo() {
                            showChange={showLastNameChange}
                            value={newLastName}
                            showDropdown={false}
-                           onConfirmClick={() => handlePatch("last_name", newLastName, setLastName, setShowLastNameChangeConfirmation)}
+                           onConfirmClick={() => {handlePatch("last_name", newLastName, setLastName, setShowLastNameChangeConfirmation); setNewLastName("")}}
                            onCancelClick={() => {setShowLastNameChange(false); setShowLastNameChangeConfirmation(false);}}
                            showConfirmation={showLastNameChangeConfirmation}
                            onInputChange={(e) => setNewLastName(e.target.value)}></ChangeBox>
@@ -179,7 +179,7 @@ function UserInfo() {
                            showChange={showEmailChange}
                            value={newEmail}
                            showDropdown={false}
-                           onConfirmClick={() => handlePatch("email", newEmail, setEmail, setShowEmailChangeConfirmation)}
+                           onConfirmClick={() => {handlePatch("email", newEmail, setEmail, setShowEmailChangeConfirmation); setNewEmail("")}}
                            onCancelClick={() => {setShowEmailChange(false); setShowEmailChangeConfirmation(false);}}
                            showConfirmation={showEmailChangeConfirmation}
                            onInputChange={(e) => setNewEmail(e.target.value)}></ChangeBox>
@@ -191,7 +191,7 @@ function UserInfo() {
                            showChange={showPhoneNumberChange}
                            value={newPhoneNumber}
                            showDropdown={false}
-                           onConfirmClick={() => handlePatch("phone_number", newPhoneNumber, setPhoneNumber, setShowPhoneNumberChangeConfirmation)}
+                           onConfirmClick={() => {handlePatch("phone_number", newPhoneNumber, setPhoneNumber, setShowPhoneNumberChangeConfirmation); setNewPhoneNumber("")}}
                            onCancelClick={() => {setShowPhoneNumberChange(false); setShowPhoneNumberChangeConfirmation(false);}}
                            showConfirmation={showPhoneNumberChangeConfirmation}
                            onInputChange={(e) => setNewPhoneNumber(e.target.value)}></ChangeBox>

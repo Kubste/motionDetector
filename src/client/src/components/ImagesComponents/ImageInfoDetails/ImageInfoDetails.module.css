@@ -25,6 +25,11 @@
     gap: 12px;
 }
 
+.DetailsContainer p {
+    font-weight: 800;
+    margin-bottom: 0;
+}
+
 .FilenameContainer {
     display: flex;
     justify-content: space-between;
