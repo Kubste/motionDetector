@@ -1,6 +1,6 @@
 import TopBar from '../UniversalComponents/TopBar.jsx';
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import {useState, useEffect} from "react";
+import {useNavigate} from "react-router-dom";
 import api from "../UniversalComponents/api.jsx";
 
 function LoginPage() {
@@ -10,6 +10,13 @@ function LoginPage() {
     const [error, setError] = useState(null);
 
     const navigate = useNavigate();
+
+    // preventing user to go back to login page after successful login
+    useEffect(() => {
+        const token = sessionStorage.getItem("token");
+        if(token) navigate("/", {replace: true});
+    }, [navigate])
+
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -23,7 +30,7 @@ function LoginPage() {
             sessionStorage.setItem('username', response.data.username);
             sessionStorage.setItem('user_id', response.data.user_id);
             sessionStorage.setItem('role', response.data.role);
-            navigate('/');
+            navigate('/', {replace: true});
         } catch (error) {
             if(error.response && error.response.status === 400) setError("Invalid username or password");
             else setError("Server Error. Please try again.");
