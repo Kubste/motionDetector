@@ -1,9 +1,8 @@
-import styles from './TopBar.module.css';
 import { CgLogOut } from "react-icons/cg";
 import {useNavigate} from "react-router-dom";
-import ErrorWindow from "../ErrorWindow/ErrorWindow.jsx";
-import ConfirmWindow from "../ConfirmWindow/ConfirmWindow.jsx";
-import api from "../../UniversalComponents/api.jsx";
+import ErrorWindow from "./ErrorWindow.jsx";
+import ConfirmWindow from "./ConfirmWindow.jsx";
+import api from "./api.jsx";
 import {useState} from "react";
 
 function TopBar({isLoggedIn}) {
@@ -56,27 +55,30 @@ function TopBar({isLoggedIn}) {
     }
 
     return (
-        <div className={styles.TopBar}>
-            <h3 onClick={() => navigate("/")}>Motion Detector App {isLoggedIn && `\u00A0\u00A0 Hi ${username}!`}</h3>
+        <div className="w-full bg-cyan-300 text-cyan-700 shadow-2xl px-6 py-4 flex items-center justify-between">
+            <h3 className="text-xl font-bold cursor-pointer hover:text-cyan-900 transition" onClick={() => navigate("/")}>
+                Motion Detector App {isLoggedIn && `\u00A0\u00A0 Hi ${username}!`}
+            </h3>
 
-            {isLoggedIn && (
-                <div className={styles.ButtonGroup}>
-                    {sessionStorage.getItem('role') === "sup" && (
-                        <button onClick={() => setShowConfirmation(true)}>
-                            <CgLogOut size={20} />
+            {isLoggedIn && (<div className="flex gap-3">{sessionStorage.getItem('role') === "sup" && (
+                        <button className="button flex items-center gap-1 px-3 py-2 rounded-lg bg-cyan-700 hover:bg-cyan-900 hover:cursor-pointer text-white"
+                            onClick={() => setShowConfirmation(true)}>
+                            <CgLogOut size={18}/>
                             Logout all users
                         </button>
                     )}
 
-                    <button onClick={handleLogout}>
-                        <CgLogOut size={20} />
+                    <button className="button flex items-center gap-1 px-3 py-2 rounded-lg bg-cyan-700 hover:bg-cyan-900 hover:cursor-pointer text-white"
+                        onClick={handleLogout}>
+                        <CgLogOut size={18}/>
                         Logout
                     </button>
                 </div>
             )}
 
-            {showError && <ErrorWindow message="Error while trying to log out" onClose={handleCloseError}/>}
-            {showConfirmation && <ConfirmWindow message="log out all users" onClose={handleCloseConfirmation} onConfirm={handleLogoutAll}></ConfirmWindow>}
+            {showError && (<ErrorWindow message="Error while trying to log out" onClose={handleCloseError}/>)}
+
+            {showConfirmation && (<ConfirmWindow message="log out all users" onClose={handleCloseConfirmation} onConfirm={handleLogoutAll}/>)}
         </div>
     );
 }

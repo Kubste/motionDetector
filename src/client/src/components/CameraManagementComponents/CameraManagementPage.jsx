@@ -1,10 +1,9 @@
 import {useNavigate} from "react-router-dom";
 import {useEffect} from "react";
-import styles from "./MyAccountPage.module.css";
-import TopBar from "../../UniversalComponents/TopBar/TopBar.jsx";
-import UserInfo from "../UserInfo/UserInfo.jsx"
+import TopBar from "../UniversalComponents/TopBar.jsx";
+import CameraList from "./CameraList.jsx";
 
-function MyAccountPage() {
+function CameraManagementPage() {
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -15,13 +14,13 @@ function MyAccountPage() {
     }, [navigate]);
 
     return(
-        <div className={styles.MyAccountPage}>
+        <div className="flex flex-col min-h-screen">
             <TopBar isLoggedIn={true}></TopBar>
-            <div>
-                <UserInfo></UserInfo>
+            <div className="flex flex-col flex-1 justify-center items-center w-full">
+                <CameraList></CameraList>
             </div>
         </div>
     );
 }
 
-export default MyAccountPage;
+export default CameraManagementPage;

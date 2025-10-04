@@ -1,10 +1,10 @@
 import './App.css'
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import MainPage from "./components/MainPageComponents/MainPage/MainPage.jsx";
-import ImagesPage from "./components/ImagesComponents/ImagesPage/ImagesPage.jsx";
-import CameraManagementPage from "./components/CameraManagementComponents/CameraManagementPage/CameraManagementPage.jsx";
-import MyAccountPage from "./components/MyAccountComponents/MyAccountPage/MyAccountPage.jsx";
-import LoginPage from "./components/LoginPageComponents/LoginPage/LoginPage.jsx";
+import MainPage from "./components/MainPageComponents/MainPage.jsx";
+import ImagesPage from "./components/ImagesComponents/ImagesPage.jsx";
+import CameraManagementPage from "./components/CameraManagementComponents/CameraManagementPage.jsx";
+import MyAccountPage from "./components/MyAccountComponents/MyAccountPage.jsx";
+import LoginPage from "./components/LoginPageComponents/LoginPage.jsx";
 
 function App() {
 

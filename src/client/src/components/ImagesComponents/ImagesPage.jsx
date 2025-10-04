@@ -1,6 +1,5 @@
-import styles from "./ImagesPage.module.css";
-import TopBar from "../../UniversalComponents/TopBar/TopBar.jsx";
-import ImageInfoList from ".././ImageInfoList/ImageInfoList.jsx";
+import TopBar from "../UniversalComponents/TopBar.jsx";
+import ImageInfoList from "./ImageInfoList.jsx";
 import {useEffect} from "react";
 import {useNavigate} from "react-router-dom";
 
@@ -16,9 +15,9 @@ function ImagesPage() {
     }, [navigate]);
 
     return(
-        <div className={styles.ImagesPage}>
+        <div className="flex flex-col min-h-screen">
             <TopBar isLoggedIn={true}></TopBar>
-            <div className={styles.ImagesContainer}>
+            <div className="flex flex-col flex-1 justify-center items-center w-full">
                 <ImageInfoList></ImageInfoList>
             </div>
         </div>

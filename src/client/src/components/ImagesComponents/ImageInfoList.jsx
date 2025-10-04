@@ -1,10 +1,9 @@
 import {useState, useEffect} from "react";
-import ErrorWindow from "../../UniversalComponents/ErrorWindow/ErrorWindow.jsx";
-import ConfirmWindow from "../../UniversalComponents/ConfirmWindow/ConfirmWindow.jsx";
-import ImageInfoDetails from "../ImageInfoDetails/ImageInfoDetails.jsx";
-import ImageWindow from "../ImageWindow/ImageWindow.jsx";
-import styles from "./ImageInfoList.module.css";
-import api from "../../UniversalComponents/api.jsx";
+import ErrorWindow from "../UniversalComponents/ErrorWindow.jsx";
+import ConfirmWindow from "../UniversalComponents/ConfirmWindow.jsx";
+import ImageInfoDetails from "./ImageInfoDetails.jsx";
+import ImageWindow from "./ImageWindow.jsx";
+import api from "../UniversalComponents/api.jsx";
 
 function ImageInfoList() {
     const [imageInfo, setImageInfo] = useState([]);
@@ -97,28 +96,47 @@ function ImageInfoList() {
         setSelectedIndex(null);
     }
 
-    return(
-        <div className={styles.ImagesContainer}>
-            <h1>Captured Images</h1>
-            <button className={styles.ReloadButton} onClick={() => {window.location.reload()}}>{loading ? "Reloading images..." : "Reload images"}</button>
-            <div className={styles.List}>
+    return (
+        <div className="flex flex-col text-center justify-center px-5 w-2/5 my-10 mx-auto">
+            <h1 className="mb-5 text-black font-bold text-3xl">Captured Images</h1>
+
+            <button
+                className=" button w-[200px] px-4 py-2 mb-12 mx-auto rounded-full bg-cyan-600 text-white text-xl hover:bg-cyan-800"
+                onClick={() => window.location.reload()}>{loading ? "Reloading images..." : "Reload images"}</button>
+
+            <div className="w-full">
                 {imageInfo.length > 0 ? (
-                    <ol>
+                    <ol className="p-0 m-0">
                         {imageInfo.map((item, index) => (
-                            <li key={index}>
-                                <span className={styles.Filename} onClick={() => handleShowImage(item)}>{item.filename}</span>
-                                <button className={styles.ShowImageButton} onClick={() => handleShowImage(item)}>Show Image</button>
-                                <button className={styles.DetailsButton} onClick={() => handleShowDetails(item.id)}>Details</button>
-                                <button className={styles.DeleteButton} onClick={() => {setSelectedItem(item); setSelectedIndex(index); setShowConfirmation(true)}}>Delete</button>
+                            <li className="flex justify-between items-center px-4 py-3 mb-3 rounded-3xl bg-cyan-50 shadow-md transition-transform hover:-translate-y-0.5 hover:shadow-xl hover:bg-white/20"
+                                key={index}>
+                                <span className="flex-1 font-medium text-black break-words">{index + 1 }. {item.filename}</span>
+
+                                <div className="flex">
+                                    <button className="button px-3 py-1 rounded-full text-sm bg-green-700 text-white hover:bg-green-900"
+                                        onClick={() => handleShowImage(item)}>Show Image</button>
+
+                                    <button className="button px-3 py-1 rounded-full text-sm ml-2 bg-blue-500 text-white hover:bg-blue-700"
+                                        onClick={() => handleShowDetails(item.id)}>Details</button>
+
+                                    <button className="close-button px-3 py-1 rounded-full text-sm ml-2 text-white"
+                                        onClick={() => {
+                                            setSelectedItem(item);
+                                            setSelectedIndex(index);
+                                            setShowConfirmation(true);
+                                        }}
+                                    >Delete</button>
+                                </div>
                             </li>
                         ))}
                     </ol>
-                ) : (<h2>No images found</h2>)}
+                ) : (<h2 className="text-2xl">No images found</h2>)}
             </div>
-            {showError && <ErrorWindow message={error} onClose={handleCloseError}></ErrorWindow>}
-            {showDetails && <ImageInfoDetails id={currentID} onClose={handleCloseDetails}></ImageInfoDetails>}
-            {showSelectedImage && <ImageWindow filename={selectedImage.filename} path={selectedImage.path} onClose={handleCloseSelectedImage}></ImageWindow>}
-            {showConfirmation && <ConfirmWindow message={`delete ${selectedItem.filename}`} onClose={handleCancelConfirmation} onConfirm={handleConfirmConfirmation}></ConfirmWindow>}
+
+            {showError && <ErrorWindow message={error} onClose={handleCloseError} />}
+            {showDetails && <ImageInfoDetails id={currentID} onClose={handleCloseDetails} />}
+            {showSelectedImage && <ImageWindow filename={selectedImage.filename} path={selectedImage.path} onClose={handleCloseSelectedImage}/>}
+            {showConfirmation && <ConfirmWindow message={`delete ${selectedItem.filename}`} onClose={handleCancelConfirmation} onConfirm={handleConfirmConfirmation}/>}
         </div>
     );
 }

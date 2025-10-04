@@ -1,8 +1,7 @@
-import styles from './CameraDetails.module.css';
 import {useState, useEffect} from "react";
-import api from "../../UniversalComponents/api.jsx";
-import ErrorWindow from "../../UniversalComponents/ErrorWindow/ErrorWindow.jsx";
-import ChangeBox from "../../UniversalComponents/ChangeBox/ChangeBox.jsx";
+import api from "../UniversalComponents/api.jsx";
+import ErrorWindow from "../UniversalComponents/ErrorWindow.jsx";
+import ChangeBox from "../UniversalComponents/ChangeBox.jsx";
 
 function CameraDetails({id, onClose}) {
     const [details, setDetails] = useState(null);
@@ -118,8 +117,10 @@ function CameraDetails({id, onClose}) {
     }
 
     return(
-        <div className={styles.Window}>
-            <div className={styles.DetailsContainer}>
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-100">
+            <div className="bg-white rounded-xl p-6 min-w-[500px] max-h-[90vh] shadow-2xl text-black flex flex-col items-center gap-3">
+
+                <p className="text-2xl font-semibold mb-4">Camera Details</p>
                 <ChangeBox nameStr="Camera Name"
                            nameValue={details?.camera_name}
                            show={showCameraNameChange}
@@ -202,7 +203,7 @@ function CameraDetails({id, onClose}) {
                             showConfirmation={showModelChangeConfirmation}
                             onInputChange={(e) => setNewModel(e.target.value)}></ChangeBox>
 
-                <button className={styles.CloseButton} onClick={onClose}>Close</button>
+                <button className="close-button mt-2 px-6 py-2 rounded-full" onClick={onClose}>Close</button>
             </div>
             {showError && <ErrorWindow message={error} onClose={handleCloseError}></ErrorWindow>}
         </div>

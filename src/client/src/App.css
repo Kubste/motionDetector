@@ -1,11 +1,38 @@
-html, body {
-    min-height: 100%;
-    margin: 0;
-    padding: 0;
+@import "tailwindcss";
+
+@layer base {
+    body {
+        @apply min-h-screen bg-gradient-to-br from-stone-50 via-blue-100 to-cyan-200 text-black;
+    }
 }
 
-body {
-    font-family: Inter, system-ui, sans-serif;
-    background: linear-gradient(180deg, hsl(360 0% 100%), hsl(360 0% 60%)) no-repeat fixed;
-    background-size: cover;        /* makes gradient cover the whole page */
+@layer components {
+    .button {
+        @apply transition delay-100 duration-200 hover:cursor-pointer transform hover:-translate-y-0.5 hover:shadow-lg;
+    }
+
+    .close-button {
+        @apply bg-red-500 rounded-full transition delay-100 duration-200 hover:cursor-pointer hover:bg-red-600 transform hover:-translate-y-0.5 hover:shadow-lg;
+    }
+
+    .confirm-button {
+        @apply bg-green-500 rounded-full transition delay-100 duration-200 hover:cursor-pointer hover:bg-green-600 transform hover:-translate-y-0.5 hover:shadow-lg;
+    }
+
+    .input {
+        @apply w-full rounded-3xl bg-cyan-100 text-sm text-gray-500 placeholder-gray-500
+        border border-cyan-700 focus:ring-1 focus:ring-cyan-950 focus:outline-none;
+    }
 }
+
+/*html, body {*/
+/*    min-height: 100%;*/
+/*    margin: 0;*/
+/*    padding: 0;*/
+/*}*/
+
+/*body {*/
+/*    font-family: Inter, system-ui, sans-serif;*/
+/*    background: linear-gradient(180deg, hsl(360 0% 100%), hsl(360 0% 60%)) no-repeat fixed;*/
+/*    background-size: cover;        !* makes gradient cover the whole page *!*/
+/*}*/

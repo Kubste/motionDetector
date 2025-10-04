@@ -1,0 +1,78 @@
+import TopBar from '../UniversalComponents/TopBar.jsx';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import api from "../UniversalComponents/api.jsx";
+
+function LoginPage() {
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    const navigate = useNavigate();
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        setLoading(true);
+        setError(null);
+
+        try {
+            const response = await api.post('/auth/login/', { username, password });
+
+            sessionStorage.setItem('token', response.data.token);
+            sessionStorage.setItem('username', response.data.username);
+            sessionStorage.setItem('user_id', response.data.user_id);
+            sessionStorage.setItem('role', response.data.role);
+            navigate('/');
+        } catch (error) {
+            if(error.response && error.response.status === 400) setError("Invalid username or password");
+            else setError("Server Error. Please try again.");
+
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    return (
+        <div className="min-h-screen flex flex-col">
+            <TopBar isLoggedIn={false} />
+
+            <div className="flex-grow flex items-center justify-center px-4">
+                <div className="w-full max-w-md bg-cyan-50 backdrop-blur-md shadow-xl rounded-2xl p-8">
+                    <h2 className="text-2xl font-bold text-center text-stone-950 mb-6">
+                        Sign in to your account
+                    </h2>
+
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                        <input
+                            className="w-full px-4 py-3 rounded-xl bg-cyan-100 text-gray-500 placeholder-gray-500 border border-cyan-700 focus:ring-1 focus:ring-cyan-950 focus:outline-none"
+                            type="text"
+                            placeholder="Username"
+                            value={username}
+                            onChange={(event) => setUsername(event.target.value)}
+                            required
+                        />
+
+                        <input
+                            className="w-full px-4 py-3 rounded-xl bg-cyan-100 text-gray-500 placeholder-gray-500 border border-cyan-700 focus:ring-1 focus:ring-cyan-950 focus:outline-none"
+                            type="password"
+                            placeholder="Password"
+                            value={password}
+                            onChange={(event) => setPassword(event.target.value)}
+                            required
+                        />
+
+                        <button
+                            className="w-full py-3 rounded-xl font-bold text-white bg-cyan-600 hover:bg-cyan-700 hover:cursor-pointer transition disabled:cursor-not-allowed"
+                            type="submit"
+                            disabled={loading}>{loading ? "Signing in ..." : "Sign in"}</button>
+
+                        {error && <p className="text-red-600 text-center font-medium mt-2">{error}</p>}
+                    </form>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+export default LoginPage;

@@ -1,10 +1,9 @@
-import styles from './CameraList.module.css';
-import ErrorWindow from "../../UniversalComponents/ErrorWindow/ErrorWindow.jsx";
-import ConfirmWindow from "../../UniversalComponents/ConfirmWindow/ConfirmWindow.jsx";
-import CameraDetails from "../CameraDetails/CameraDetails.jsx";
-import AddCamera from "../AddCamera/AddCamera.jsx";
+import ErrorWindow from "../UniversalComponents/ErrorWindow.jsx";
+import ConfirmWindow from "../UniversalComponents/ConfirmWindow.jsx";
+import CameraDetails from "./CameraDetails.jsx";
+import AddCamera from "./AddCamera.jsx";
 import {useEffect, useState} from "react";
-import api from "../../UniversalComponents/api.jsx";
+import api from "../UniversalComponents/api.jsx";
 
 function CameraList() {
     const [cameras, setCameras] = useState([]);
@@ -95,28 +94,48 @@ function CameraList() {
         setSelectedIndex(null);
     }
 
-    return(
-        <div className={styles.CameraContainer}>
-            <h1>Your cameras</h1>
-            <button className={styles.ReloadButton} onClick={() => {window.location.reload()}}>{loading ? "Reloading cameras..." : "Reload cameras"}</button>
-            <button className={styles.AddButton} onClick={handleShowAddCamera}>Add new camera</button>
-            <div className={styles.List}>
-                {cameras.length > 0 ? (
-                    <ol>
+    return (
+        <div className="flex flex-col text-center justify-center px-5 w-2/5 my-10 mx-auto">
+            <h1 className="mb-5 text-black font-bold text-3xl">Your cameras</h1>
+
+            <button
+                className="button w-[200px] px-4 py-2 mb-4 mx-auto rounded-full bg-cyan-600 text-white text-xl hover:bg-cyan-800 transition"
+                onClick={() => window.location.reload()}>{loading ? "Reloading cameras..." : "Reload cameras"}</button>
+
+            <button
+                className="button w-[200px] px-4 py-2 mb-12 mx-auto rounded-full bg-green-500 text-white text-xl hover:bg-green-600 transition"
+                onClick={handleShowAddCamera}>Add new camera</button>
+
+            <div className="w-full">
+                {cameras.length > 0 ?
+                    <ol className="p-0 m-0">
                         {cameras.map((item, index) => (
-                            <li key={index}>
-                                <span className={styles.CameraName}>{item.camera_name}</span>
-                                <button className={styles.DetailsButton} onClick={() => handleShowCameraDetails(item.id)}>Details</button>
-                                <button className={styles.DeleteButton} onClick={() => {setSelectedItem(item); setSelectedIndex(index); setShowConfirmation(true);}}>Delete</button>
+                            <li className="flex justify-between items-center px-4 py-3 mb-3 rounded-3xl bg-cyan-50 shadow-md
+                                            transition-transform hover:-translate-y-0.5 hover:shadow-xl hover:bg-white/20"
+                                key={index}>
+                              <span className="flex-1 font-medium text-black break-words">
+                                {index + 1}. {item.camera_name}</span>
+
+                                <div className="flex">
+                                    <button className="button px-3 py-1 rounded-full text-sm bg-blue-500 text-white hover:bg-blue-700"
+                                        onClick={() => handleShowCameraDetails(item.id)}>Details</button>
+
+                                    <button className="close-button px-3 py-1 rounded-full text-sm ml-2 text-white"
+                                        onClick={() => {
+                                            setSelectedItem(item);
+                                            setSelectedIndex(index);
+                                            setShowConfirmation(true);
+                                        }}>Delete</button>
+                                </div>
                             </li>
                         ))}
-                    </ol>
-                ) : (<h2>No cameras found</h2>)}
+                    </ol> : <h2 className="text-2xl">No cameras found</h2>}
             </div>
-            {showError && <ErrorWindow message={error} onClose={handleCloseError}></ErrorWindow>}
-            {showDetails && <CameraDetails id={currentID} onClose={handleCloseCameraDetails}></CameraDetails>}
-            {showAddCamera && <AddCamera onClose={handleCloseAddCamera}></AddCamera>}
-            {showConfirmation && <ConfirmWindow message={`delete ${selectedItem.camera_name}`} onClose={handleCancelConfirmation} onConfirm={handleConfirmConfirmation}></ConfirmWindow>}
+
+            {showError && <ErrorWindow message={error} onClose={handleCloseError} />}
+            {showDetails && <CameraDetails id={currentID} onClose={handleCloseCameraDetails} />}
+            {showAddCamera && <AddCamera onClose={handleCloseAddCamera} />}
+            {showConfirmation && <ConfirmWindow message={`delete ${selectedItem.camera_name}`} onClose={handleCancelConfirmation} onConfirm={handleConfirmConfirmation}/>}
         </div>
     );
 }
