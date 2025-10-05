@@ -1,6 +1,6 @@
 import App from "../../App.jsx";
 import {FaImages, FaCamera} from "react-icons/fa";
-import {MdAccountCircle} from "react-icons/md";
+import {MdAccountCircle, MdAdminPanelSettings, MdSwitchAccount} from "react-icons/md";
 import MainPageCard from "./MainPageCard.jsx";
 import TopBar from "../UniversalComponents/TopBar.jsx";
 import {useNavigate} from "react-router-dom";
@@ -24,6 +24,10 @@ function MainPage() {
                     <MainPageCard Icon={FaImages} description="Images" onClick={() => navigate("/images")} />
                     <MainPageCard Icon={FaCamera} description="Camera management" onClick={() => navigate("/camera-management")} />
                     <MainPageCard Icon={MdAccountCircle} description="My account" onClick={() => navigate("/my-account")} />
+                    {(sessionStorage.getItem("role") === "sup" || sessionStorage.getItem("role") === "admin") &&
+                        <MainPageCard Icon={MdSwitchAccount} description="Register new user" onClick={() => navigate("/register")}></MainPageCard>}
+                    {sessionStorage.getItem("role") === "sup" &&
+                        <MainPageCard Icon={MdAdminPanelSettings} description="Django superuser panel" onClick={() => window.open("https://192.168.100.7/admin")}></MainPageCard>}
                 </div>
             </div>
         </div>

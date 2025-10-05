@@ -1,3 +1,4 @@
+from django.contrib.messages.api import success
 from knox.views import LogoutAllView
 from rest_framework import generics, status, permissions, viewsets
 from knox.models import AuthToken
