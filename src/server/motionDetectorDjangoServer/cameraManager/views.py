@@ -4,12 +4,14 @@ import numpy as np
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework import status
 from databaseApp.models import Camera
 from auth_manager.models import User
 from .utils import save_file, save_file_metadata, get_client_ip, change_resolution, send_email, detect_human, save_tensor_flow_output
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from knox.auth import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
 
 # changing the camera resolution
@@ -19,7 +21,7 @@ from rest_framework.permissions import IsAuthenticated
 def change_camera_resolution(request):
     # getting POST request from frontend
     if request.method != "POST":
-        return JsonResponse({"success": False, "error": "Method not allowed"}, status=405)
+        return Response({"success": False, "error": "Method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     # getting data from JSON
     try:
@@ -27,18 +29,21 @@ def change_camera_resolution(request):
         camera_id = data.get("camera_id")
         resolution = data.get("resolution")
     except json.JSONDecodeError:
-        return JsonResponse({"success": False, "error": "Invalid JSON data"}, status=400)
+        return Response({"success": False, "error": "Invalid JSON data"}, status=status.HTTP_400_BAD_REQUEST)
 
     # getting camera address
     try:
-        address = Camera.objects.get(id=camera_id).address
+        camera = Camera.objects.get(id=camera_id)
+        address = camera.address
+        camera.resolution = resolution
+        camera.save()
     except Camera.DoesNotExist:
-        return JsonResponse({"success": False, "error": "Camera not found"}, status=404)
+        return Response({"success": False, "error": "Camera not found"}, status=status.HTTP_404_NOT_FOUND)
 
     if not change_resolution(resolution, address):
-        return JsonResponse({"success": False, "error": "Error while sending resolution change request"}, status=503)
+        return Response({"success": False, "error": "Error while sending resolution change request"}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
-    return JsonResponse({"success": True}, status=200)
+    return Response({"success": True}, status=status.HTTP_200_OK)
 
 
 # uploading new image to filesystem

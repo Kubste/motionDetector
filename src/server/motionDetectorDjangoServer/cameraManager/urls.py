@@ -5,5 +5,5 @@ app_name = 'cameraManager'
 
 urlpatterns = [
     path('upload/', upload_image, name='upload'),
-    path('change_resolution/', change_camera_resolution, name='change_resolution'),
+    path('change-resolution/', change_camera_resolution, name='change_resolution'),
 ]

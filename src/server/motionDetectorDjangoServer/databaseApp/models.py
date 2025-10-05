@@ -15,6 +15,7 @@ class Camera(models.Model):
     board_name = models.CharField(max_length=32)
     location =models.CharField(max_length=64)
     address = models.GenericIPAddressField(protocol='IPv4', unique=True)
+    resolution = models.CharField(max_length=16)
     process_image = models.BooleanField(default=True)
     confidence_threshold = models.FloatField(default=0.1, validators=[MinValueValidator(0.0), MaxValueValidator(1.0)])
     user = models.ForeignKey(User, on_delete=models.CASCADE)

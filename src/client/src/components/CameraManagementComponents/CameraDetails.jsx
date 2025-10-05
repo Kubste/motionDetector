@@ -29,6 +29,11 @@ function CameraDetails({id, onClose}) {
     const [showAddressChange, setShowAddressChange] = useState(false);
     const [showAddressChangeConfirmation, setShowAddressChangeConfirmation] = useState(false);
 
+    const [resolution, setResolution] = useState(null);
+    const [newResolution, setNewResolution] = useState(null);
+    const [showResolutionChange, setShowResolutionChange] = useState(false);
+    const [showResolutionChangeConfirmation, setShowResolutionChangeConfirmation] = useState(false);
+
     const [confidence, setConfidence] = useState("");
     const [newConfidence, setNewConfidence] = useState("");
     const [showConfidenceChange, setShowConfidenceChange] = useState(false);
@@ -45,16 +50,19 @@ function CameraDetails({id, onClose}) {
     const [showModelChangeConfirmation, setShowModelChangeConfirmation] = useState(false);
 
     useEffect(() => {
+        fetchDetails();
+    }, [id, cameraName, boardName, location, address, confidence, process, model, resolution])
 
+    const fetchDetails = () => {
         api.get(`/api/cameras/${id}/`
         ).then(response => {
+            console.log(response.data);
             setDetails(response.data);
         }).catch(error => {
             setError(error.response?.data?.error || "Failed to load cameras details.");
             setShowError(true);
         })
-
-    }, [id, cameraName, boardName, location, address, confidence, process, model])
+    }
 
     const handleFetchModels = () => {
         const token = sessionStorage.getItem('token');
@@ -99,6 +107,26 @@ function CameraDetails({id, onClose}) {
             }
             setShowError(true);
         })
+    }
+
+    const handleResolutionPost = () => {
+        api.post("/camera/change-resolution/", {
+            camera_id: id,
+            resolution: resolution.value,
+        }).then(() => {
+            setResolution(newResolution);
+            setShowResolutionChangeConfirmation(true);
+            fetchDetails();
+        }).catch(error => {
+            console.log(error);
+            setError(error.response?.request?.statusText || "Failed to change resolution");
+            setShowError(true);
+        })
+    }
+
+    const handleResolutionChange = (option) => {
+        setNewResolution(option);
+        setResolution(option);
     }
 
     const handleProcessingChange = (option) => {
@@ -161,7 +189,24 @@ function CameraDetails({id, onClose}) {
                            showDropdown={false}
                            onConfirmClick={() => {handlePatch("address", newAddress, setAddress, setShowAddressChangeConfirmation); setNewAddress("");}}
                            onCancelClick={() => {setShowAddressChange(false); setShowAddressChangeConfirmation(false)}}
-                           showConfirmation={showAddressChangeConfirmation} onInputChange={(e) => setNewAddress(e.target.value)}></ChangeBox>
+                           showConfirmation={showAddressChangeConfirmation}
+                           onInputChange={(e) => setNewAddress(e.target.value)}></ChangeBox>
+
+                <ChangeBox nameStr="Camera Resolution"
+                           nameValue={details?.resolution}
+                           show={showResolutionChange}
+                           onShowClick={() => setShowResolutionChange(true)}
+                           showChange={showResolutionChange}
+                           value={newResolution}
+                           showDropdown={true}
+                           options={[{name: "1600x1200", value: "1600x1200"}, {name: "1280x1024", value: "1280x1024"}, {name: "1024x768", value: "1024x768"},
+                               {name: "800x600", value: "800x600"}, {name: "640x480", value: "640x480"}, {name: "320x240", value: "320x240"}, {name: "176x144", value: "176x144"}]}
+                           label="Choose option"
+                           onChange={handleResolutionChange}
+                           onConfirmClick={() => {handleResolutionPost()}}
+                           onCancelClick={() => {setShowResolutionChange(false); setShowResolutionChangeConfirmation(false)}}
+                           showConfirmation={showResolutionChangeConfirmation}
+                           onInputChange={(e) => setNewResolution(e.target.value)}></ChangeBox>
 
                 <ChangeBox nameStr="Confidence Threshold"
                            nameValue={details?.confidence_threshold}
@@ -172,7 +217,8 @@ function CameraDetails({id, onClose}) {
                            showDropdown={false}
                            onConfirmClick={() => {handlePatch("confidence_threshold", newConfidence, setConfidence, setShowConfidenceChangeConfirmation); setNewConfidence("");}}
                            onCancelClick={() => {setShowConfidenceChange(false); setShowConfidenceChangeConfirmation(false)}}
-                           showConfirmation={showConfidenceChangeConfirmation} onInputChange={(e) => setNewConfidence(e.target.value)}></ChangeBox>
+                           showConfirmation={showConfidenceChangeConfirmation}
+                           onInputChange={(e) => setNewConfidence(e.target.value)}></ChangeBox>
 
                 <ChangeBox nameStr="Process Image"
                            nameValue={details?.process_image}
@@ -185,7 +231,8 @@ function CameraDetails({id, onClose}) {
                            onChange={handleProcessingChange}
                            onConfirmClick={() => {handlePatch("process_image", newProcess.value, setProcess, setShowProcessChangeConfirmation); setNewProcess(null);}}
                            onCancelClick={() => {setShowProcessChange(false); setShowProcessChangeConfirmation(false)}}
-                           showConfirmation={showProcessChangeConfirmation} onInputChange={(e) => setNewProcess(e.target.value)}></ChangeBox>
+                           showConfirmation={showProcessChangeConfirmation}
+                           onInputChange={(e) => setNewProcess(e.target.value)}></ChangeBox>
 
                 <ChangeBox
                             nameStr="Tensor flow model"
