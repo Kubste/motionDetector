@@ -1,6 +1,7 @@
 import App from "../../App.jsx";
-import {FaImages, FaCamera} from "react-icons/fa";
+import {FaImages, FaCamera, FaUsers} from "react-icons/fa";
 import {MdAccountCircle, MdAdminPanelSettings, MdSwitchAccount} from "react-icons/md";
+import {RiAdminFill} from "react-icons/ri"
 import MainPageCard from "./MainPageCard.jsx";
 import TopBar from "../UniversalComponents/TopBar.jsx";
 import {useNavigate} from "react-router-dom";
@@ -26,6 +27,10 @@ function MainPage() {
                     <MainPageCard Icon={MdAccountCircle} description="My account" onClick={() => navigate("/my-account")} />
                     {(sessionStorage.getItem("role") === "sup" || sessionStorage.getItem("role") === "admin") &&
                         <MainPageCard Icon={MdSwitchAccount} description="Register new user" onClick={() => navigate("/register")}></MainPageCard>}
+                    {(sessionStorage.getItem("role") === "sup" || sessionStorage.getItem("role") === "admin") &&
+                        <MainPageCard Icon={FaUsers} description="Users" onClick={() => navigate("/users")}></MainPageCard>}
+                    {sessionStorage.getItem("role") === "sup" &&
+                        <MainPageCard Icon={RiAdminFill} description="Admins Management" onClick={() => navigate("/admins-management")}></MainPageCard>}
                     {sessionStorage.getItem("role") === "sup" &&
                         <MainPageCard Icon={MdAdminPanelSettings} description="Django superuser panel" onClick={() => window.open("https://192.168.100.7/admin")}></MainPageCard>}
                 </div>

@@ -6,6 +6,8 @@ import CameraManagementPage from "./components/CameraManagementComponents/Camera
 import MyAccountPage from "./components/MyAccountComponents/MyAccountPage.jsx";
 import LoginPage from "./components/LoginPageComponents/LoginPage.jsx";
 import RegisterPage from "./components/RegisterUserComponents/RegisterPage.jsx";
+import UsersPage from "./components/UsersComponents/UsersPage.jsx";
+import AdminsManagementPage from "./components/AdminsManagementComponents/AdminsManagementPage.jsx";
 
 function App() {
 
@@ -20,6 +22,8 @@ function App() {
             <Route path="/camera-management" element={<CameraManagementPage></CameraManagementPage>}></Route>
             <Route path="/my-account" element={<MyAccountPage></MyAccountPage>}></Route>
             <Route path="/register" element={<RegisterPage></RegisterPage>}></Route>
+            <Route path="/users" element={<UsersPage></UsersPage>}></Route>
+            <Route path="/admins-management" element={<AdminsManagementPage></AdminsManagementPage>}></Route>
         </Routes>
     </Router>
   );
