@@ -78,6 +78,19 @@ class PasswordChangeSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+class UsersSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'first_name', 'last_name', 'email', 'phone_number', 'role']
+        read_only_fields = ['id', 'username', 'first_name', 'last_name', 'email', 'phone_number', 'role']
+
+    def validate(self, attrs):
+        user = self.context['request'].user
+
+        if user.role not in ['sup', 'admin']:
+            raise ValidationError('Only superadmin and administrator can fetch users')
+
 class AuthManagerSerializer(serializers.ModelSerializer):
     class Meta:
         model = User

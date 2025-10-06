@@ -6,8 +6,10 @@ from knox.auth import TokenAuthentication
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+
+from databaseApp.models import Camera
 from .models import User
-from .serializers import RegisterSerializer, PasswordChangeSerializer, AuthManagerSerializer
+from .serializers import RegisterSerializer, PasswordChangeSerializer, AuthManagerSerializer, UsersSerializer
 from .permissions import IsAdmin, IsSuperuser, IsSuperuserOrAdmin
 
 class LoginView(generics.GenericAPIView):
@@ -60,6 +62,18 @@ class PasswordChangeView(generics.UpdateAPIView):
         serializer.save()                                                           # calls serializer.update() - given instance parameter in .get_serializer()
 
         return Response({"success": True, "user_id": request.user.id}, status=status.HTTP_200_OK)
+
+class UsersView(viewsets.ReadOnlyModelViewSet):
+    serializer_class = UsersSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.role == 'sup':
+            return User.objects.all()
+        elif user.role == 'admin':
+            return User.objects.filter(camera__admins=user).distinct()      # return all users with cameras assigned to given admin
+        else:
+            return User.objects.none()
 
 class AuthManagerView(viewsets.ModelViewSet):
     serializer_class = AuthManagerSerializer

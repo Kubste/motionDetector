@@ -2,12 +2,13 @@ from django.urls import include, path
 from knox import views as knox_views
 from rest_framework.routers import DefaultRouter
 
-from .views import LoginView, RegisterView, PasswordChangeView, LogoutOutAllUsers, AuthManagerView
+from .views import LoginView, RegisterView, PasswordChangeView, LogoutOutAllUsers, AuthManagerView, UsersView
 
 app_name = 'auth_manager'
 
 router = DefaultRouter()
 router.register(r'auth-manager', AuthManagerView, basename='auth-manager')
+router.register(r'users', UsersView, basename='users')
 
 urlpatterns = [
     path('', include(router.urls)),

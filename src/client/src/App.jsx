@@ -8,6 +8,7 @@ import LoginPage from "./components/LoginPageComponents/LoginPage.jsx";
 import RegisterPage from "./components/RegisterUserComponents/RegisterPage.jsx";
 import UsersPage from "./components/UsersComponents/UsersPage.jsx";
 import AdminsManagementPage from "./components/AdminsManagementComponents/AdminsManagementPage.jsx";
+import SynchronizePage from "./components/SynchronizeComponents/SynchronizePage.jsx";
 
 function App() {
 
@@ -24,6 +25,7 @@ function App() {
             <Route path="/register" element={<RegisterPage></RegisterPage>}></Route>
             <Route path="/users" element={<UsersPage></UsersPage>}></Route>
             <Route path="/admins-management" element={<AdminsManagementPage></AdminsManagementPage>}></Route>
+            <Route path="/synchronize" element={<SynchronizePage></SynchronizePage>}></Route>
         </Routes>
     </Router>
   );
