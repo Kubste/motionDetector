@@ -3,9 +3,12 @@ import ConfirmWindow from "../UniversalComponents/ConfirmWindow.jsx";
 import CameraDetails from "./CameraDetails.jsx";
 import AddCamera from "./AddCamera.jsx";
 import {useEffect, useState} from "react";
+import {useNavigate} from "react-router-dom";
 import api from "../UniversalComponents/api.jsx";
 
-function CameraList() {
+function CameraList({isList}) {
+    const navigate = useNavigate();
+
     const [cameras, setCameras] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -42,6 +45,7 @@ function CameraList() {
     }, []);
 
     function deleteCamera(id, index) {
+        if(!isList) return;
         api.delete(`/api/cameras/${id}/`, {
             headers: {
                 Authorization: `Token ${token}`
@@ -50,7 +54,22 @@ function CameraList() {
             const updatedCameras = cameras.filter((_, i) => i !== index);
             setCameras(updatedCameras);
         }).catch(error => {
-            console.log(error);
+            if(error.response) setError(error.response.data.detail || "Internal Server Error");
+            else if(error.request) setError("Cannot connect to the server.");
+            else setError(error.message);
+            setShowError(true);
+        })
+    }
+
+    const handleGetDeletedFiles = (id) => {
+        if(isList) return;
+        api.get(`/api/cameras/${id}/get-deleted-files`)
+            .then(response => {
+                if(response.status === 204) {
+                    setError("No deleted files found");
+                    setShowError(true)
+                } else navigate("/synchronize-list", {state: {filesList: response.data.paths, cameraID: id}});
+            }).catch(error => {
             if(error.response) setError(error.response.data.detail || "Internal Server Error");
             else if(error.request) setError("Cannot connect to the server.");
             else setError(error.message);
@@ -59,20 +78,24 @@ function CameraList() {
     }
 
     const handleShowCameraDetails = (id) => {
+        if(!isList) return;
         setShowDetails(true);
         setCurrentID(id);
     }
 
     const handleCloseCameraDetails = () => {
+        if(!isList) return;
         setShowDetails(false);
         window.location.reload();
     }
 
     const handleShowAddCamera = () => {
+        if(!isList) return;
         setShowAddCamera(true);
     }
 
     const handleCloseAddCamera = () => {
+        if(!isList) return;
         setShowAddCamera(false);
     }
 
@@ -82,12 +105,14 @@ function CameraList() {
     }
 
     const handleCancelConfirmation = () => {
+        if(!isList) return;
         setShowConfirmation(false);
         setSelectedItem({});
         setSelectedIndex(null);
     }
 
     const handleConfirmConfirmation = () => {
+        if(!isList) return;
         deleteCamera(selectedItem.id, selectedIndex);
         setShowConfirmation(false);
         setSelectedItem({});
@@ -102,9 +127,9 @@ function CameraList() {
                 className="button w-[200px] px-4 py-2 mb-4 mx-auto rounded-full bg-cyan-600 text-white text-xl hover:bg-cyan-800 transition"
                 onClick={() => window.location.reload()}>{loading ? "Reloading cameras..." : "Reload cameras"}</button>
 
-            <button
+            {isList && <button
                 className="button w-[200px] px-4 py-2 mb-12 mx-auto rounded-full bg-green-500 text-white text-xl hover:bg-green-600 transition"
-                onClick={handleShowAddCamera}>Add new camera</button>
+                onClick={handleShowAddCamera}>Add new camera</button>}
 
             <div className="w-full">
                 {cameras.length > 0 ?
@@ -117,15 +142,20 @@ function CameraList() {
                                 {index + 1}. {item.camera_name}</span>
 
                                 <div className="flex">
-                                    <button className="button px-3 py-1 rounded-full text-sm bg-blue-500 text-white hover:bg-blue-700"
-                                        onClick={() => handleShowCameraDetails(item.id)}>Details</button>
+                                    {isList && <button className="button px-3 py-1 rounded-full text-sm bg-blue-500 text-white hover:bg-blue-700"
+                                        onClick={() => handleShowCameraDetails(item.id)}>Details</button>}
 
-                                    <button className="close-button px-3 py-1 rounded-full text-sm ml-2 text-white"
+                                    {isList && <button className="close-button px-3 py-1 rounded-full text-sm ml-2 text-white"
                                         onClick={() => {
                                             setSelectedItem(item);
                                             setSelectedIndex(index);
                                             setShowConfirmation(true);
-                                        }}>Delete</button>
+                                        }}>Delete</button>}
+
+                                    {!isList && <button className="button px-3 py-1 rounded-full text-sm bg-blue-500 text-white hover:bg-blue-700"
+                                    onClick={() => handleGetDeletedFiles(item.id)}>
+                                        Synchronize
+                                    </button>}
                                 </div>
                             </li>
                         ))}

@@ -1,9 +1,13 @@
 import {useNavigate} from "react-router-dom";
 import {useEffect} from "react";
 import TopBar from "../UniversalComponents/TopBar.jsx"
-import CameraList from "../CameraManagementComponents/CameraList.jsx"
+import DeletedFilesList from "./DeletedFilesList.jsx"
+import {useLocation} from "react-router-dom";
 
-function SynchronizePage() {
+function DeletedFilesPage() {
+    const location = useLocation();
+    const filesList = location.state?.filesList || [];
+    const cameraID = location.state?.cameraID;
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -17,11 +21,11 @@ function SynchronizePage() {
         <div className="flex flex-col min-h-screen w-full">
             <TopBar isLoggedIn={true}></TopBar>
             <div className="flex flex-1 justify-center items-center w-full">
-                <CameraList isList={false}></CameraList>
+                <DeletedFilesList filesList={filesList} cameraID={cameraID}></DeletedFilesList>
             </div>
         </div>
     );
 
 }
 
-export default SynchronizePage;
+export default DeletedFilesPage;

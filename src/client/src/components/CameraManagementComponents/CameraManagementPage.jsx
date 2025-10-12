@@ -17,7 +17,7 @@ function CameraManagementPage() {
         <div className="flex flex-col min-h-screen">
             <TopBar isLoggedIn={true}></TopBar>
             <div className="flex flex-col flex-1 justify-center items-center w-full">
-                <CameraList></CameraList>
+                <CameraList isList={true}></CameraList>
             </div>
         </div>
     );

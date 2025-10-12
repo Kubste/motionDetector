@@ -9,6 +9,7 @@ import RegisterPage from "./components/RegisterUserComponents/RegisterPage.jsx";
 import UsersPage from "./components/UsersComponents/UsersPage.jsx";
 import AdminsManagementPage from "./components/AdminsManagementComponents/AdminsManagementPage.jsx";
 import SynchronizePage from "./components/SynchronizeComponents/SynchronizePage.jsx";
+import DeletedFilesPage from "./components/SynchronizeComponents/DeletedFilesPage.jsx";
 
 function App() {
 
@@ -26,6 +27,7 @@ function App() {
             <Route path="/users" element={<UsersPage></UsersPage>}></Route>
             <Route path="/admins-management" element={<AdminsManagementPage></AdminsManagementPage>}></Route>
             <Route path="/synchronize" element={<SynchronizePage></SynchronizePage>}></Route>
+            <Route path="/synchronize-list" element={<DeletedFilesPage></DeletedFilesPage>}></Route>
         </Routes>
     </Router>
   );
