@@ -68,7 +68,7 @@ function CameraList({isList}) {
                 if(response.status === 204) {
                     setError("No deleted files found");
                     setShowError(true)
-                } else navigate("/synchronize-list", {state: {filesList: response.data.paths, cameraID: id}});
+                } else navigate(`/synchronize-list?camera=${id}`, {state: {filesList: response.data.paths}});
             }).catch(error => {
             if(error.response) setError(error.response.data.detail || "Internal Server Error");
             else if(error.request) setError("Cannot connect to the server.");
@@ -153,7 +153,7 @@ function CameraList({isList}) {
                                         }}>Delete</button>}
 
                                     {!isList && <button className="button px-3 py-1 rounded-full text-sm bg-blue-500 text-white hover:bg-blue-700"
-                                    onClick={() => handleGetDeletedFiles(item.id)}>
+                                    onClick={() => navigate(`/synchronize-list?camera=${item.id}`)}>
                                         Synchronize
                                     </button>}
                                 </div>

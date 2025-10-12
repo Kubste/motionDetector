@@ -2,22 +2,36 @@ import ErrorWindow from "../UniversalComponents/ErrorWindow.jsx";
 import {useEffect, useState} from "react";
 import api from "../UniversalComponents/api.jsx";
 
-function DeletedFilesList({filesList, cameraID}) {
+function DeletedFilesList({cameraID}) {
 
     const [error, setError] = useState(null);
     const [showError, setShowError] = useState(false);
     const [files, setFiles] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        setFiles(filesList);
+        handleGetDeletedFiles()
     }, [])
 
-    const handleDeleteFile = (ids, index) => {
+    const handleGetDeletedFiles = () => {
+        setLoading(true);
+        api.get(`/api/cameras/${cameraID}/get-deleted-files`)
+            .then(response => {
+                if(response.status !== 204) setFiles(response.data.paths)
+                else setFiles([]);
+            }).catch(error => {
+            if(error.response) setError(error.response.data.detail || "Internal Server Error");
+            else if(error.request) setError("Cannot connect to the server.");
+            else setError(error.message);
+            setShowError(true);
+        }).finally(() => setLoading(false));
+    }
+
+    const handleDeleteFile = (ids) => {
         api.delete(`api/cameras/${cameraID}/synchronize/`, {
             data: {ids: ids}
         }).then(response => {
-            const updatedFiles = files.filter((_, i) => i !== index);
-            setFiles(updatedFiles);
+            handleGetDeletedFiles();
         }).catch(error => {
             if(error.response) setError(error.response.data.detail || "Internal Server Error");
             else if(error.request) setError("Cannot connect to the server.");
@@ -36,9 +50,14 @@ function DeletedFilesList({filesList, cameraID}) {
             <h1 className="mb-5 text-black font-bold text-3xl">Found deleted files</h1>
 
             <button
+                className="button w-[250px] px-4 py-2 mb-4 mx-auto rounded-full bg-cyan-600 text-white text-xl hover:bg-cyan-800 transition"
+                onClick={handleGetDeletedFiles}>
+                {loading ? "Reloading deleted files..." : "Reload deleted files"}</button>
+
+            {files.length !== 0 && <button
                 className="close-button w-[200px] px-4 py-2 mb-4 mx-auto rounded-full text-white text-xl transition"
-                onClick={() => handleDeleteFile(files.map(([id]) => id), null)}>
-                Delete all</button>
+                onClick={() => handleDeleteFile(files.map(([id]) => id), null)}
+            >Delete all</button>}
 
 
             <div className="w-full">

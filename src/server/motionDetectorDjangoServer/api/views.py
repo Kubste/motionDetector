@@ -92,7 +92,6 @@ class CameraViewSet(viewsets.ModelViewSet):
         if user.role == "admin" and not Camera.objects.get(id=pk).admins.filter(id=user.id).exists():
             raise PermissionDenied("User does not have admin access to this camera")
 
-        print(storages, flush=True)
         if storages.count() == 0:
             #return Response({"success": True, "paths": []}, status=status.HTTP_204_NO_CONTENT)
             return Response(status=status.HTTP_204_NO_CONTENT)      #only status code - Django will cut off JSON
