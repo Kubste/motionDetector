@@ -13,7 +13,7 @@ function UserDetails({onClose, userDetails}) {
 
     return(
         <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-100">
-            <div className="bg-cyan-50 rounded-3xl p-6 min-w-[500px] max-h-[90vh] shadow-2xl text-black flex flex-col items-start justify-center gap-3 mb-4">
+            <div className="bg-cyan-50 dark:bg-slate-700 rounded-3xl p-6 min-w-[500px] max-h-[90vh] shadow-2xl text-black dark:text-white flex flex-col items-start justify-center gap-3 mb-4">
 
                 <p className="self-center text-2xl font-semibold mb-4">User Details</p>
                 <p><span className="font-semibold">Database ID</span>: {userDetails.id || "N/A"}</p>

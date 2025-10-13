@@ -3,7 +3,7 @@ import DropBar from "../UniversalComponents/DropBar.jsx";
 import {useEffect, useState} from "react";
 import api from "../UniversalComponents/api.jsx";
 
-function AddCamera({onClose}) {
+function AddCamera({onClose, onCameraAdd}) {
 
     const [cameraName, setCameraName] = useState('');
     const [boardName, setBoardName] = useState('');
@@ -13,6 +13,7 @@ function AddCamera({onClose}) {
     const [process, setProcess] = useState(null);
     const [model, setModel] = useState(null);
     const [models, setModels] = useState([]);
+    const [resolution, setResolution] = useState(null);
 
     const [error, setError] = useState('');
     const [showError, setShowError] = useState(false);
@@ -31,9 +32,10 @@ function AddCamera({onClose}) {
             "confidence_threshold": parseFloat(confidence),
             "user": sessionStorage.getItem('user_id'),
             "model_id": model.value,
-            "process_image": process.value
+            "process_image": process.value,
+            "resolution": resolution.value
         }).then(() => {
-            window.location.reload();
+            onCameraAdd();
         }).catch(error => {
             setError(error.response?.data?.error || "Failed to add camera.");
             setShowError(true);
@@ -41,18 +43,13 @@ function AddCamera({onClose}) {
     }
 
     useEffect(() => {
-        const token = sessionStorage.getItem('token');
-
         api.get(`/api/tensor-flow-models/`,  {
-            headers: {
-                Authorization: `Token ${token}`
-            }
         }).then((response) => {
             setModels(response.data);
         }).catch(error => {
             setError(error.response?.data?.error || "Failed to load tensor flow models.");
         })
-    },[])
+    },[cameraName, boardName, location, address, confidence, model, process, resolution])
 
     const handleProcessChange = (option) => {
         setProcess(option);
@@ -62,6 +59,10 @@ function AddCamera({onClose}) {
         setModel(option);
     }
 
+    const handleResolutionChange = (option) => {
+        setResolution(option);
+    }
+
     const handleCloseError = () => {
         setError('');
         setShowError(false);
@@ -69,7 +70,7 @@ function AddCamera({onClose}) {
 
     return(
         <div className="fixed inset-0 flex justify-center items-center bg-black/50 z-100">
-            <div className="bg-cyan-50 flex flex-col justify-center items-center rounded-3xl p-6 min-w-[500px] max-w-[90%] shadow-3xl gap-4">
+            <div className="bg-cyan-50 dark:bg-slate-700 flex flex-col justify-center items-center rounded-3xl p-6 min-w-[500px] max-w-[90%] shadow-3xl gap-4">
                 <h2 className="text-2xl font-semibold">Input new camera parameters</h2>
                 <form onSubmit={handleSubmit} className="w-full">
                     <div className="flex flex-col items-center gap-3 w-full">
@@ -101,6 +102,12 @@ function AddCamera({onClose}) {
                                value={confidence}
                                onChange={(event) => setConfidence(event.target.value)}
                                required min="0" max="1" step="0.01"/>
+
+                        <DropBar label={"Resolution"}
+                                 options={[{name: "1600x1200", value: "1600x1200"}, {name: "1280x1024", value: "1280x1024"}, {name: "1024x768", value: "1024x768"},
+                                 {name: "800x600", value: "800x600"}, {name: "640x480", value: "640x480"}, {name: "320x240", value: "320x240"}, {name: "176x144", value: "176x144"}]}
+                                 onChange={handleResolutionChange}
+                                 selectedOption={resolution}/>
 
                         <DropBar label={"Process image"}
                                  options={[{name: "Enabled", value: true}, {name: "Disabled", value: false}]}

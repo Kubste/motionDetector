@@ -132,8 +132,8 @@ function UserInfo() {
     }
 
     return (
-        <div className="flex flex-col gap-5 p-6 my-5 mx-auto bg-cyan-50 rounded-3xl shadow-2xl min-w-[600px] max-w-[90%] text-black">
-            <h2 className="mb-4 text-2xl font-semibold text-black self-center">My account information</h2>
+        <div className="flex flex-col gap-5 p-6 my-5 mx-auto bg-cyan-50 dark:bg-slate-700 rounded-3xl shadow-2xl min-w-[600px] max-w-[90%] text-black dark:text-white">
+            <h2 className="mb-4 text-2xl font-semibold text-black dark:text-white self-center">My account information</h2>
 
             <div className="flex flex-col py-3 gap-4">
                 <ChangeBox
@@ -205,7 +205,7 @@ function UserInfo() {
 
                 <div className="mt-15 flex flex-col items-center gap-3">
                     <form className="flex flex-col gap-2 w-full max-w-[350px]" onSubmit={handleSubmit}>
-                        <p className="font-semibold text-xl text-black text-center">Change your password</p>
+                        <p className="font-semibold text-xl text-black dark:text-white text-center">Change your password</p>
                         <input
                             className="input px-3 py-2"
                             type="password"

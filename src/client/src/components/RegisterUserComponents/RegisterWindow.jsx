@@ -67,7 +67,7 @@ function RegisterWindow() {
 
     return (
         <div className="flex justify-center items-center">
-            <div className="bg-cyan-50 flex flex-col justify-center items-center rounded-3xl p-6 min-w-[500px] max-w-[90%] shadow-3xl gap-4">
+            <div className="bg-cyan-50 dark:bg-slate-700 flex flex-col justify-center items-center rounded-3xl p-6 min-w-[500px] max-w-[90%] shadow-3xl gap-4">
                 <h2 className="text-2xl font-semibold">Input new User parameters</h2>
                 <form onSubmit={handleSubmit} className="w-full">
                     <div className="flex flex-col items-center gap-3 w-full">

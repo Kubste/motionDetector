@@ -14,7 +14,8 @@ function ImageWindow({path, filename, onClose}) {
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-100">
-            <div className="relative flex flex-col items-center w-full max-w-5xl max-h-full p-6 rounded-3xl bg-cyan-50 backdrop-blur-3xl shadow-2xl text-black">
+            <div className="relative flex flex-col items-center w-full max-w-5xl max-h-full p-6 rounded-3xl bg-cyan-50 dark:bg-slate-700
+             backdrop-blur-3xl shadow-2xl text-black dark:text-white">
                 <h2 className="mb-4 text-2xl font-semibold">{filename}</h2>
 
                 <img className="object-contain max-h-[calc(90vh-120px)] w-full rounded-lg shadow-md"

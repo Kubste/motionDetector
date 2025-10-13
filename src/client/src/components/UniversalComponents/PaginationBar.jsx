@@ -5,14 +5,14 @@ function PaginationBar({page, onPrevClick, onNextClick, totalPages, onChange, se
     return(
         <div className="flex flex-col items-center justify-between gap-4 w-[200px]">
             <div className="flex justify-center mt-6 space-x-3">
-                <button className="button px-3 py-1 rounded-full bg-gray-300 hover:bg-gray-400 disabled:opacity-50"
+                <button className="button px-3 py-1 rounded-full bg-gray-300 hover:bg-gray-400 dark:bg-slate-700 dark:hover:bg-slate-800 disabled:opacity-50"
                         disabled={page === 1}
                         onClick={onPrevClick}
                 >&lt;</button>
 
                 <span className="text-lg font-semibold">Page {page} of {totalPages}</span>
 
-                <button className="button px-3 py-1 rounded-full bg-gray-300 hover:bg-gray-400 disabled:opacity-50"
+                <button className="button px-3 py-1 rounded-full bg-gray-300 hover:bg-gray-400 dark:bg-slate-700 dark:hover:bg-slate-800 disabled:opacity-50"
                         disabled={page === totalPages}
                         onClick={onNextClick}
                 >&gt;</button>

@@ -146,7 +146,7 @@ function CameraDetails({id, onClose}) {
 
     return(
         <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-100">
-            <div className="bg-white rounded-xl p-6 min-w-[500px] max-h-[90vh] shadow-2xl text-black flex flex-col items-center gap-3">
+            <div className="bg-white dark:bg-slate-700 rounded-xl p-6 min-w-[500px] max-h-[90vh] shadow-2xl text-black dark:text-white flex flex-col items-center gap-3">
 
                 <p className="text-2xl font-semibold mb-4">Camera Details</p>
                 <ChangeBox nameStr="Camera Name"

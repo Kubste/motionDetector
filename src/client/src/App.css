@@ -1,8 +1,24 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @layer base {
+    * {
+        @apply transition-colors duration-500 ease-in-out;
+    }
+
+    .preload * {
+        transition-property: none !important;
+    }
+
     body {
-        @apply min-h-screen bg-gradient-to-br from-stone-50 via-blue-100 to-cyan-200 text-black;
+        @apply min-h-screen bg-gradient-to-br from-stone-50 via-blue-100 to-cyan-200 text-black ;
+        background-attachment: fixed;
+        background-repeat: no-repeat;
+    }
+
+    .dark body {
+        @apply bg-gradient-to-br from-slate-900 via-gray-800 to-zinc-700 text-white ;
         background-attachment: fixed;
         background-repeat: no-repeat;
     }
@@ -22,7 +38,7 @@
     }
 
     .input {
-        @apply w-full rounded-3xl bg-cyan-100 text-sm text-gray-500 placeholder-gray-500
+        @apply w-full rounded-3xl bg-cyan-100 text-sm text-gray-500 placeholder-gray-500 dark:bg-slate-800
         border border-cyan-700 focus:ring-1 focus:ring-cyan-950 focus:outline-none;
     }
 }

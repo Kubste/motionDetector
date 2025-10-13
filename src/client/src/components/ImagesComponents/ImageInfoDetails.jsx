@@ -66,7 +66,7 @@ function ImageInfoDetails({id, onClose}) {
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-100">
-            <div className="relative w-full max-w-lg max-h-[90vh] p-6 rounded-3xl bg-cyan-50 backdrop-blur-3xl shadow-2xl text-black">
+            <div className="relative w-full max-w-lg max-h-[90vh] p-6 rounded-3xl bg-cyan-50 dark:bg-slate-700 backdrop-blur-3xl shadow-2xl text-black dark:text-white">
 
                 <h2 className="text-2xl font-semibold mb-4">File Details</h2>
 

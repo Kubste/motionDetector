@@ -24,24 +24,25 @@ function CameraList({isList}) {
     const [totalPages, setTotalPages] = useState(1);
     const [pageSize, setPageSize] = useState({name: 5, value: 5});
 
+    const fetchCameras = async () => {
+        setLoading(true);
+
+        try {
+            const response = await api.get(`/api/cameras/?page=${page}&page_size=${pageSize.value}`);
+            const data = response.data;
+            setCameras(data.results);
+            setTotalPages(Math.ceil(data.count / pageSize.value));
+        } catch(error) {
+            setError(error.message || "Failed to load cameras.");
+            setShowError(true);
+
+        } finally {
+            setLoading(false);
+        }
+    };
+
     // called once after render and each time after reload button is clicked
     useEffect(() => {
-        const fetchCameras = async () => {
-            setLoading(true);
-
-            try {
-                const response = await api.get(`/api/cameras/?page=${page}&page_size=${pageSize.value}`);
-                const data = response.data;
-                setCameras(data.results);
-                setTotalPages(Math.ceil(data.count / pageSize.value));
-            } catch(error) {
-                setError(error.message || "Failed to load cameras.");
-                setShowError(true);
-
-            } finally {
-                setLoading(false);
-            }
-        };
         fetchCameras();
     }, [page, pageSize]);
 
@@ -106,13 +107,18 @@ function CameraList({isList}) {
         setPage(1);
     }
 
+    const handleCameraAdd = () => {
+        setShowAddCamera(false);
+        fetchCameras();
+    }
+
     return (
         <div className="flex flex-col text-center justify-center px-5 w-2/5 my-10 mx-auto">
-            <h1 className="mb-5 text-black font-bold text-3xl">Your cameras</h1>
+            <h1 className="mb-5 text-black dark:text-white font-bold text-3xl">Your cameras</h1>
 
             <button
                 className="button w-[200px] px-4 py-2 mb-4 mx-auto rounded-full bg-cyan-600 text-white text-xl hover:bg-cyan-800 transition"
-                onClick={() => window.location.reload()}>{loading ? "Reloading cameras..." : "Reload cameras"}</button>
+                onClick={fetchCameras}>{loading ? "Reloading cameras..." : "Reload cameras"}</button>
 
             {isList && <button
                 className="button w-[200px] px-4 py-2 mb-12 mx-auto rounded-full bg-green-500 text-white text-xl hover:bg-green-600 transition"
@@ -122,10 +128,10 @@ function CameraList({isList}) {
                 {cameras.length > 0 ?
                     <ol className="p-0 m-0">
                         {cameras.map((item, index) => (
-                            <li className="flex justify-between items-center px-4 py-3 mb-3 rounded-3xl bg-cyan-50 shadow-md
-                                            transition-transform hover:-translate-y-0.5 hover:shadow-xl hover:bg-white/20"
+                            <li className="flex justify-between items-center px-4 py-3 mb-3 rounded-3xl bg-cyan-50 shadow-md dark:bg-slate-700 dark:hover:bg-slate-800
+                            transition-transform hover:-translate-y-0.5 hover:shadow-xl hover:bg-white/20"
                                 key={index}>
-                              <span className="flex-1 font-medium text-black break-words">
+                              <span className="flex-1 font-medium text-black dark:text-white break-words">
                                 {index + 1}. {item.camera_name}</span>
 
                                 <div className="flex">
@@ -161,7 +167,7 @@ function CameraList({isList}) {
 
             {showError && <ErrorWindow message={error} onClose={handleCloseError} />}
             {showDetails && <CameraDetails id={currentID} onClose={handleCloseCameraDetails} />}
-            {showAddCamera && <AddCamera onClose={handleCloseAddCamera} />}
+            {showAddCamera && <AddCamera onClose={handleCloseAddCamera} onCameraAdd={handleCameraAdd}/>}
             {showConfirmation && <ConfirmWindow message={`delete ${selectedItem.camera_name}`} onClose={handleCancelConfirmation} onConfirm={handleConfirmConfirmation}/>}
         </div>
     );

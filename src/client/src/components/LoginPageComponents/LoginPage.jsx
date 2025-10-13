@@ -45,14 +45,15 @@ function LoginPage() {
             <TopBar isLoggedIn={false} />
 
             <div className="flex-grow flex items-center justify-center px-4">
-                <div className="w-full max-w-md bg-cyan-50 backdrop-blur-md shadow-xl rounded-2xl p-8">
-                    <h2 className="text-2xl font-bold text-center text-stone-950 mb-6">
+                <div className="w-full max-w-md bg-cyan-50 dark:bg-slate-700 transition-colors duration-500 ease-in-out backdrop-blur-md shadow-xl rounded-2xl p-8">
+                    <h2 className="text-2xl font-bold text-center text-stone-950 dark:text-white mb-6 transition-colors duration-500 ease-in-out">
                         Sign in to your account
                     </h2>
 
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <input
-                            className="w-full px-4 py-3 rounded-xl bg-cyan-100 text-gray-500 placeholder-gray-500 border border-cyan-700 focus:ring-1 focus:ring-cyan-950 focus:outline-none"
+                            className="w-full px-4 py-3 rounded-xl bg-cyan-100 text-gray-500 placeholder-gray-500 border dark:bg-slate-800 transition-colors
+                            duration-500 ease-in-out border-cyan-700 focus:ring-1 focus:ring-cyan-950 focus:outline-none"
                             type="text"
                             placeholder="Username"
                             value={username}
@@ -61,7 +62,8 @@ function LoginPage() {
                         />
 
                         <input
-                            className="w-full px-4 py-3 rounded-xl bg-cyan-100 text-gray-500 placeholder-gray-500 border border-cyan-700 focus:ring-1 focus:ring-cyan-950 focus:outline-none"
+                            className="w-full px-4 py-3 rounded-xl bg-cyan-100 text-gray-500 placeholder-gray-500 dark:bg-slate-800 transition-colors duration-500
+                            ease-in-out border border-cyan-700 focus:ring-1 focus:ring-cyan-950 focus:outline-none"
                             type="password"
                             placeholder="Password"
                             value={password}
@@ -70,7 +72,8 @@ function LoginPage() {
                         />
 
                         <button
-                            className="w-full py-3 rounded-xl font-bold text-white bg-cyan-600 hover:bg-cyan-700 hover:cursor-pointer transition disabled:cursor-not-allowed"
+                            className="w-full py-3 rounded-xl font-bold text-white bg-cyan-600 hover:bg-cyan-700 dark:bg-slate-800 dark:hover:bg-slate-900
+                            transition-colors duration-500 ease-in-out hover:cursor-pointer transition disabled:cursor-not-allowed"
                             type="submit"
                             disabled={loading}>{loading ? "Signing in ..." : "Sign in"}</button>
 

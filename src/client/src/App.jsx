@@ -15,6 +15,12 @@ function App() {
 
     document.title = "Motion Detector App";
 
+    // // disabling color transition effect after page reload
+    // document.documentElement.classList.add("preload");
+    // window.addEventListener("load", () => {
+    //     document.documentElement.classList.remove("preload");
+    // });
+
   return(
     <Router>
         <Routes>

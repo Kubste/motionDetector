@@ -60,7 +60,7 @@ function UsersList() {
 
     return (
         <div className="flex flex-col text-center justify-center px-5 w-2/5 my-10 mx-auto">
-            <h1 className="mb-5 text-black font-bold text-3xl">Users List</h1>
+            <h1 className="mb-5 text-black dark:text-white font-bold text-3xl">Users List</h1>
 
             <button
                 className="button w-[200px] px-4 py-2 mb-4 mx-auto rounded-full bg-cyan-600 text-white text-xl hover:bg-cyan-800 transition"
@@ -70,10 +70,10 @@ function UsersList() {
                 {users.length > 0 ?
                     <ol className="p-0 m-0">
                         {users.map((item, index) => (
-                            <li className="flex justify-between items-center px-4 py-3 mb-3 rounded-3xl bg-cyan-50 shadow-md
+                            <li className="flex justify-between items-center px-4 py-3 mb-3 rounded-3xl bg-cyan-50 dark:bg-slate-700 dark:hover:bg-slate-800 shadow-md
                                             transition-transform hover:-translate-y-0.5 hover:shadow-xl hover:bg-white/20"
                                 key={index}>
-                              <span className="flex-1 font-medium text-black break-words">
+                              <span className="flex-1 font-medium text-black dark:text-white break-words">
                                 {index + 1}. {item.username}</span>
 
                                 <div className="flex">
