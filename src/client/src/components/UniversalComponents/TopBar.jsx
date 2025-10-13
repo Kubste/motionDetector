@@ -55,7 +55,7 @@ function TopBar({isLoggedIn}) {
     }
 
     return (
-        <div className="w-full bg-cyan-300 text-cyan-700 shadow-2xl px-6 py-4 flex items-center justify-between">
+        <div className="w-full bg-cyan-300 text-cyan-700 shadow-2xl px-6 py-4 flex items-center justify-between sticky top-0 z-50">
             <h3 className="text-xl font-bold cursor-pointer hover:text-cyan-900 transition" onClick={() => navigate("/")}>
                 Motion Detector App {isLoggedIn && `\u00A0\u00A0 Hi ${username}!`}
             </h3>

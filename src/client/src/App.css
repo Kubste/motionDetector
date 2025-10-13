@@ -3,6 +3,8 @@
 @layer base {
     body {
         @apply min-h-screen bg-gradient-to-br from-stone-50 via-blue-100 to-cyan-200 text-black;
+        background-attachment: fixed;
+        background-repeat: no-repeat;
     }
 }
 
