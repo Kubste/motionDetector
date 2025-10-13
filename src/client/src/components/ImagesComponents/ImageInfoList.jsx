@@ -4,6 +4,7 @@ import ConfirmWindow from "../UniversalComponents/ConfirmWindow.jsx";
 import ImageInfoDetails from "./ImageInfoDetails.jsx";
 import ImageWindow from "./ImageWindow.jsx";
 import api from "../UniversalComponents/api.jsx";
+import PaginationBar from "../UniversalComponents/PaginationBar.jsx";
 
 function ImageInfoList() {
     const [imageInfo, setImageInfo] = useState([]);
@@ -18,7 +19,10 @@ function ImageInfoList() {
     const [selectedIndex, setSelectedIndex] = useState(null);
     const [showConfirmation, setShowConfirmation] = useState(false);
 
-    const token = sessionStorage.getItem("token");
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [pageSize, setPageSize] = useState({name: 5, value: 5});
+
 
     // called once after render and each time after reload button is clicked
     useEffect(() => {
@@ -26,9 +30,10 @@ function ImageInfoList() {
             setLoading(true);
 
             try {
-                const response = await api.get("/api/image-info/");
-                setImageInfo(response.data);
-
+                const response = await api.get(`/api/image-info/?page=${page}&page_size=${pageSize.value}`);
+                const data = response.data;
+                setImageInfo(data.results);
+                setTotalPages(Math.ceil(data.count / pageSize.value));
             } catch(error) {
                 console.error(error);
                 setError(error.message || "Failed to load images.");
@@ -39,14 +44,11 @@ function ImageInfoList() {
             }
         };
         fetchImages();
-        }, []);
+        }, [page, pageSize]);
 
     function deleteImageInfo(id, index) {
-        api.delete(`/api/image-info/${id}/`, {
-            headers: {
-                Authorization: `Token ${token}`
-            }
-        }).then(() => {
+        api.delete(`/api/image-info/${id}/`
+        ).then(() => {
             const updatedImageInfo = imageInfo.filter((_, i) => i !== index);
             setImageInfo(updatedImageInfo);
         }).catch(error => {
@@ -70,7 +72,7 @@ function ImageInfoList() {
 
     const handleCloseDetails = () => {
         setShowDetails(false);
-        window.location.reload();
+        //window.location.reload();
     }
 
     const handleShowImage = (item) => {
@@ -94,6 +96,11 @@ function ImageInfoList() {
         setShowConfirmation(false);
         setSelectedItem({});
         setSelectedIndex(null);
+    }
+
+    const handlePageSizeChange = (option) => {
+        setPageSize(option);
+        setPage(1);
     }
 
     return (
@@ -132,6 +139,16 @@ function ImageInfoList() {
                     </ol>
                 ) : (<h2 className="text-2xl">No images found</h2>)}
             </div>
+
+            {imageInfo.length > 0 && <div className="flex justify-center">
+                <PaginationBar page={page}
+                               onPrevClick={() => setPage(page - 1)}
+                               onNextClick={() => setPage(page + 1)}
+                               totalPages={totalPages}
+                               onChange={handlePageSizeChange}
+                               selectedOption={pageSize}
+                ></PaginationBar>
+            </div>}
 
             {showError && <ErrorWindow message={error} onClose={handleCloseError} />}
             {showDetails && <ImageInfoDetails id={currentID} onClose={handleCloseDetails} />}

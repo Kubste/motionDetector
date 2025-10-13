@@ -5,10 +5,10 @@ import AddCamera from "./AddCamera.jsx";
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import api from "../UniversalComponents/api.jsx";
+import PaginationBar from "../UniversalComponents/PaginationBar.jsx";
 
 function CameraList({isList}) {
     const navigate = useNavigate();
-
     const [cameras, setCameras] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -20,7 +20,9 @@ function CameraList({isList}) {
     const [selectedItem, setSelectedItem] = useState({});
     const [selectedIndex, setSelectedIndex] = useState(null);
 
-    const token = sessionStorage.getItem("token");
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [pageSize, setPageSize] = useState({name: 5, value: 5});
 
     // called once after render and each time after reload button is clicked
     useEffect(() => {
@@ -28,12 +30,11 @@ function CameraList({isList}) {
             setLoading(true);
 
             try {
-                const response = await api.get("/api/cameras/");
-                console.log(response.data);
-                setCameras(response.data);
-
+                const response = await api.get(`/api/cameras/?page=${page}&page_size=${pageSize.value}`);
+                const data = response.data;
+                setCameras(data.results);
+                setTotalPages(Math.ceil(data.count / pageSize.value));
             } catch(error) {
-                console.error(error);
                 setError(error.message || "Failed to load cameras.");
                 setShowError(true);
 
@@ -42,34 +43,15 @@ function CameraList({isList}) {
             }
         };
         fetchCameras();
-    }, []);
+    }, [page, pageSize]);
 
     function deleteCamera(id, index) {
         if(!isList) return;
-        api.delete(`/api/cameras/${id}/`, {
-            headers: {
-                Authorization: `Token ${token}`
-            }
-        }).then(() => {
+        api.delete(`/api/cameras/${id}/`
+        ).then(() => {
             const updatedCameras = cameras.filter((_, i) => i !== index);
             setCameras(updatedCameras);
         }).catch(error => {
-            if(error.response) setError(error.response.data.detail || "Internal Server Error");
-            else if(error.request) setError("Cannot connect to the server.");
-            else setError(error.message);
-            setShowError(true);
-        })
-    }
-
-    const handleGetDeletedFiles = (id) => {
-        if(isList) return;
-        api.get(`/api/cameras/${id}/get-deleted-files`)
-            .then(response => {
-                if(response.status === 204) {
-                    setError("No deleted files found");
-                    setShowError(true)
-                } else navigate(`/synchronize-list?camera=${id}`, {state: {filesList: response.data.paths}});
-            }).catch(error => {
             if(error.response) setError(error.response.data.detail || "Internal Server Error");
             else if(error.request) setError("Cannot connect to the server.");
             else setError(error.message);
@@ -86,7 +68,7 @@ function CameraList({isList}) {
     const handleCloseCameraDetails = () => {
         if(!isList) return;
         setShowDetails(false);
-        window.location.reload();
+        //window.location.reload();
     }
 
     const handleShowAddCamera = () => {
@@ -117,6 +99,11 @@ function CameraList({isList}) {
         setShowConfirmation(false);
         setSelectedItem({});
         setSelectedIndex(null);
+    }
+
+    const handlePageSizeChange = (option) => {
+        setPageSize(option);
+        setPage(1);
     }
 
     return (
@@ -161,6 +148,16 @@ function CameraList({isList}) {
                         ))}
                     </ol> : <h2 className="text-2xl">No cameras found</h2>}
             </div>
+
+            {cameras.length > 0 && <div className="flex justify-center">
+                <PaginationBar page={page}
+                               onPrevClick={() => setPage(page - 1)}
+                               onNextClick={() => setPage(page + 1)}
+                               totalPages={totalPages}
+                               onChange={handlePageSizeChange}
+                               selectedOption={pageSize}
+                ></PaginationBar>
+            </div>}
 
             {showError && <ErrorWindow message={error} onClose={handleCloseError} />}
             {showDetails && <CameraDetails id={currentID} onClose={handleCloseCameraDetails} />}

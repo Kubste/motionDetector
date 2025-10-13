@@ -1,21 +1,28 @@
 import os
 from rest_framework import viewsets
+from rest_framework.pagination import PageNumberPagination
 from .serializers import *
 from auth_manager.permissions import AdminWritePermission
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
 
+class PaginationClass(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+    max_page_size = 100
+
 class CameraViewSet(viewsets.ModelViewSet):
     serializer_class = CameraSerializer
+    pagination_class = PaginationClass
 
     def get_queryset(self):
         if self.request.user.role == "sup":
-            return Camera.objects.all()
+            return Camera.objects.all().order_by('id')
         elif self.request.user.role == "admin":
-            return Camera.objects.filter(admins=self.request.user)
+            return Camera.objects.filter(admins=self.request.user).order_by('id')
         else:
-            return Camera.objects.filter(user=self.request.user)
+            return Camera.objects.filter(user=self.request.user).order_by('id')
 
     def get_serializer_class(self):
         if self.action == "list":
@@ -138,6 +145,7 @@ class CameraViewSet(viewsets.ModelViewSet):
 
 class ImageInfoViewSet(viewsets.ModelViewSet):
     serializer_class = ImageInfoSerializer
+    pagination_class = PaginationClass
 
     def get_serializer_class(self):
         if self.action == "list":
@@ -146,11 +154,11 @@ class ImageInfoViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         if self.request.user.role == "sup":
-            return ImageInfo.objects.all()
+            return ImageInfo.objects.all().order_by('id')
         elif self.request.user.role == "admin":
-            return ImageInfo.objects.filter(camera__admins=self.request.user)
+            return ImageInfo.objects.filter(camera__admins=self.request.user).order_by('id')
         else:
-            return ImageInfo.objects.filter(camera__user=self.request.user)
+            return ImageInfo.objects.filter(camera__user=self.request.user).order_by('id')
 
     # deleting corresponding file
     def destroy(self, request, *args, **kwargs):

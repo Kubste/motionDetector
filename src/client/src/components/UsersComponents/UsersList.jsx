@@ -1,4 +1,5 @@
 import ErrorWindow from "../UniversalComponents/ErrorWindow.jsx";
+import PaginationBar from "../UniversalComponents/PaginationBar.jsx";
 import UserDetails from "./UserDetails.jsx";
 import {useEffect, useState} from "react";
 import api from "../UniversalComponents/api.jsx";
@@ -12,28 +13,35 @@ function UsersList() {
     const [showUserDetails, setShowUserDetails] = useState(false);
     const [currentIndex, setCurrentIndex] = useState("");
 
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [pageSize, setPageSize] = useState({name: 5, value: 5});
+
     useEffect(() => {
         fetchUsers();
-    }, [])
+    }, [page, pageSize])
 
     const fetchUsers = async () => {
         setLoading(true);
 
         try {
-            const response = await api.get("/auth/users/");
-            console.log(response.data);
-            setUsers(response.data);
-
+            const response = await api.get(`/auth/users/?page=${page}&page_size=${pageSize.value}`);
+            const data = response.data;
+            setUsers(data.results);
+            setTotalPages(Math.ceil(data.count / pageSize.value));
         } catch(error) {
-            console.error(error);
             setError(error.message || "Failed to load users.");
             setShowError(true);
 
         } finally {
             setLoading(false);
-            console.log(users);
         }
     };
+
+    const handlePageSizeChange = (option) => {
+        setPageSize(option);
+        setPage(1);
+    }
 
     const handleShowUserDetails = (index) => {
         setCurrentIndex(index);
@@ -56,7 +64,7 @@ function UsersList() {
 
             <button
                 className="button w-[200px] px-4 py-2 mb-4 mx-auto rounded-full bg-cyan-600 text-white text-xl hover:bg-cyan-800 transition"
-                onClick={() => window.location.reload()}>{loading ? "Reloading users..." : "Reload users"}</button>
+                onClick={() => fetchUsers()}>{loading ? "Reloading users..." : "Reload users"}</button>
 
             <div className="w-full">
                 {users.length > 0 ?
@@ -76,6 +84,17 @@ function UsersList() {
                         ))}
                     </ol> : <h2 className="text-2xl">No cameras found</h2>}
             </div>
+
+            {users.length > 0 && <div className="flex justify-center">
+                <PaginationBar page={page}
+                               onPrevClick={() => setPage(page - 1)}
+                               onNextClick={() => setPage(page + 1)}
+                               totalPages={totalPages}
+                               onChange={handlePageSizeChange}
+                               selectedOption={pageSize}
+                ></PaginationBar>
+            </div>}
+
             {showError && <ErrorWindow message={error} onClose={handleCloseError}></ErrorWindow>}
             {showUserDetails && <UserDetails onClose={handleCloseUserDetails} userDetails={users[currentIndex]}></UserDetails>}
         </div>

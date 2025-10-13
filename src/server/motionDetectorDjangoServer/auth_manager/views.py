@@ -4,6 +4,7 @@ from rest_framework import generics, status, permissions, viewsets
 from knox.models import AuthToken
 from knox.auth import TokenAuthentication
 from rest_framework.authtoken.serializers import AuthTokenSerializer
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
@@ -63,15 +64,21 @@ class PasswordChangeView(generics.UpdateAPIView):
 
         return Response({"success": True, "user_id": request.user.id}, status=status.HTTP_200_OK)
 
+class PaginationClass(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+    max_page_size = 100
+
 class UsersView(viewsets.ReadOnlyModelViewSet):
     serializer_class = UsersSerializer
+    pagination_class = PaginationClass
 
     def get_queryset(self):
         user = self.request.user
         if user.role == 'sup':
-            return User.objects.all()
+            return User.objects.all().order_by('id')                                    # for pagination
         elif user.role == 'admin':
-            return User.objects.filter(camera__admins=user).distinct()      # return all users with cameras assigned to given admin
+            return User.objects.filter(camera__admins=user).distinct().order_by('id')   # return all users with cameras assigned to given admin
         else:
             return User.objects.none()
 
