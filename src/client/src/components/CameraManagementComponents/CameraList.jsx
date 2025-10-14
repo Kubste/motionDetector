@@ -7,7 +7,7 @@ import {useNavigate} from "react-router-dom";
 import api from "../UniversalComponents/api.jsx";
 import PaginationBar from "../UniversalComponents/PaginationBar.jsx";
 
-function CameraList({isList}) {
+function CameraList({isList, isSynchronize, isManagement}) {
     const navigate = useNavigate();
     const [cameras, setCameras] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -145,7 +145,11 @@ function CameraList({isList}) {
                                             setShowConfirmation(true);
                                         }}>Delete</button>}
 
-                                    {!isList && <button className="button px-3 py-1 rounded-full text-sm bg-blue-500 text-white hover:bg-blue-700"
+                                    {isManagement && <button className="button px-3 py-1 rounded-full text-sm ml-2  bg-blue-500 text-white hover:bg-blue-700"
+                                    onClick={() => navigate(`/admins-page?camera=${item.id}`)}
+                                    >Show Admins</button>}
+
+                                    {isSynchronize && <button className="button px-3 py-1 rounded-full text-sm bg-blue-500 text-white hover:bg-blue-700"
                                     onClick={() => navigate(`/synchronize-list?camera=${item.id}`)}>
                                         Synchronize
                                     </button>}

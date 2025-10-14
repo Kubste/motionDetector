@@ -1,4 +1,5 @@
 import os
+from auth_manager.serializers import UsersSerializer
 from rest_framework import viewsets
 from rest_framework.pagination import PageNumberPagination
 from .serializers import *
@@ -29,7 +30,45 @@ class CameraViewSet(viewsets.ModelViewSet):
             return CameraSerializer
         return CameraDetailsSerializer
 
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=['get'], url_path="get-admins")
+    def get_admins(self, request, pk=None):
+        camera = self.get_object()
+
+        if request.user.role != "sup":
+            raise PermissionDenied("Only superuser can get admins list")        # will return 403 Forbidden in response
+
+        admins = camera.admins.all().order_by('id')
+        serializer = UsersSerializer(admins, many=True)
+
+        # applying pagination - @action does not inherit it from ViewSet
+        page = self.paginate_queryset(admins)
+        if page is not None:
+            serializer = UsersSerializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        # in case no pagination parameters were given
+        return Response({"success": True, "admins": serializer.data})
+
+    @action(detail=True, methods=['get'], url_path="get-new-admins")
+    def get_new_admins(self, request, pk=None):
+        camera = self.get_object()
+
+        if request.user.role != "sup":
+            raise PermissionDenied("Only superuser can get admins list")        # will return 403 Forbidden in response
+
+        admins = User.objects.filter(role="admin").exclude(id__in=camera.admins.all()).order_by('id')   # admins that are not assigned to given camera
+        serializer = UsersSerializer(admins, many=True)
+
+        # applying pagination - @action does not inherit it from ViewSet
+        page = self.paginate_queryset(admins)
+        if page is not None:
+            serializer = UsersSerializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        # in case no pagination parameters were given
+        return Response({"success": True, "admins": serializer.data})
+
+    @action(detail=True, methods=['post'], url_path="add-admins")
     def add_admins(self, request, pk=None):
         camera = self.get_object()
 
@@ -54,7 +93,7 @@ class CameraViewSet(viewsets.ModelViewSet):
         camera.admins.add(*ids)
         return Response({"success": True}, status=status.HTTP_200_OK)
 
-    @action(detail=True, methods=['delete'])
+    @action(detail=True, methods=['delete'], url_path="remove-admins")
     def remove_admins(self, request, pk=None):
         camera = self.get_object()
 

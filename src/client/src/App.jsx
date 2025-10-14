@@ -10,6 +10,8 @@ import UsersPage from "./components/UsersComponents/UsersPage.jsx";
 import AdminsManagementPage from "./components/AdminsManagementComponents/AdminsManagementPage.jsx";
 import SynchronizePage from "./components/SynchronizeComponents/SynchronizePage.jsx";
 import DeletedFilesPage from "./components/SynchronizeComponents/DeletedFilesPage.jsx";
+import AdminsPage from "./components/AdminsManagementComponents/AdminsPage.jsx";
+import AddAdminsPage from "./components/AdminsManagementComponents/AddAdminsPage.jsx";
 
 function App() {
 
@@ -34,6 +36,8 @@ function App() {
             <Route path="/admins-management" element={<AdminsManagementPage></AdminsManagementPage>}></Route>
             <Route path="/synchronize" element={<SynchronizePage></SynchronizePage>}></Route>
             <Route path="/synchronize-list" element={<DeletedFilesPage></DeletedFilesPage>}></Route>
+            <Route path="/admins-page" element={<AdminsPage></AdminsPage>}></Route>
+            <Route path="/assign-admins" element={<AddAdminsPage></AddAdminsPage>}></Route>
         </Routes>
     </Router>
   );
