@@ -15,7 +15,8 @@ function DeletedFilesList({cameraID}) {
 
     const handleGetDeletedFiles = () => {
         setLoading(true);
-        api.get(`/api/cameras/${cameraID}/get-deleted-files`)
+        const url = cameraID === -1 ? `/api/cameras/get-all-deleted-files/` : `/api/cameras/${cameraID}/get-deleted-files/`
+        api.get(url)
             .then(response => {
                 if(response.status !== 204) setFiles(response.data.paths)
                 else setFiles([]);

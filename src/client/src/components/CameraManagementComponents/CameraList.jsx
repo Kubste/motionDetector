@@ -124,6 +124,11 @@ function CameraList({isList, isSynchronize, isManagement}) {
                 className="button w-[200px] px-4 py-2 mb-12 mx-auto rounded-full bg-green-500 text-white text-xl hover:bg-green-600 transition"
                 onClick={handleShowAddCamera}>Add new camera</button>}
 
+            {isSynchronize &&
+                <button className="button w-[200px] px-4 py-2 mb-4 mx-auto rounded-full bg-cyan-600 text-white text-xl hover:bg-cyan-800 transition"
+                        onClick={() => navigate(`/synchronize-list?camera=-1`)}
+                >Synchronize all</button>}
+
             <div className="w-full">
                 {cameras.length > 0 ?
                     <ol className="p-0 m-0">
