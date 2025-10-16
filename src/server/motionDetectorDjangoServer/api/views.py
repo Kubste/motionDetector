@@ -152,8 +152,8 @@ class CameraViewSet(viewsets.ModelViewSet):
 
         return Response({"success": True, "paths": deleted_files}, status=status.HTTP_200_OK)
 
-    @action(detail=False, methods=['get'], url_path="get-all-deleted-images")
-    def get_all_deleted_images(self, request):
+    @action(detail=False, methods=['get'], url_path="get-all-deleted-files")
+    def get_all_deleted_files(self, request):
         user = request.user
         storages = []
 
@@ -186,7 +186,7 @@ class CameraViewSet(viewsets.ModelViewSet):
         if user.role not in ["sup", "admin"]:
             raise PermissionDenied("Only superuser and admin can synchronize")  # will return 403 Forbidden in response
 
-        if pk != -1 and user.role == "admin" and not Camera.objects.get(id=pk).admins.filter(id=user.id).exists():
+        if user.role == "admin" and not Camera.objects.get(id=pk).admins.filter(id=user.id).exists():
             raise PermissionDenied("User does not have admin access to this camera")
 
         if len(ids) == 0:
@@ -194,12 +194,28 @@ class CameraViewSet(viewsets.ModelViewSet):
 
         directories = Storage.objects.filter(id__in=ids).values_list("camera_directory", flat=True)     # getting directories names
 
-        if pk != -1:
-            for directory in directories:
-                if int(directory) != int(pk):
-                    return Response({"success": False, "error": f"One of the storage objects does not belong to camera: {pk}"}, status=status.HTTP_400_BAD_REQUEST)
+        for directory in directories:
+            if int(directory) != int(pk):
+                return Response({"success": False, "error": f"One of the storage objects does not belong to camera: {pk}"}, status=status.HTTP_400_BAD_REQUEST)
 
-        if pk == -1 and user.role == "admin":
+        # deleting corresponding TensorFlowOutput record from database
+        TensorFlowOutput.objects.filter(id__in=ImageInfo.objects.filter(storage_id__in=ids).values_list("output_id", flat=True)).delete()
+        Storage.objects.filter(pk__in=ids).delete()
+
+        return Response({"success": True, "message": "files have been deleted"}, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['delete'], url_path="synchronize-all")
+    def synchronize_all(self, request):
+        ids = request.data.get("ids", [])
+        user = request.user
+
+        if user.role not in ["sup", "admin"]:
+            raise PermissionDenied("Only superuser and admin can synchronize")  # will return 403 Forbidden in response
+
+        if len(ids) == 0:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+        if user.role == "admin":
             if Storage.objects.filter(id__in=ids).exclude(imageinfo__camera__admins=user).exists():
                 raise PermissionDenied("User does not have admin access to some files")
 

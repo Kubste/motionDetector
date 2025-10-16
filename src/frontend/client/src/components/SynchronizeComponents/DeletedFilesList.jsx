@@ -15,7 +15,7 @@ function DeletedFilesList({cameraID}) {
 
     const handleGetDeletedFiles = () => {
         setLoading(true);
-        const url = cameraID === -1 ? `/api/cameras/get-all-deleted-files/` : `/api/cameras/${cameraID}/get-deleted-files/`
+        const url = Number(cameraID) === -1 ? `/api/cameras/get-all-deleted-files/` : `/api/cameras/${cameraID}/get-deleted-files/`;
         api.get(url)
             .then(response => {
                 if(response.status !== 204) setFiles(response.data.paths)
@@ -29,7 +29,8 @@ function DeletedFilesList({cameraID}) {
     }
 
     const handleDeleteFile = (ids) => {
-        api.delete(`api/cameras/${cameraID}/synchronize/`, {
+        const url = Number(cameraID) === -1 ? `/api/cameras/synchronize-all/` : `api/cameras/${cameraID}/synchronize/`;
+        api.delete(url, {
             data: {ids: ids}
         }).then(response => {
             handleGetDeletedFiles();
@@ -51,13 +52,12 @@ function DeletedFilesList({cameraID}) {
             <h1 className="mb-5 text-black dark:text-white font-bold text-3xl">Found deleted files</h1>
 
             <button
-                className="button w-[250px] px-4 py-2 mb-4 mx-auto rounded-full bg-cyan-600 dark:bg-slate-700 text-white text-xl
-                hover:bg-cyan-800 dark:hover:bg-slate-800 transition"
+                className="button w-[250px] px-4 py-2 mb-4 mx-auto rounded-full bg-cyan-600 text-white text-xl
+                hover:bg-cyan-800 transition"
                 onClick={handleGetDeletedFiles}>
                 {loading ? "Reloading deleted files..." : "Reload deleted files"}</button>
 
-            {files.length !== 0 && <button
-                className="close-button w-[200px] px-4 py-2 mb-4 mx-auto rounded-full text-white text-xl transition"
+            {files.length !== 0 && <button className="close-button w-[200px] px-4 py-2 mb-4 mx-auto rounded-full text-white text-xl transition"
                 onClick={() => handleDeleteFile(files.map(([id]) => id), null)}
             >Delete all</button>}
 
