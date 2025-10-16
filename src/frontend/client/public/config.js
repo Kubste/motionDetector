@@ -1,0 +1,3 @@
+window.RUNTIME_CONFIG = {
+    SERVER_IP: "192.168.100.7"
+};

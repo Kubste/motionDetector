@@ -1,7 +1,9 @@
 import axios from 'axios';
 
+const address = window.RUNTIME_CONFIG?.SERVER_IP
+
 const api = axios.create({
-    baseURL: 'https://192.168.100.7',
+    baseURL: `https://${address}`,
 });
 
 // adding token globally to all requests

@@ -1,0 +1,38 @@
+version: "3.9"
+
+services:
+  database:
+    image: postgres:17
+    container_name: database
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    env_file:
+      - ./.env
+
+  backend:
+    build:
+      context: ./src/server
+      dockerfile: ./docker/Dockerfile
+    container_name: backend
+    depends_on:
+      - database
+    volumes:
+      - /srv/motionDetector/static:/app/static
+      - /srv/motionDetector/media:/app/media
+    env_file:
+      - ./src/server/.env
+
+  frontend:
+    build:
+      context: ./src/client
+      dockerfile: ./docker/frontend/Dockerfile.frontend
+    container_name: frontend
+    ports:
+      - "443:443"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:

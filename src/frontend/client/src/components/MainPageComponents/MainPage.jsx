@@ -10,6 +10,7 @@ import {useEffect} from "react";
 
 function MainPage() {
     const navigate = useNavigate();
+    const address = window.RUNTIME_CONFIG?.SERVER_IP
 
     useEffect(() => {
         const token = sessionStorage.getItem('token');
@@ -35,7 +36,7 @@ function MainPage() {
                     {sessionStorage.getItem("role") === "sup" &&
                         <MainPageCard Icon={RiAdminFill} description="Admins Management" onClick={() => navigate("/admins-management")}></MainPageCard>}
                     {sessionStorage.getItem("role") === "sup" &&
-                        <MainPageCard Icon={MdAdminPanelSettings} description="Django superuser panel" onClick={() => window.open("https://192.168.100.7/admin")}></MainPageCard>}
+                        <MainPageCard Icon={MdAdminPanelSettings} description="Django superuser panel" onClick={() => window.open(`https://${address}/admin`)}></MainPageCard>}
                 </div>
             </div>
         </div>
