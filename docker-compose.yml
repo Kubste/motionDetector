@@ -3,15 +3,15 @@ version: "3.9"
 services:
   database:
     image: postgres:17
+    platform: linux/amd64
     container_name: database
-    ports:
-      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     env_file:
       - ./.env
 
   backend:
+    platform: linux/amd64
     build:
       context: ./src/server
       dockerfile: ./docker/Dockerfile
@@ -19,20 +19,25 @@ services:
     depends_on:
       - database
     volumes:
-      - /srv/motionDetector/static:/app/static
-      - /srv/motionDetector/media:/app/media
+      - /srv/motionDetectorProd/static:/app/static
+      - /srv/motionDetectorProd/media:/app/media
     env_file:
       - ./src/server/.env
 
   frontend:
+    platform: linux/amd64
     build:
-      context: ./src/client
-      dockerfile: ./docker/frontend/Dockerfile.frontend
+      context: ./src/frontend
+      dockerfile: ./docker/Dockerfile
     container_name: frontend
-    ports:
-      - "443:443"
     depends_on:
       - backend
+    ports:
+      - "443:443"
+    volumes:
+      - /srv/motionDetectorProd/dist/config.js:/usr/share/nginx/html/config.js:ro   # to be able to modify config without from host
+      - /srv/motionDetectorProd/static:/usr/share/nginx/html/static:ro
+      - /srv/motionDetectorProd/media:/usr/share/nginx/html/media:ro
 
 volumes:
   postgres_data:

@@ -6,8 +6,9 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
   plugins: [react(), tailwindcss()],
 
-  build: {
-    outDir: '../dist',    // above vite react project root
-    emptyOutDir: true,    // clears existing build directory
-  }
+  // for running outside docker
+  // build: {
+  //   outDir: '../dist',    // above vite react project root
+  //   emptyOutDir: true,    // clears existing build directory
+  // }
 })
