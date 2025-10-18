@@ -3,6 +3,7 @@ import {FaImages, FaCamera, FaUsers} from "react-icons/fa";
 import {MdAccountCircle, MdAdminPanelSettings, MdSwitchAccount} from "react-icons/md";
 import {RiAdminFill} from "react-icons/ri"
 import {IoReloadCircle} from "react-icons/io5";
+import {SiTensorflow} from "react-icons/si";
 import MainPageCard from "./MainPageCard.jsx";
 import TopBar from "../UniversalComponents/TopBar.jsx";
 import {useNavigate} from "react-router-dom";
@@ -33,6 +34,8 @@ function MainPage() {
                         <MainPageCard Icon={FaUsers} description="Users" onClick={() => navigate("/users")}></MainPageCard>}
                     {(sessionStorage.getItem("role") === "sup" || sessionStorage.getItem("role") === "admin") &&
                         <MainPageCard Icon={IoReloadCircle} description="Synchronize files" onClick={() => navigate("/synchronize")}></MainPageCard>}
+                    {(sessionStorage.getItem("role") === "sup" || sessionStorage.getItem("role") === "admin") &&
+                        <MainPageCard Icon={SiTensorflow} description="TensorFlow models management" onClick={() => navigate("/models-management")}></MainPageCard>}
                     {sessionStorage.getItem("role") === "sup" &&
                         <MainPageCard Icon={RiAdminFill} description="Admins Management" onClick={() => navigate("/admins-management")}></MainPageCard>}
                     {sessionStorage.getItem("role") === "sup" &&

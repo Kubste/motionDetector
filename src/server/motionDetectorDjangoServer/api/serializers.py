@@ -5,6 +5,11 @@ from databaseApp.models import *
 class TensorFlowModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = TensorFlowModel
+        fields = ['id', 'model_name', 'model_version']
+
+class TensorFlowModelDetailsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TensorFlowModel
         fields = "__all__"
 
 class BaseCameraSerializer(serializers.ModelSerializer):

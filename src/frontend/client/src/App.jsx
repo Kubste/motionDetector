@@ -12,6 +12,7 @@ import SynchronizePage from "./components/SynchronizeComponents/SynchronizePage.
 import DeletedFilesPage from "./components/SynchronizeComponents/DeletedFilesPage.jsx";
 import AdminsPage from "./components/AdminsManagementComponents/AdminsPage.jsx";
 import AddAdminsPage from "./components/AdminsManagementComponents/AddAdminsPage.jsx";
+import ModelsManagementPage from "./components/ModelsManagement/ModelsManagementPage.jsx";
 
 function App() {
 
@@ -38,6 +39,7 @@ function App() {
             <Route path="/synchronize-list" element={<DeletedFilesPage></DeletedFilesPage>}></Route>
             <Route path="/admins-page" element={<AdminsPage></AdminsPage>}></Route>
             <Route path="/assign-admins" element={<AddAdminsPage></AddAdminsPage>}></Route>
+            <Route path="/models-management" element={<ModelsManagementPage></ModelsManagementPage>}></Route>
         </Routes>
     </Router>
   );

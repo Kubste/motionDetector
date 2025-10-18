@@ -290,6 +290,12 @@ class TensorFlowModelViewSet(viewsets.ModelViewSet):
     queryset = TensorFlowModel.objects.all()
     serializer_class = TensorFlowModelSerializer
     permission_classes = [AdminWritePermission]     # 'user' role can only use safe methods
+    pagination_class = PaginationClass
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return TensorFlowModelSerializer
+        return TensorFlowModelDetailsSerializer
 
 class TensorFlowOutputViewSet(viewsets.ModelViewSet):
     serializer_class = TensorFlowOutputSerializer

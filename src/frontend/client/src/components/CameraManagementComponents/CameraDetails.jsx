@@ -65,14 +65,9 @@ function CameraDetails({id, onClose}) {
     }
 
     const handleFetchModels = () => {
-        const token = sessionStorage.getItem('token');
-
         api.get(`/api/tensor-flow-models/`,  {
-            headers: {
-                Authorization: `Token ${token}`
-            }
         }).then((response) => {
-            setModels(response.data);
+            setModels(response.data.results);
         }).catch(error => {
             setError(error.response?.data?.error || "Failed to load tensor flow models.");
         })

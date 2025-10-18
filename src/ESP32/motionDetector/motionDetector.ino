@@ -42,6 +42,7 @@ bool send_image() {
 
   // checking connection to server
   WiFiClientSecure client;
+  // client.setInsecure();
   client.setCACert(rootCA);
 
   if(!client.connect(serverHost, serverPort)) {

@@ -5,7 +5,7 @@ function ChangeBox({nameStr, nameValue, show, onShowClick, showChange, value, on
 
     return(
         <div className="w-full">
-            <div className="flex w-full justify-between items-center">
+            <div className="flex w-full justify-between items-center gap-4">
                 <p>
                     <span className="font-semibold">{nameStr}</span>:
                     {nameValue === true ? " enabled"
