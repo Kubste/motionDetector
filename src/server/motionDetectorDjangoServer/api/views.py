@@ -6,7 +6,7 @@ from .serializers import *
 from auth_manager.permissions import AdminWritePermission
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, filters
 
 class PaginationClass(PageNumberPagination):
     page_size = 10
@@ -16,14 +16,17 @@ class PaginationClass(PageNumberPagination):
 class CameraViewSet(viewsets.ModelViewSet):
     serializer_class = CameraSerializer
     pagination_class = PaginationClass
+    filter_backends = [filters.OrderingFilter]
+    ordering_fields = "__all__"
+    ordering = ['id']  # default order
 
     def get_queryset(self):
         if self.request.user.role == "sup":
-            return Camera.objects.all().order_by('id')
+            return Camera.objects.all()
         elif self.request.user.role == "admin":
-            return Camera.objects.filter(admins=self.request.user).order_by('id')
+            return Camera.objects.filter(admins=self.request.user)
         else:
-            return Camera.objects.filter(user=self.request.user).order_by('id')
+            return Camera.objects.filter(user=self.request.user)
 
     def get_serializer_class(self):
         if self.action == "list":
@@ -228,6 +231,9 @@ class CameraViewSet(viewsets.ModelViewSet):
 class ImageInfoViewSet(viewsets.ModelViewSet):
     serializer_class = ImageInfoSerializer
     pagination_class = PaginationClass
+    filter_backends = [filters.OrderingFilter]
+    ordering_fields = "__all__"
+    ordering = ['id']       # default order
 
     def get_serializer_class(self):
         if self.action == "list":
@@ -236,11 +242,11 @@ class ImageInfoViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         if self.request.user.role == "sup":
-            return ImageInfo.objects.all().order_by('id')
+            return ImageInfo.objects.all()
         elif self.request.user.role == "admin":
-            return ImageInfo.objects.filter(camera__admins=self.request.user).order_by('id')
+            return ImageInfo.objects.filter(camera__admins=self.request.user)
         else:
-            return ImageInfo.objects.filter(camera__user=self.request.user).order_by('id')
+            return ImageInfo.objects.filter(camera__user=self.request.user)
 
     # deleting corresponding file
     def destroy(self, request, *args, **kwargs):
@@ -291,6 +297,9 @@ class TensorFlowModelViewSet(viewsets.ModelViewSet):
     serializer_class = TensorFlowModelSerializer
     permission_classes = [AdminWritePermission]     # 'user' role can only use safe methods
     pagination_class = PaginationClass
+    filter_backends = [filters.OrderingFilter]
+    ordering_fields = "__all__"
+    ordering = ['id']  # default order
 
     def get_serializer_class(self):
         if self.action == "list":

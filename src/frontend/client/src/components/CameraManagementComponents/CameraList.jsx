@@ -6,6 +6,7 @@ import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import api from "../UniversalComponents/api.jsx";
 import PaginationBar from "../UniversalComponents/PaginationBar.jsx";
+import SortingBar from "../UniversalComponents/SortingBar.jsx";
 
 function CameraList({isList, isSynchronize, isManagement}) {
     const navigate = useNavigate();
@@ -19,6 +20,9 @@ function CameraList({isList, isSynchronize, isManagement}) {
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [selectedItem, setSelectedItem] = useState({});
     const [selectedIndex, setSelectedIndex] = useState(null);
+    const [sortingField, setSortingField] = useState({name: "Camera name", value: "camera_name"});
+    const [order, setOrder] = useState({name: "ascending", value: ""});
+    const [showChangeOrder, setShowChangeOrder] = useState(false);
 
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
@@ -28,7 +32,7 @@ function CameraList({isList, isSynchronize, isManagement}) {
         setLoading(true);
 
         try {
-            const response = await api.get(`/api/cameras/?page=${page}&page_size=${pageSize.value}`);
+            const response = await api.get(`/api/cameras/?ordering=${order.value}${sortingField.value}&page=${page}&page_size=${pageSize.value}`);
             const data = response.data;
             setCameras(data.results);
             setTotalPages(Math.ceil(data.count / pageSize.value));
@@ -112,16 +116,42 @@ function CameraList({isList, isSynchronize, isManagement}) {
         fetchCameras();
     }
 
+    const handleSortingFieldChange = (option) => {
+        setSortingField(option);
+    }
+
+    const handleOrderChange = (option) => {
+        setOrder(option);
+    }
+
     return (
         <div className="flex flex-col text-center justify-center px-5 w-2/5 my-10 mx-auto">
             <h1 className="mb-5 text-black dark:text-white font-bold text-3xl">Your cameras</h1>
 
-            <button
-                className="button w-[200px] px-4 py-2 mb-4 mx-auto rounded-full bg-cyan-600 text-white text-xl hover:bg-cyan-800 transition"
-                onClick={fetchCameras}>{loading ? "Reloading cameras..." : "Reload cameras"}</button>
+            <div className="flex items-center justify-center mb-4 rounded-2xl gap-6">
+
+                <button className="button w-[200px] px-4 py-2 rounded-full bg-cyan-600 text-white text-xl hover:bg-cyan-800 transition"
+                        onClick={fetchCameras}>{loading ? "Reloading cameras..." : "Reload cameras"}</button>
+
+                {!showChangeOrder &&
+                    <button className="button w-[200px] px-4 py-2 rounded-full bg-cyan-600 text-white text-xl hover:bg-cyan-800"
+                            onClick={() => {setShowChangeOrder(true)}}>Change order</button>
+                }
+
+                {showChangeOrder &&
+                    <SortingBar options={[{name: "Camera name", value: "camera_name"}, {name: "Board name", value: "board_name"}, {name: "Location", value: "location"},
+                                {name: "Address", value: "address"}, {name: "Confidence", value: "confidence_threshold"}, {name: "User", value: "user_id"},
+                                {name: "TensorFlow model", value: "model_id"}, {name: "Was processed", value: "process_image"}, {name: "Resolution", value: "resolution"}]}
+                                onChangeField={handleSortingFieldChange}
+                                onChangeOrder={handleOrderChange}
+                                selectedOptionName={sortingField}
+                                selectedOptionOrder={order}
+                                onClose={() => setShowChangeOrder(false)}
+                    ></SortingBar>}
+            </div>
 
             {isList && <button
-                className="button w-[200px] px-4 py-2 mb-12 mx-auto rounded-full bg-green-500 text-white text-xl hover:bg-green-600 transition"
+                className="button w-[200px] px-4 py-2 mb-6 mx-auto rounded-full bg-green-500 text-white text-xl hover:bg-green-600 transition"
                 onClick={handleShowAddCamera}>Add new camera</button>}
 
             {isSynchronize &&

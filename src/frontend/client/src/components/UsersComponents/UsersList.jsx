@@ -3,6 +3,7 @@ import PaginationBar from "../UniversalComponents/PaginationBar.jsx";
 import UserDetails from "./UserDetails.jsx";
 import {useEffect, useState} from "react";
 import api from "../UniversalComponents/api.jsx";
+import SortingBar from "../UniversalComponents/SortingBar.jsx";
 
 function UsersList() {
 
@@ -12,6 +13,10 @@ function UsersList() {
     const [showError, setShowError] = useState(false);
     const [showUserDetails, setShowUserDetails] = useState(false);
     const [currentIndex, setCurrentIndex] = useState("");
+
+    const [sortingField, setSortingField] = useState({name: "Username", value: "username"});
+    const [order, setOrder] = useState({name: "ascending", value: ""});
+    const [showChangeOrder, setShowChangeOrder] = useState(false);
 
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
@@ -25,7 +30,7 @@ function UsersList() {
         setLoading(true);
 
         try {
-            const response = await api.get(`/auth/users/?page=${page}&page_size=${pageSize.value}`);
+            const response = await api.get(`/auth/users/?ordering=${order.value}${sortingField.value}&page=${page}&page_size=${pageSize.value}`);
             const data = response.data;
             setUsers(data.results);
             setTotalPages(Math.ceil(data.count / pageSize.value));
@@ -58,13 +63,37 @@ function UsersList() {
         setError("");
     }
 
+    const handleSortingFieldChange = (option) => {
+        setSortingField(option);
+    }
+
+    const handleOrderChange = (option) => {
+        setOrder(option);
+    }
+
     return (
         <div className="flex flex-col text-center justify-center px-5 w-2/5 my-10 mx-auto">
             <h1 className="mb-5 text-black dark:text-white font-bold text-3xl">Users List</h1>
 
-            <button
-                className="button w-[200px] px-4 py-2 mb-4 mx-auto rounded-full bg-cyan-600 text-white text-xl hover:bg-cyan-800 transition"
-                onClick={() => fetchUsers()}>{loading ? "Reloading users..." : "Reload users"}</button>
+            <div className="flex items-center justify-center p-4 rounded-2xl mb-6 gap-6">
+                <button className="button w-[200px] px-4 py-2 rounded-full bg-cyan-600 text-white text-xl hover:bg-cyan-800 transition"
+                        onClick={() => fetchUsers()}>{loading ? "Reloading users..." : "Reload users"}</button>
+
+                {!showChangeOrder &&
+                    <button className="button w-[200px] px-4 py-2 rounded-full bg-cyan-600 text-white text-xl hover:bg-cyan-800"
+                            onClick={() => {setShowChangeOrder(true)}}>Change order</button>
+                }
+
+                {showChangeOrder &&
+                    <SortingBar options={[{name: "Username", value: "username"}, {name: "First name", value: "first_name"}, {name: "Last name", value: "last_name"},
+                                {name: "E-mail", value: "email"}, {name: "Phone number", value: "phone_number"}]}
+                                onChangeField={handleSortingFieldChange}
+                                onChangeOrder={handleOrderChange}
+                                selectedOptionName={sortingField}
+                                selectedOptionOrder={order}
+                                onClose={() => setShowChangeOrder(false)}
+                    ></SortingBar>}
+            </div>
 
             <div className="w-full">
                 {users.length > 0 ?

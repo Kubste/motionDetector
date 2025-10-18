@@ -3,6 +3,7 @@ import ErrorWindow from "../UniversalComponents/ErrorWindow.jsx";
 import ConfirmWindow from "../UniversalComponents/ConfirmWindow.jsx";
 import ImageInfoDetails from "./ImageInfoDetails.jsx";
 import ImageWindow from "./ImageWindow.jsx";
+import SortingBar from "../UniversalComponents/SortingBar.jsx";
 import api from "../UniversalComponents/api.jsx";
 import PaginationBar from "../UniversalComponents/PaginationBar.jsx";
 
@@ -19,6 +20,10 @@ function ImageInfoList() {
     const [selectedIndex, setSelectedIndex] = useState(null);
     const [showConfirmation, setShowConfirmation] = useState(false);
 
+    const [sortingField, setSortingField] = useState({name: "Filename", value: "filename"});
+    const [order, setOrder] = useState({name: "ascending", value: ""});
+    const [showChangeOrder, setShowChangeOrder] = useState(false);
+
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [pageSize, setPageSize] = useState({name: 5, value: 5});
@@ -28,7 +33,7 @@ function ImageInfoList() {
         setLoading(true);
 
         try {
-            const response = await api.get(`/api/image-info/?page=${page}&page_size=${pageSize.value}`);
+            const response = await api.get(`/api/image-info/?ordering=${order.value}${sortingField.value}&page=${page}&page_size=${pageSize.value}`);
             const data = response.data;
             setImageInfo(data.results);
             setTotalPages(Math.ceil(data.count / pageSize.value));
@@ -104,20 +109,45 @@ function ImageInfoList() {
         setPage(1);
     }
 
+    const handleSortingFieldChange = (option) => {
+        setSortingField(option);
+    }
+
+    const handleOrderChange = (option) => {
+        setOrder(option);
+    }
+
     return (
         <div className="flex flex-col text-center justify-center px-5 w-2/5 my-10 mx-auto">
             <h1 className="mb-5 text-black dark:text-white font-bold text-3xl">Captured Images</h1>
 
-            <button
-                className=" button w-[200px] px-4 py-2 mb-12 mx-auto rounded-full bg-cyan-600 text-white text-xl hover:bg-cyan-800"
-                onClick={fetchImages}>{loading ? "Reloading images..." : "Reload images"}</button>
+            <div className="flex items-center justify-center p-4 rounded-2xl mb-6 gap-6">
+                <button className="button w-[200px] px-4 py-2 rounded-full bg-cyan-600 text-white text-xl hover:bg-cyan-800"
+                        onClick={fetchImages}>{loading ? "Reloading images..." : "Reload images"}</button>
+
+                {!showChangeOrder &&
+                    <button className="button w-[200px] px-4 py-2 rounded-full bg-cyan-600 text-white text-xl hover:bg-cyan-800"
+                            onClick={() => {setShowChangeOrder(true)}}>Change order</button>
+                }
+
+                {showChangeOrder &&
+                    <SortingBar options={[{name: "Filename", value: "filename"}, {name: "File size", value: "file_size"}, {name: "File type", value: "file_type"},
+                                {name: "Resolution", value: "resolution"}, {name: "Photo taken date", value: "timestamp"}, {name: "Camera", value: "file_size"},
+                                {name: "TensorFlow model", value: "model_id"}, {name: "Was processed", value: "is_processed"}]}
+                                onChangeField={handleSortingFieldChange}
+                                onChangeOrder={handleOrderChange}
+                                selectedOptionName={sortingField}
+                                selectedOptionOrder={order}
+                                onClose={() => setShowChangeOrder(false)}
+                    ></SortingBar>}
+            </div>
 
             <div className="w-full">
                 {imageInfo.length > 0 ? (
                     <ol className="p-0 m-0">
                         {imageInfo.map((item, index) => (
                             <li className="flex justify-between items-center px-4 py-3 mb-3 rounded-3xl bg-cyan-50 shadow-md transition-transform hover:-translate-y-0.5
-                            hover:shadow-xl hover:bg-white/20 dark:bg-slate-700 dark:hover:bg-slate-800"
+                                            hover:shadow-xl hover:bg-white/20 dark:bg-slate-700 dark:hover:bg-slate-800"
                                 key={index}>
                                 <span className="flex-1 font-medium text-black dark:text-white break-words">{index + 1 }. {item.filename}</span>
 

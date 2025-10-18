@@ -1,6 +1,6 @@
 from django.contrib.messages.api import success
 from knox.views import LogoutAllView
-from rest_framework import generics, status, permissions, viewsets
+from rest_framework import generics, status, permissions, viewsets, filters
 from knox.models import AuthToken
 from knox.auth import TokenAuthentication
 from rest_framework.authtoken.serializers import AuthTokenSerializer
@@ -72,6 +72,9 @@ class PaginationClass(PageNumberPagination):
 class UsersView(viewsets.ReadOnlyModelViewSet):
     serializer_class = UsersSerializer
     pagination_class = PaginationClass
+    filter_backends = [filters.OrderingFilter]
+    ordering_fields = "__all__"
+    ordering = ['id']  # default order
 
     def get_queryset(self):
         user = self.request.user
