@@ -1,6 +1,8 @@
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator
 from django.db import models
+from django.utils import timezone
+import datetime
 
 class User(AbstractUser):
 
@@ -27,3 +29,11 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.username
+
+class PasswordCodes(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    code = models.CharField(max_length=8)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def is_valid(self):
+        return timezone.now() <= self.created_at + datetime.timedelta(minutes=15)

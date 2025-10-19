@@ -1,6 +1,8 @@
+from django.contrib.auth.views import PasswordResetView
 from django.urls import include, path
 from knox import views as knox_views
 from rest_framework.routers import DefaultRouter
+from .views import send_code, reset_password
 
 from .views import LoginView, RegisterView, PasswordChangeView, LogoutOutAllUsers, AuthManagerView, UsersView
 
@@ -19,4 +21,6 @@ urlpatterns = [
     path('logout-all-users/', LogoutOutAllUsers.as_view(), name='logout_all_users'),
     path('register/', RegisterView.as_view(), name='register'),
     path('password-change/', PasswordChangeView.as_view(), name='password_change'),
+    path('send-code/', send_code, name='send_code'),
+    path('reset-password/', reset_password, name='password_reset'),
 ]
