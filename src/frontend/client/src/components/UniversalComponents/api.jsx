@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 const address = window.RUNTIME_CONFIG?.SERVER_IP
+console.log(address);
 
 const api = axios.create({
     baseURL: `https://${address}`,

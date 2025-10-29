@@ -1,10 +1,10 @@
 import ErrorWindow from "../UniversalComponents/ErrorWindow.jsx";
-import {useState} from "react";
+import {useState, useEffect} from "react";
+import api from "../UniversalComponents/api.jsx";
 
-function ImageWindow({path, filename, onClose}) {
+function ImageWindow({id, filename, onClose}) {
     const [error, setError] = useState(null);
     const [showError, setShowError] = useState(false);
-    const address = window.RUNTIME_CONFIG?.SERVER_IP
     const [src, setSrc] = useState(null);
 
     useEffect(() => {
@@ -43,7 +43,7 @@ function ImageWindow({path, filename, onClose}) {
                 <h2 className="mb-4 text-2xl font-semibold">{filename}</h2>
 
                 <img className="object-contain max-h-[calc(90vh-120px)] w-full rounded-lg shadow-md"
-                    src={imageURL}
+                    src={src}
                     alt={filename}
                     onLoad={handleCloseError}
                     onError={() => {
