@@ -1,11 +1,35 @@
 import ErrorWindow from "../UniversalComponents/ErrorWindow.jsx";
-import {useState} from "react";
+import {useState, useEffect} from "react";
+import api from "../UniversalComponents/api.jsx";
 
-function ImageWindow({path, filename, onClose}) {
+function ImageWindow({id, filename, onClose}) {
     const [error, setError] = useState(null);
     const [showError, setShowError] = useState(false);
+    const [src, setSrc] = useState(null);
 
-    const imageURL = `https://192.168.100.7/${path}`;
+    useEffect(() => {
+        const controller = new AbortController();   // it enables cancelling requests
+        let revoke;
+        setSrc(null);
+
+        api.get(`/api/image-info/${id}/get-permission/`, {
+            responseType: "blob",       // binary file
+            signal: controller.signal,  // signal that can abort request
+        }).then(res => {
+                const url = URL.createObjectURL(res.data);  // url to image, so src can display it
+                setSrc(url);
+                revoke = () => URL.revokeObjectURL(url);    // function to free memory after closing image window
+        }).catch(e => {
+                if(e.name === "CanceledError" || e.code === "ERR_CANCELED") return;     // returning when user cancels
+                setError(e?.message || "Download failed");
+                setShowError(true);
+        });
+
+        return () => {        // called when component demounts
+            controller.abort();     // aborts downloading image
+            if(revoke) revoke();    // freeing memory
+        };
+    }, [id]);
 
     const handleCloseError = () => {
         setError(null);
@@ -18,14 +42,17 @@ function ImageWindow({path, filename, onClose}) {
              backdrop-blur-3xl shadow-2xl text-black dark:text-white">
                 <h2 className="mb-4 text-2xl font-semibold">{filename}</h2>
 
-                <img className="object-contain max-h-[calc(90vh-120px)] w-full rounded-lg shadow-md"
-                    src={imageURL}
-                    alt={filename}
-                    onLoad={handleCloseError}
-                    onError={() => {
-                        setError(`Failed to load ${filename}`);
-                        setShowError(true);
-                    }}/>
+                {src ?  (
+                    <img className="object-contain max-h-[calc(90vh-120px)] w-full rounded-lg shadow-md"
+                        src={src}
+                        alt={filename}
+                        onLoad={handleCloseError}
+                        onError={() => {
+                            setError(`Failed to load ${filename}`);
+                            setShowError(true);
+                        }}/>
+                    ) : <p>Loading ...</p>
+                }
 
                 <button className="close-button mt-6 px-6 py-2 rounded-full" onClick={onClose}>Close</button>
             </div>

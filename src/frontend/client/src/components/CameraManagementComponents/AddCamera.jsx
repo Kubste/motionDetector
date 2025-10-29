@@ -37,7 +37,17 @@ function AddCamera({onClose, onCameraAdd}) {
         }).then(() => {
             onCameraAdd();
         }).catch(error => {
-            setError(error.response?.data?.error || "Failed to add camera.");
+            console.log(error);
+            // setError(error.response?.data?.error || "Failed to add camera.");
+            // setShowError(true);
+            const errorData = error.response?.data;
+
+            if(errorData.non_field_errors?.[0]) setError(errorData.non_field_errors?.[0]);
+            else {
+                // finding the right key in errorData - finding sublist with length is greater than 0
+                const fieldKey = Object.keys(errorData).find(key => Array.isArray(errorData[key]) && errorData[key].length > 0);
+                if(fieldKey) setError(errorData[fieldKey][0] || "Failed to change field");
+            }
             setShowError(true);
         }).finally(() => setLoading(false));
     }
@@ -45,7 +55,7 @@ function AddCamera({onClose, onCameraAdd}) {
     useEffect(() => {
         api.get(`/api/tensor-flow-models/`,  {
         }).then((response) => {
-            setModels(response.data);
+            setModels(response.data.results);
         }).catch(error => {
             setError(error.response?.data?.error || "Failed to load tensor flow models.");
         })

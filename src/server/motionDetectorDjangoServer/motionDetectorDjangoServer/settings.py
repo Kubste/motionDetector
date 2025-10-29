@@ -158,6 +158,10 @@ CORS_ALLOWED_ORIGINS = [
     "https://127.0.0.1:5173",
 ]
 
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^http://192\.168\.100\.\d{1,3}(:\d+)?$",
+]
+
 CORS_ALLOW_CREDENTIALS = True
 
 

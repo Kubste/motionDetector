@@ -1,4 +1,7 @@
 import os
+
+from django.http import HttpResponse
+
 from auth_manager.serializers import UsersSerializer
 from rest_framework import viewsets
 from rest_framework.pagination import PageNumberPagination
@@ -7,6 +10,9 @@ from auth_manager.permissions import AdminWritePermission
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status, filters
+import mimetypes, os
+from django.http import FileResponse, Http404
+from django.conf import settings
 
 class PaginationClass(PageNumberPagination):
     page_size = 10
@@ -247,6 +253,31 @@ class ImageInfoViewSet(viewsets.ModelViewSet):
             return ImageInfo.objects.filter(camera__admins=self.request.user)
         else:
             return ImageInfo.objects.filter(camera__user=self.request.user)
+
+    @action(detail=True, methods=['get'], url_path="get-permission")
+    def get_permission(self, request, pk=None):
+        try:
+            image = ImageInfo.objects.get(id=pk)
+        except ImageInfo.DoesNotExist:
+            return Response({"success": False, "error": "Image does not exist"}, status=status.HTTP_404_NOT_FOUND)
+
+        user = request.user
+        role = user.role
+        path = image.storage.path
+
+        if role == "sup" or (role == "admin" and user in image.camera.admins.all()) or (role == "user" and user == image.camera.user):
+            if not os.path.exists(path):
+                return Response({"success": False, "error": "Cannot find image"}, status=status.HTTP_404_NOT_FOUND)
+
+            mime, _ = mimetypes.guess_type(path)
+            file = open(path, "rb")
+            response = FileResponse(file, content_type=mime)
+            response["Content-Disposition"] = f'inline; filename="{image.filename}"'    # can display image in window without downloading it to client filesystem
+            return response
+
+        else:
+            raise PermissionDenied("User does not have access to this image")
+
 
     # deleting corresponding file
     def destroy(self, request, *args, **kwargs):

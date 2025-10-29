@@ -184,7 +184,7 @@ function ImageInfoList() {
 
             {showError && <ErrorWindow message={error} onClose={handleCloseError} />}
             {showDetails && <ImageInfoDetails id={currentID} onClose={handleCloseDetails} />}
-            {showSelectedImage && <ImageWindow filename={selectedImage.filename} path={selectedImage.path} onClose={handleCloseSelectedImage}/>}
+            {showSelectedImage && <ImageWindow filename={selectedImage.filename} id={selectedImage.id} onClose={handleCloseSelectedImage}/>}
             {showConfirmation && <ConfirmWindow message={`delete ${selectedItem.filename}`} onClose={handleCancelConfirmation} onConfirm={handleConfirmConfirmation}/>}
         </div>
     );
