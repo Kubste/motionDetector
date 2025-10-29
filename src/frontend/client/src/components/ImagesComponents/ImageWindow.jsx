@@ -1,10 +1,10 @@
 import ErrorWindow from "../UniversalComponents/ErrorWindow.jsx";
-import {useState, useEffect} from "react";
-import api from "../UniversalComponents/api.jsx";
+import {useState} from "react";
 
-function ImageWindow({id, filename, onClose}) {
+function ImageWindow({path, filename, onClose}) {
     const [error, setError] = useState(null);
     const [showError, setShowError] = useState(false);
+    const address = window.RUNTIME_CONFIG?.SERVER_IP
     const [src, setSrc] = useState(null);
 
     useEffect(() => {
@@ -42,17 +42,14 @@ function ImageWindow({id, filename, onClose}) {
              backdrop-blur-3xl shadow-2xl text-black dark:text-white">
                 <h2 className="mb-4 text-2xl font-semibold">{filename}</h2>
 
-                {src ?  (
-                    <img className="object-contain max-h-[calc(90vh-120px)] w-full rounded-lg shadow-md"
-                        src={src}
-                        alt={filename}
-                        onLoad={handleCloseError}
-                        onError={() => {
-                            setError(`Failed to load ${filename}`);
-                            setShowError(true);
-                        }}/>
-                    ) : <p>Loading ...</p>
-                }
+                <img className="object-contain max-h-[calc(90vh-120px)] w-full rounded-lg shadow-md"
+                    src={imageURL}
+                    alt={filename}
+                    onLoad={handleCloseError}
+                    onError={() => {
+                        setError(`Failed to load ${filename}`);
+                        setShowError(true);
+                    }}/>
 
                 <button className="close-button mt-6 px-6 py-2 rounded-full" onClick={onClose}>Close</button>
             </div>

@@ -1,3 +1,3 @@
 window.RUNTIME_CONFIG = {
-    SERVER_IP: "192.168.100.7"
+    SERVER_IP: 10.182.19.31"
 };
