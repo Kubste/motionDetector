@@ -254,8 +254,8 @@ class ImageInfoViewSet(viewsets.ModelViewSet):
         else:
             return ImageInfo.objects.filter(camera__user=self.request.user)
 
-    @action(detail=True, methods=['get'], url_path="get-permission")
-    def get_permission(self, request, pk=None):
+    @action(detail=True, methods=['get'], url_path="get-image")
+    def get_image(self, request, pk=None):
         try:
             image = ImageInfo.objects.get(id=pk)
         except ImageInfo.DoesNotExist:

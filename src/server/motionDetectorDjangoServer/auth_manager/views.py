@@ -6,6 +6,7 @@ from knox.models import AuthToken
 from knox.auth import TokenAuthentication
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -85,7 +86,7 @@ class UsersView(viewsets.ReadOnlyModelViewSet):
         elif user.role == 'admin':
             return User.objects.filter(camera__admins=user).distinct()      # return all users with cameras assigned to given admin
         else:
-            return User.objects.none()
+            raise PermissionDenied("Only superuser and admin can get users list")
 
 class AuthManagerView(viewsets.ModelViewSet):
     serializer_class = AuthManagerSerializer

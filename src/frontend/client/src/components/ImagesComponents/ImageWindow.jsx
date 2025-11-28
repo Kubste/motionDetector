@@ -12,7 +12,7 @@ function ImageWindow({id, filename, onClose}) {
         let revoke;
         setSrc(null);
 
-        api.get(`/api/image-info/${id}/get-permission/`, {
+        api.get(`/api/image-info/${id}/get-image/`, {
             responseType: "blob",       // binary file
             signal: controller.signal,  // signal that can abort request
         }).then(res => {
