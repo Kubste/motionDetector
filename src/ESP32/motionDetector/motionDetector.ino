@@ -1,7 +1,8 @@
 // libraries
 #include <WiFi.h>
 #include <HTTPClient.h>
-#include <WebServer.h>
+//#include <WebServer.h>
+#include <ESPWebServerSecure.hpp>
 #include <Wire.h>
 #include <ArduCAM.h>
 #include <SPI.h>
@@ -10,6 +11,10 @@
 // configuration files
 #include "memorysaver.h"
 #include "config.h"
+
+// HTTPS server cert and key
+#include "cert.h"
+#include "private_key.h"
 
 #define BMPIMAGEOFFSET 66
 
@@ -22,7 +27,7 @@ volatile bool motionDetected = false;
 volatile unsigned long lastCaptured;
 
 ArduCAM myCAM(OV2640, CS);
-WebServer server(80);
+ESPWebServerSecure server(443);
 
 // function to send image chunks to the server
 bool send_image() {
@@ -80,6 +85,16 @@ bool send_image() {
 
 // function to set the camera resolution
 void setResolution() {
+
+  if(server.hasArg("res_token")) {
+    String token = server.arg("res_token");
+    if(token != resToken) {
+      Serial.println("Wrong token: ");
+      Serial.println(token);
+      server.send(403, "text/plain", "Invalid token");
+    }
+  }
+  
   if(server.hasArg("res")) {
     String res = server.arg("res");
 
@@ -136,10 +151,17 @@ void setup() {
   Serial.print("ESP32 IP address: ");
   Serial.println(WiFi.localIP());
 
+  server.setServerKeyAndCert(
+              example_key_DER,          // Raw DER key data as byte array
+              example_key_DER_len,      // Length of the key array
+              example_crt_DER,          // Raw DER certificate (no certificate chain!) as byte array
+              example_crt_DER_len       // Length of the certificate array
+          );
+
   // setting up HTTP server to receive requests to change camera resolution
   server.on("/set_resolution", setResolution);
   server.begin();
-  Serial.println("HTTP server started");
+  Serial.println("HTTPS server started");
 
   //        sck miso mosi ss
   //SPI.begin(14, 12, 13, 15);    // changed to HSPI pins to avoid conflicts with WiFi library

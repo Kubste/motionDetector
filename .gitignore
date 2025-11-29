@@ -1,4 +1,4 @@
-.idea/
+.aidea/
 # Django #
 *.log
 *.pot
@@ -9,6 +9,8 @@ media
 
 **.txt
 !**requirements.txt**
+**cert.h
+**private_key.h
 
 **/media/**
 **/static/**

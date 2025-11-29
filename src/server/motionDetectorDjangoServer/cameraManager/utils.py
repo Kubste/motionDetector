@@ -13,11 +13,11 @@ from django.utils import timezone
 
 # sending request to change camera resolution
 def change_resolution(resolution, address):
-    url = f"http://{address}/set_resolution"
+    url = f"https://{address}/set_resolution"
 
     try:
         # Send GET request with resolution parameter - POST would be more proper, but it would require JSON deserialization on ESP32 side - another not build in library
-        response = requests.get(url, params={"res": resolution}, timeout=5)
+        response = requests.get(url, params={"res": resolution, "res_token": config('RESTOKEN')}, timeout=5, verify=False)   # ignoring verification of a self-signed certificate
         response.raise_for_status()     # will throw exception if response status is different from 2XX
     except requests.RequestException as e:
         print(f"Error: {e}")
