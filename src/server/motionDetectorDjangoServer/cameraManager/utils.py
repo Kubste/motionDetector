@@ -10,6 +10,8 @@ from auth_manager.models import User
 from motionDetectorDjangoServer.settings import UPLOAD_FOLDER, MEDIA_ROOT
 from PIL import Image
 from django.utils import timezone
+import tensorflow as tf
+import tensorflow_hub as hub
 
 # sending request to change camera resolution
 def change_resolution(resolution, address):
@@ -27,12 +29,12 @@ def change_resolution(resolution, address):
 
 # getting ip address where request came from
 def get_client_ip(request):
-    req_headers = request.META
-    x_forwarded_for_value = req_headers.get('HTTP_X_FORWARDED_FOR')
+    req_headers = request.META  # all headers
+    x_forwarded_for_value = req_headers.get('HTTP_X_FORWARDED_FOR') #list of IP addresses that request passed through
     if x_forwarded_for_value:
-        ip_addr = x_forwarded_for_value.split(',')[-1].strip()
+        ip_addr = x_forwarded_for_value.split(',')[-1].strip()      # last address - host which sent request
     else:
-        ip_addr = req_headers.get('REMOTE_ADDR')
+        ip_addr = req_headers.get('REMOTE_ADDR')    # if request didn't pass through any proxy
     return ip_addr
 
 # saving image file to filesystem
@@ -120,9 +122,6 @@ Please check your account immediately"""
         print(f"Error: {e}", flush=True)
 
 def detect_human(img, confidence, model_url):
-    import tensorflow as tf         # importing tensorflow library in function - it's slow and it's blocking server
-    import tensorflow_hub as hub
-
     # model will be cached locally after first download
     model = hub.load(model_url)
 
@@ -144,7 +143,7 @@ def detect_human(img, confidence, model_url):
             if score > max_score:
                 max_score = score
 
-    return counter, max_score
+    return counter, min(max(max_score, 0.0), 1.0)
 
 def save_tensor_flow_output(confidence, counter):
 

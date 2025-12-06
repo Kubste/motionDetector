@@ -92,6 +92,7 @@ void setResolution() {
       Serial.println("Wrong token: ");
       Serial.println(token);
       server.send(403, "text/plain", "Invalid token");
+      return;
     }
   }
   
