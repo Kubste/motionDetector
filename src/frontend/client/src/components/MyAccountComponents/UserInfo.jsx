@@ -44,7 +44,7 @@ function UserInfo() {
 
 
     useEffect(() => {
-        const user_id = sessionStorage.getItem('user_id');
+        const user_id = localStorage.getItem('user_id');
 
         api.get(`/auth/auth-manager/${user_id}/`
         ).then(response => {
@@ -57,8 +57,8 @@ function UserInfo() {
     }, [userName, firstName, lastName, email, phoneNumber]);
 
     const handlePatch = (field, fieldValue, valueSetter, confirmationSetter) => {
-        const token = sessionStorage.getItem('token');
-        const user_id = sessionStorage.getItem('user_id');
+        const token = localStorage.getItem('token');
+        const user_id = localStorage.getItem('user_id');
 
         if(field === 'confidence_threshold' && (Number(fieldValue) < 0 || Number(fieldValue) > 1)) {
             setError("Confidence threshold must be a number in range [0, 1]");
@@ -92,7 +92,7 @@ function UserInfo() {
         event.preventDefault();
         setLoading(true);
         setError(null);
-        const token = sessionStorage.getItem('token');
+        const token = localStorage.getItem('token');
 
         if(newPassword !== confirmPassword) {
             setNewPassword("");
@@ -111,7 +111,7 @@ function UserInfo() {
             }).then(() => {
                 setShowPasswordChangeConfirmation(true)
                 setOldPassword("");
-                setNewFirstName("");
+                setNewPassword("");
                 setConfirmPassword("");
             });
 

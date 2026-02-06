@@ -112,7 +112,7 @@ function RegisterWindow() {
                                value={phoneNumber}
                                onChange={(event) => setPhoneNumber(event.target.value)}/>
 
-                        {sessionStorage.getItem("role") === "sup" &&
+                        {localStorage.getItem("role") === "sup" &&
                             <DropBar label={"Role"}
                                      options={[{name: "User", value: "user"}, {name: "Admin", value: "admin"}, {name: "Superuser", value: "sup"}]}
                                      onChange={handleRoleChange}

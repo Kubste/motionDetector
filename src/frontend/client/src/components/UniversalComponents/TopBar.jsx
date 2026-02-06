@@ -8,7 +8,7 @@ import {BsMoon, BsSun} from "react-icons/bs";
 
 function TopBar({isLoggedIn}) {
     const navigate = useNavigate();
-    const username = sessionStorage.getItem("username");
+    const username = localStorage.getItem("username");
     const [error, setError] = useState(null);
     const [showError, setShowError] = useState(false);
     const [showConfirmation, setShowConfirmation] = useState(false);
@@ -40,10 +40,10 @@ function TopBar({isLoggedIn}) {
 
         try {
             await api.post('/auth/logout-all/', {});
-            //sessionStorage.removeItem('token');
-            sessionStorage.removeItem('username');
-            sessionStorage.removeItem('user_id');
-            sessionStorage.removeItem('role');
+            //localStorage.removeItem('token');
+            localStorage.removeItem('username');
+            localStorage.removeItem('user_id');
+            localStorage.removeItem('role');
             navigate('/login');
         } catch (error) {
             setError(error);
@@ -53,17 +53,17 @@ function TopBar({isLoggedIn}) {
 
     const handleLogoutAll = async () => {
         try {
-            const token = sessionStorage.getItem("token");
+            const token = localStorage.getItem("token");
 
             await api.post('/auth/logout-all-users/', {}, {
                 headers: {
                     'Authorization': `Token ${token}`,
                 }
             });
-            //sessionStorage.removeItem('token');
-            sessionStorage.removeItem('username');
-            sessionStorage.removeItem('user_id');
-            sessionStorage.removeItem('role');
+            //localStorage.removeItem('token');
+            localStorage.removeItem('username');
+            localStorage.removeItem('user_id');
+            localStorage.removeItem('role');
             navigate('/login');
         } catch (error) {
             setError(error);
@@ -91,7 +91,7 @@ function TopBar({isLoggedIn}) {
                     onClick={handleThemeToggle}
             >{theme === "light" ? <BsMoon size={18} /> : <BsSun size={18} />} {theme === "light" ? "Set dark mode" : "Set light mode"}</button>
 
-            {isLoggedIn && (<div className="flex gap-3">{sessionStorage.getItem('role') === "sup" && (
+            {isLoggedIn && (<div className="flex gap-3">{localStorage.getItem('role') === "sup" && (
                         <button className="button flex items-center gap-1 px-3 py-2 rounded-lg bg-cyan-700 hover:bg-cyan-900 hover:cursor-pointer text-white dark:text-black dark:bg-slate-600 dark:hover:bg-slate-700"
                             onClick={() => setShowConfirmation(true)}>
                             <CgLogOut size={18}/>

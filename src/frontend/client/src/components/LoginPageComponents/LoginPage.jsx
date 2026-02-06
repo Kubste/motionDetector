@@ -15,9 +15,8 @@ function LoginPage() {
 
     // preventing user to go back to login page after successful login
     useEffect(() => {
-        const token = sessionStorage.getItem("token");
-        if(token) navigate("/", {replace: true});
-    }, [navigate])
+        api.get("/auth/is-logged").then(() => {navigate("/", {replace: true});})
+    }, [navigate]);
 
 
     const handleSubmit = async (event) => {
@@ -28,10 +27,9 @@ function LoginPage() {
         try {
             const response = await api.post('/auth/login/', { username, password });
 
-            //sessionStorage.setItem('token', response.data.token);
-            sessionStorage.setItem('username', response.data.username);
-            sessionStorage.setItem('user_id', response.data.user_id);
-            sessionStorage.setItem('role', response.data.role);
+            localStorage.setItem('username', response.data.username);
+            localStorage.setItem('user_id', response.data.user_id);
+            localStorage.setItem('role', response.data.role);
             navigate('/', {replace: true});
         } catch (error) {
             if(error.response && error.response.status === 400) setError("Invalid username or password");

@@ -74,7 +74,7 @@ function CameraDetails({id, onClose}) {
     }
 
     const handlePatch = (field, fieldValue, valueSetter, confirmationSetter) => {
-        const token = sessionStorage.getItem('token');
+        const token = localStorage.getItem('token');
 
         if(field === 'confidence_threshold' && (Number(fieldValue) < 0 || Number(fieldValue) > 1)) {
             setError("Confidence threshold must be a number in range [0, 1]");

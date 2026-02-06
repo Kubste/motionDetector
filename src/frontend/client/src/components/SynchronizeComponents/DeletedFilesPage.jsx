@@ -2,6 +2,7 @@ import {useNavigate} from "react-router-dom";
 import {useEffect} from "react";
 import TopBar from "../UniversalComponents/TopBar.jsx"
 import DeletedFilesList from "./DeletedFilesList.jsx"
+import api from "../UniversalComponents/api.jsx";
 
 function DeletedFilesPage() {
     const searchParams = new URLSearchParams(location.search);
@@ -9,10 +10,7 @@ function DeletedFilesPage() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const token = sessionStorage.getItem('token');
-        if(!token) {
-            navigate('/login');
-        }
+        api.get("/auth/is-logged").catch(() => {navigate("/login")});
     }, [navigate]);
 
     return(

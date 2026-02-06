@@ -4,14 +4,13 @@ const address = window.RUNTIME_CONFIG?.SERVER_IP
 
 const api = axios.create({
     baseURL: `https://${address}`,
-    //baseURL: `http://${address}`,
     withCredentials: true
 });
 
 // adding token globally to all requests
 // api.interceptors.request.use(
 //     (config) => {
-//         const token = sessionStorage.getItem("token");
+//         const token = localStorage.getItem("token");
 //         if(token) {
 //             config.headers.Authorization = `Token ${token}`;
 //         }
@@ -25,7 +24,7 @@ api.interceptors.response.use(
     response => response,
     (error) => {
         if(error.response && error.response.status === 401) {
-            sessionStorage.clear();
+            localStorage.clear();
             //window.location.href = '/login';
         }
         return Promise.reject(error);

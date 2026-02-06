@@ -13,12 +13,7 @@ function ImageInfoDetails({id, onClose}) {
     const [showFilenameChangeConfirmation, setShowFilenameChangeConfirmation] = useState(false);
 
     useEffect(() => {
-        const token = sessionStorage.getItem('token');
-
         api.get(`/api/image-info/${id}/`, {
-            headers: {
-                Authorization: `Token ${token}`,
-            },
         }).then(response => {
             setDetails(response.data);
         }).catch(error => {

@@ -94,7 +94,7 @@ class RegisterView(generics.CreateAPIView):
 
 class PasswordChangeView(generics.UpdateAPIView):
     serializer_class = PasswordChangeSerializer
-    authentication_classes = [TokenAuthentication]
+    authentication_classes = [CookieTokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
     # getting user object

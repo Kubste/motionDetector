@@ -26,17 +26,17 @@ function MainPage() {
                     <MainPageCard Icon={FaImages} description="Images" onClick={() => navigate("/images")} />
                     <MainPageCard Icon={FaCamera} description="Camera management" onClick={() => navigate("/camera-management")} />
                     <MainPageCard Icon={MdAccountCircle} description="My account" onClick={() => navigate("/my-account")} />
-                    {(sessionStorage.getItem("role") === "sup" || sessionStorage.getItem("role") === "admin") &&
+                    {(localStorage.getItem("role") === "sup" || localStorage.getItem("role") === "admin") &&
                         <MainPageCard Icon={MdSwitchAccount} description="Register new user" onClick={() => navigate("/register")}></MainPageCard>}
-                    {(sessionStorage.getItem("role") === "sup" || sessionStorage.getItem("role") === "admin") &&
+                    {(localStorage.getItem("role") === "sup" || localStorage.getItem("role") === "admin") &&
                         <MainPageCard Icon={FaUsers} description="Users" onClick={() => navigate("/users")}></MainPageCard>}
-                    {(sessionStorage.getItem("role") === "sup" || sessionStorage.getItem("role") === "admin") &&
+                    {(localStorage.getItem("role") === "sup" || localStorage.getItem("role") === "admin") &&
                         <MainPageCard Icon={IoReloadCircle} description="Synchronize files" onClick={() => navigate("/synchronize")}></MainPageCard>}
-                    {(sessionStorage.getItem("role") === "sup" || sessionStorage.getItem("role") === "admin") &&
+                    {(localStorage.getItem("role") === "sup" || localStorage.getItem("role") === "admin") &&
                         <MainPageCard Icon={SiTensorflow} description="TensorFlow models management" onClick={() => navigate("/models-management")}></MainPageCard>}
-                    {sessionStorage.getItem("role") === "sup" &&
+                    {localStorage.getItem("role") === "sup" &&
                         <MainPageCard Icon={RiAdminFill} description="Admins Management" onClick={() => navigate("/admins-management")}></MainPageCard>}
-                    {sessionStorage.getItem("role") === "sup" &&
+                    {localStorage.getItem("role") === "sup" &&
                         <MainPageCard Icon={MdAdminPanelSettings} description="Django superuser panel" onClick={() => window.open(`https://${address}/admin`)}></MainPageCard>}
                 </div>
             </div>

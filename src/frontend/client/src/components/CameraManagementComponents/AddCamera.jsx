@@ -30,7 +30,7 @@ function AddCamera({onClose, onCameraAdd}) {
             "location": location,
             "address": address,
             "confidence_threshold": parseFloat(confidence),
-            "user": sessionStorage.getItem('user_id'),
+            "user": localStorage.getItem('user_id'),
             "model_id": model.value,
             "process_image": process.value,
             "resolution": resolution.value
