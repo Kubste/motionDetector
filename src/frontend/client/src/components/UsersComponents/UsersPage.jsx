@@ -2,15 +2,13 @@ import {useNavigate} from "react-router-dom";
 import {useEffect} from "react";
 import TopBar from "../UniversalComponents/TopBar.jsx";
 import UsersList from "./UsersList.jsx";
+import api from "../UniversalComponents/api.jsx";
 
 function UsersPage() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const token = sessionStorage.getItem('token');
-        if(!token) {
-            navigate('/login');
-        }
+        api.get("/auth/is-logged").catch(() => {navigate("/login")});
     }, [navigate]);
 
     return(

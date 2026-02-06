@@ -8,13 +8,16 @@ from rest_framework.authtoken.serializers import AuthTokenSerializer
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from databaseApp.models import Camera
+from .authentication import CookieTokenAuthentication
 from .models import User, PasswordCodes
 from .serializers import RegisterSerializer, PasswordChangeSerializer, AuthManagerSerializer, UsersSerializer
 from .permissions import IsAdmin, IsSuperuser, IsSuperuserOrAdmin
 from .utils import send_email_code
+from decouple import config     # config file
 
 class LoginView(generics.GenericAPIView):
     serializer_class = AuthTokenSerializer
@@ -30,14 +33,52 @@ class LoginView(generics.GenericAPIView):
 
         # creating Knox token
         token = AuthToken.objects.create(user)[1]                   # getting token as string
-        return Response({"user_id": user.id, "username": user.username, "role": user.role, "token": token}, status=status.HTTP_200_OK)
+
+        response = Response({
+            "user_id": user.id,
+            "username": user.username,
+            "role": user.role,
+        }, status=status.HTTP_200_OK)
+
+        response.set_cookie(
+            key='knox',     # cookie name
+            value=token,    # knox token
+            httponly=True,
+            secure=config('SECURE', default=True, cast=bool),
+            samesite="Lax",
+            max_age=60*60*24,   # one day
+            path="/",
+        )
+
+        return response
+
+class IsLoggedView(generics.GenericAPIView):
+
+    def get(self, request, *args, **kwargs):
+        if self.request.user.is_authenticated:
+            return Response(status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+class LogoutView(generics.GenericAPIView):
+    authentication_classes = [CookieTokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        AuthToken.objects.filter(user=request.user).delete()    # deleting user tokens
+
+        response = Response({"detail": "Logged out"}, status=status.HTTP_200_OK)
+        response.delete_cookie(key='knox')
+        return response
 
 class LogoutOutAllUsers(generics.GenericAPIView):
     permission_classes = [IsSuperuser]
 
     def post(self, request, *args, **kwargs):
         AuthToken.objects.all().delete()
-        return Response({"detail": "All users have been logged out."}, status=status.HTTP_200_OK)
+        response = Response({"detail": "All users have been logged out."}, status=status.HTTP_200_OK)
+        response.delete_cookie(key='knox')
+        return response
 
 # generics.CreateAPIView - only POST method allowed
 class RegisterView(generics.CreateAPIView):

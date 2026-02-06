@@ -32,7 +32,7 @@ logging.getLogger('absl').setLevel(logging.ERROR)
 SECRET_KEY = config('SECRET_KEY')
 
 # HTTPS configuration
-SECURE_SSL_REDIRECT = True
+SECURE_SSL_REDIRECT = config('SECURE', default=True, cast=bool)
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
@@ -84,12 +84,13 @@ MIDDLEWARE = [
 
 # using django knox tokens to authenticate users
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'knox.auth.TokenAuthentication',
-    ),
-    'DEFAULT_PERMISSION_CLASSES': (
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        #'knox.auth.TokenAuthentication',
+        'auth_manager.authentication.CookieTokenAuthentication'
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
-    )
+    ]
 }
 
 ROOT_URLCONF = 'motionDetectorDjangoServer.urls'

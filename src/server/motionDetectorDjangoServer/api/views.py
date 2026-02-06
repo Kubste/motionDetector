@@ -1,7 +1,9 @@
 import os
 
 from django.http import HttpResponse
+from rest_framework.permissions import IsAuthenticated
 
+from auth_manager.authentication import CookieTokenAuthentication
 from auth_manager.serializers import UsersSerializer
 from rest_framework import viewsets
 from rest_framework.pagination import PageNumberPagination
@@ -20,6 +22,8 @@ class PaginationClass(PageNumberPagination):
     max_page_size = 100
 
 class CameraViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+
     serializer_class = CameraSerializer
     pagination_class = PaginationClass
     filter_backends = [filters.OrderingFilter]

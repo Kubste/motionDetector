@@ -40,8 +40,9 @@ function TopBar({isLoggedIn}) {
 
         try {
             await api.post('/auth/logout-all/', {});
-            sessionStorage.removeItem('token');
+            //sessionStorage.removeItem('token');
             sessionStorage.removeItem('username');
+            sessionStorage.removeItem('user_id');
             sessionStorage.removeItem('role');
             navigate('/login');
         } catch (error) {
@@ -59,8 +60,9 @@ function TopBar({isLoggedIn}) {
                     'Authorization': `Token ${token}`,
                 }
             });
-            sessionStorage.removeItem('token');
+            //sessionStorage.removeItem('token');
             sessionStorage.removeItem('username');
+            sessionStorage.removeItem('user_id');
             sessionStorage.removeItem('role');
             navigate('/login');
         } catch (error) {

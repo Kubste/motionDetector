@@ -2,6 +2,7 @@ import {useNavigate} from "react-router-dom";
 import {useEffect} from "react";
 import TopBar from "../UniversalComponents/TopBar.jsx";
 import AdminsList from "./AdminsList.jsx";
+import api from "../UniversalComponents/api.jsx";
 
 function AdminsPage() {
 
@@ -10,10 +11,7 @@ function AdminsPage() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const token = sessionStorage.getItem('token');
-        if(!token) {
-            navigate('/login');
-        }
+        api.get("/auth/is-logged").catch(() => {navigate("/login")});
     }, [navigate]);
 
     return(
