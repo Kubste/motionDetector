@@ -1,4 +1,5 @@
 import random
+from logging import exception
 from django.contrib.messages.api import success
 from knox.views import LogoutAllView
 from rest_framework import generics, status, permissions, viewsets, filters
@@ -175,14 +176,17 @@ def reset_password(request):
     try:
         user = User.objects.get(email=email)
         password_code = PasswordCodes.objects.get(user=user, code=code)
-    except User.DoesNotExist:
+    except (User.DoesNotExist, PasswordCodes.DoesNotExist):
         return Response({"success": False, "error": "Invalid code or email"}, status=status.HTTP_400_BAD_REQUEST)
-    except:
+    except Exception as e:
+        if config('DEBUG', default=False, cast=bool) == False:
+            print(e)
         return Response({"success": False, "error": "Internal server error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     if password_code.is_valid():
         user.set_password(new_password)
         user.save()
+        password_code.delete()
 
         return Response({"success": True, "message": "password has been changed"}, status=status.HTTP_200_OK)
 

@@ -1,4 +1,5 @@
 import './App.css'
+import './locales/locales.jsx'
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import MainPage from "./components/MainPageComponents/MainPage.jsx";
 import ImagesPage from "./components/ImagesComponents/ImagesPage.jsx";
