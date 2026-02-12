@@ -1,4 +1,4 @@
 window.RUNTIME_CONFIG = {
-    SERVER_IP: "localhost:8000",
+    SERVER_IP: "motiondetector.test",
     DEBUG: Boolean(false)
 };

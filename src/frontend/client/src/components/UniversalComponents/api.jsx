@@ -3,7 +3,7 @@ import axios from 'axios';
 const address = window.RUNTIME_CONFIG?.SERVER_IP
 
 const api = axios.create({
-    baseURL: `http://${address}`,
+    baseURL: `https://${address}`,
     withCredentials: true
 });
 

@@ -84,7 +84,7 @@ class ImageInfoSerializer(BaseImageInfoSerializer):
 
     class Meta:
         model = ImageInfo
-        fields = ['id', 'filename', 'path']
+        fields = ['id', 'filename', 'path', 'timestamp', 'is_processed']
 
     # getting file path
     def get_path(self, instance):

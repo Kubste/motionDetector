@@ -1,4 +1,4 @@
-import {useState, useEffect} from "react";
+import React, {useState, useEffect} from "react";
 import ErrorWindow from "../UniversalComponents/ErrorWindow.jsx";
 import ConfirmWindow from "../UniversalComponents/ConfirmWindow.jsx";
 import ImageInfoDetails from "./ImageInfoDetails.jsx";
@@ -6,8 +6,28 @@ import ImageWindow from "./ImageWindow.jsx";
 import SortingBar from "../UniversalComponents/SortingBar.jsx";
 import api from "../UniversalComponents/api.jsx";
 import PaginationBar from "../UniversalComponents/PaginationBar.jsx";
+import {
+    Eye,
+    Info,
+    Trash2,
+    RefreshCw,
+} from "lucide-react"
+
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip"
+import {Button} from "@/components/ui/button.js";
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card.js";
+import {Badge} from "@/components/ui/badge.js";
+import {useTranslation} from "react-i18next";
+import {Spinner} from "@/components/ui/spinner.js";
 
 function ImageInfoList() {
+    const { t } = useTranslation();
+
     const [imageInfo, setImageInfo] = useState([]);
     const [currentID, setCurrentID] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -21,22 +41,25 @@ function ImageInfoList() {
     const [showConfirmation, setShowConfirmation] = useState(false);
 
     const [sortingField, setSortingField] = useState({name: "Filename", value: "filename"});
-    const [order, setOrder] = useState({name: "ascending", value: ""});
+    const [order, setOrder] = useState({name: "ascending", value: "asc"});
     const [showChangeOrder, setShowChangeOrder] = useState(false);
 
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
-    const [pageSize, setPageSize] = useState({name: 5, value: 5});
+    const [pageSize, setPageSize] = useState({name: 2, value: 2});
 
 
     const fetchImages = async () => {
         setLoading(true);
 
         try {
-            const response = await api.get(`/api/image-info/?ordering=${order.value}${sortingField.value}&page=${page}&page_size=${pageSize.value}`);
-            const data = response.data;
+            const pageSizeParam = pageSize.value === -1 ? -1 : pageSize.value * 4;
+
+            const response = await api.get(`/api/image-info/?ordering=${order.value}${sortingField.value}&page=${page}&page_size=${pageSizeParam}`);
+            const data = response?.data;
             setImageInfo(data.results);
-            setTotalPages(Math.ceil(data.count / pageSize.value));
+            console.log(imageInfo);
+            setTotalPages(pageSize.value === -1 ? 1 : Math.ceil(data.count / pageSizeParam));
         } catch(error) {
             console.error(error);
             setError(error.message || "Failed to load images.");
@@ -50,7 +73,7 @@ function ImageInfoList() {
     // called once after render and each time after reload button is clicked
     useEffect(() => {
         fetchImages();
-        }, [page, pageSize]);
+        }, [page, pageSize, sortingField, order]);
 
     function deleteImageInfo(id, index) {
         api.delete(`/api/image-info/${id}/`
@@ -82,6 +105,7 @@ function ImageInfoList() {
     }
 
     const handleShowImage = (item) => {
+        console.log(item);
         setSelectedImage(item);
         setShowSelectedImage(true);
     }
@@ -110,70 +134,153 @@ function ImageInfoList() {
     }
 
     const handleSortingFieldChange = (option) => {
+        console.log(option);
         setSortingField(option);
     }
 
     const handleOrderChange = (option) => {
+        console.log(option);
         setOrder(option);
     }
 
+    const handleConvertTimestamp = (timestamp) => {
+        const date = new Date(timestamp);
+        if(date) {
+            return date.toLocaleString(undefined, {     // undefined - default browser settings
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit"
+            });
+        } else return "N/A";
+    }
+
     return (
-        <div className="flex flex-col text-center justify-center px-5 w-2/5 my-10 mx-auto">
-            <h1 className="mb-5 text-black dark:text-white font-bold text-3xl">Captured Images</h1>
+        <div className="flex flex-col text-center justify-center px-5 w-3/5 my-10 mx-auto">
+            <div className="flex items-center justify-between mb-6">
+                <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">{t("imagesListTitle")}</h1>
 
-            <div className="flex items-center justify-center p-4 rounded-2xl mb-6 gap-6">
-                <button className="button w-[200px] px-4 py-2 rounded-full bg-cyan-600 text-white text-xl hover:bg-cyan-800"
-                        onClick={fetchImages}>{loading ? "Reloading images..." : "Reload images"}</button>
+                <div className="flex gap-3 items-center">
+                    <Button className="hover:cursor-pointer"
+                        disabled={loading}
+                        variant="outline"
+                        onClick={fetchImages}>
+                        {loading ? (
+                            <>
+                                <RefreshCw className="mr-2 size-4 animate-spin" />
+                                {t("reloadInProgress")}
+                            </>) : (<>
+                                    <RefreshCw className="mr-2 size-4" />
+                                {t("reload")}
+                                </>
+                            )}
+                    </Button>
 
-                {!showChangeOrder &&
-                    <button className="button w-[200px] px-4 py-2 rounded-full bg-cyan-600 text-white text-xl hover:bg-cyan-800"
-                            onClick={() => {setShowChangeOrder(true)}}>Change order</button>
-                }
+                    {!showChangeOrder &&
+                        <Button className="hover:cursor-pointer"
+                                variant="outline"
+                                onClick={() => setShowChangeOrder(!showChangeOrder)}>{t("order")}</Button>}
 
-                {showChangeOrder &&
-                    <SortingBar options={[{name: "Filename", value: "filename"}, {name: "File size", value: "file_size"}, {name: "File type", value: "file_type"},
-                                {name: "Resolution", value: "resolution"}, {name: "Photo taken date", value: "timestamp"}, {name: "Camera", value: "file_size"},
-                                {name: "TensorFlow model", value: "model_id"}, {name: "Was processed", value: "is_processed"}]}
-                                onChangeField={handleSortingFieldChange}
-                                onChangeOrder={handleOrderChange}
-                                selectedOptionName={sortingField}
-                                selectedOptionOrder={order}
-                                onClose={() => setShowChangeOrder(false)}
-                    ></SortingBar>}
+                    {showChangeOrder &&
+                        <SortingBar options={[{name: t("filename"), value: "filename"}, {name: t("fileSize"), value: "file_size"}, {name: t("fileType"), value: "file_type"},
+                            {name: t("res"), value: "resolution"}, {name: t("photoDate"), value: "timestamp"}, {name: t("camera"), value: "camera_id"},
+                            {name: t("model"), value: "model_id"}, {name: t("wasProcessed"), value: "is_processed"}]}
+                                    onChangeField={handleSortingFieldChange}
+                                    onChangeOrder={handleOrderChange}
+                                    selectedOptionName={sortingField}
+                                    selectedOptionOrder={order}
+                                    onClose={() => setShowChangeOrder(false)}
+                        ></SortingBar>}
+                </div>
             </div>
 
-            <div className="w-full">
-                {imageInfo.length > 0 ? (
-                    <ol className="p-0 m-0">
-                        {imageInfo.map((item, index) => (
-                            <li className="flex justify-between items-center px-4 py-3 mb-3 rounded-3xl bg-cyan-50 shadow-md transition-transform hover:-translate-y-0.5
-                                            hover:shadow-xl hover:bg-white/20 dark:bg-slate-700 dark:hover:bg-slate-800"
-                                key={index}>
-                                <span className="flex-1 font-medium text-black dark:text-white break-words">{index + 1 }. {item.filename}</span>
+            <div className="flex flex-col text-center justify-center px-5 w-auto my-10 mx-auto">
+                <div className="w-full">
+                    {imageInfo?.length > 0 ? (
+                        <div className="grid grid-cols-4 gap-4 mb-6">
+                            {imageInfo.map((item, index) => (
+                                <Card key={item.id}
+                                    className="group relative bg-white/80 dark:bg-slate-800/70 backdrop-blur-md border border-slate-200/md dark:border-slate-700/60
+                                    rounded-2xl shadow-sm transition-all hover:translate-y-1 hover:shadow-2xl hover:bg-white/90 dark:hover:bg-slate-700/80 gap-3">
 
-                                <div className="flex">
-                                    <button className="button px-3 py-1 rounded-full text-sm bg-green-700 text-white hover:bg-green-900"
-                                        onClick={() => handleShowImage(item)}>Show Image</button>
+                                    <CardHeader>
+                                        <CardTitle className="truncate">{item.filename}</CardTitle>
+                                        <CardDescription className="flex flex-col gap-2 flex-wrap">
+                                            <Badge variant="secondary">#{index + 1}</Badge>
+                                                {item.is_processed ? (
+                                                    <Badge>{t("processed")}</Badge>
+                                                ) : (
+                                                    <Badge variant="destructive">{t("notProcessed")}</Badge>
+                                                )}
+                                        </CardDescription>
+                                    </CardHeader>
 
-                                    <button className="button px-3 py-1 rounded-full text-sm ml-2 bg-blue-500 text-white hover:bg-blue-700"
-                                        onClick={() => handleShowDetails(item.id)}>Details</button>
+                                    <CardContent className="flex flex-col justify-start items-start gap-2">
+                                        <span className="text-sm text-slate-500">ID: {item.id}</span>
+                                        <span className="text-sm text-slate-500">{t("date")}: {handleConvertTimestamp(item.timestamp)}</span>
+                                        <div className="flex self-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
 
-                                    <button className="close-button px-3 py-1 rounded-full text-sm ml-2 text-white"
-                                        onClick={() => {
-                                            setSelectedItem(item);
-                                            setSelectedIndex(index);
-                                            setShowConfirmation(true);
-                                        }}
-                                    >Delete</button>
-                                </div>
-                            </li>
-                        ))}
-                    </ol>
-                ) : (<h2 className="text-2xl">No images found</h2>)}
+                                            <TooltipProvider>
+                                                <Tooltip>
+                                                    <TooltipTrigger asChild>
+                                                        <Button className="hover:cursor-pointer"
+                                                                size="icon"
+                                                                variant="ghost"
+                                                                onClick={() => handleShowImage(item)}><Eye className="size-4"></Eye>
+                                                        </Button>
+                                                    </TooltipTrigger>
+                                                    <TooltipContent side="bottom">
+                                                        <p>{t("imagesListShowImage")}</p>
+                                                    </TooltipContent>
+                                                </Tooltip>
+                                            </TooltipProvider>
+
+                                            <TooltipProvider>
+                                                <Tooltip>
+                                                    <TooltipTrigger asChild>
+                                                        <Button className="hover:cursor-pointer"
+                                                                size="icon"
+                                                                variant="ghost"
+                                                                onClick={() => handleShowDetails(item.id)}><Info className="size-4"></Info>
+                                                        </Button>
+                                                    </TooltipTrigger>
+                                                    <TooltipContent side="bottom">
+                                                        <p>{t("imagesListShowDetails")}</p>
+                                                    </TooltipContent>
+                                                </Tooltip>
+                                            </TooltipProvider>
+
+                                            <TooltipProvider>
+                                                <Tooltip>
+                                                    <TooltipTrigger asChild>
+                                                        <Button className="hover:cursor-pointer"
+                                                                size="icon"
+                                                                variant="destructive"
+                                                                onClick={() => {
+                                                                    setSelectedItem(item);
+                                                                    setSelectedIndex(index);
+                                                                    setShowConfirmation(true);
+                                                                }}><Trash2 className="size-4"></Trash2>
+                                                        </Button>
+                                                    </TooltipTrigger>
+                                                    <TooltipContent side="bottom">
+                                                        <p>{t("imagesListDelete")}</p>
+                                                    </TooltipContent>
+                                                </Tooltip>
+                                            </TooltipProvider>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            ))}
+                        </div>
+                    ) : (<h2 className="text-2xl">No images found</h2>)}
+                </div>
             </div>
 
-            {imageInfo.length > 0 && <div className="flex justify-center">
+            {imageInfo?.length > 0 && <div className="flex justify-center">
                 <PaginationBar page={page}
+                               type="rows"
                                onPrevClick={() => setPage(page - 1)}
                                onNextClick={() => setPage(page + 1)}
                                totalPages={totalPages}
