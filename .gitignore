@@ -12,6 +12,9 @@ media
 **cert.h
 **private_key.h
 
+**/*.crt
+**/*.key
+
 **/media/**
 **/static/**
 **.tar
