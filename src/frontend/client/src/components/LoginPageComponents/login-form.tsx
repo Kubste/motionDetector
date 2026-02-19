@@ -109,8 +109,8 @@ export function LoginForm({
               </Field>
               <Field>
                 <Button type="submit" disabled={loading}>
-                  {loading && <Spinner/>}
-                  {loading ? t("loginInProgress") : t("login")}</Button>
+                  {loading ? t("loginInProgress") : t("login")}
+                  {loading && <Spinner/>}</Button>
               </Field>
             </FieldGroup>
             {/*{error && <p className="text-red-600 text-center font-medium mt-2">{error}</p>}*/}

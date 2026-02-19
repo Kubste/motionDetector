@@ -1,19 +1,19 @@
 import './App.css'
 import './locales/locales.jsx'
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import MainPage from "./components/MainPageComponents/MainPage.jsx";
-import ImagesPage from "./components/ImagesComponents/ImagesPage.jsx";
-import CameraManagementPage from "./components/CameraManagementComponents/CameraManagementPage.jsx";
-import MyAccountPage from "./components/MyAccountComponents/MyAccountPage.jsx";
-import LoginPage from "./components/LoginPageComponents/LoginPage.jsx";
-import RegisterPage from "./components/RegisterUserComponents/RegisterPage.jsx";
-import UsersPage from "./components/UsersComponents/UsersPage.jsx";
+import MainPage from "./pages/MainPage.jsx";
+import ImagesPage from "./pages/ImagesPage.jsx";
+import CameraManagementPage from "./pages/CameraManagementPage.jsx";
+import MyAccountPage from "./pages/MyAccountPage.jsx";
+import LoginPage from "./pages/LoginPage.jsx";
+import RegisterPage from "./pages/RegisterPage.jsx";
+import UsersPage from "./pages/UsersPage.jsx";
 import AdminsManagementPage from "./components/AdminsManagementComponents/AdminsManagementPage.jsx";
 import SynchronizePage from "./components/SynchronizeComponents/SynchronizePage.jsx";
-import DeletedFilesPage from "./components/SynchronizeComponents/DeletedFilesPage.jsx";
-import AdminsPage from "./components/AdminsManagementComponents/AdminsPage.jsx";
+import DeletedFilesPage from "./pages/DeletedFilesPage.jsx";
+import AdminsPage from "./pages/AdminsPage.jsx";
 import AddAdminsPage from "./components/AdminsManagementComponents/AddAdminsPage.jsx";
-import ModelsManagementPage from "./components/ModelsManagement/ModelsManagementPage.jsx";
+import ModelsManagementPage from "./pages/ModelsManagementPage.jsx";
 
 function App() {
 

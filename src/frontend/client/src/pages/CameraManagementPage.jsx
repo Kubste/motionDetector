@@ -1,8 +1,8 @@
 import {useNavigate} from "react-router-dom";
 import {useEffect} from "react";
-import TopBar from "../UniversalComponents/TopBar.jsx";
-import CameraList from "./CameraList.jsx";
-import api from "../UniversalComponents/api.jsx";
+import TopBar from "../components/UniversalComponents/TopBar.jsx";
+import CameraList from "../components/CameraManagementComponents/CameraList.jsx";
+import api from "../components/UniversalComponents/api.jsx";
 
 function CameraManagementPage() {
     const navigate = useNavigate();

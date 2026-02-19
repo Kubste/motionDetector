@@ -1,10 +1,12 @@
 import {useNavigate} from "react-router-dom";
 import {useEffect} from "react";
-import TopBar from "../UniversalComponents/TopBar.jsx";
-import UserInfo from "./UserInfo.jsx"
-import api from "../UniversalComponents/api.jsx";
+import TopBar from "../components/UniversalComponents/TopBar.jsx"
+import DeletedFilesList from "../components/SynchronizeComponents/DeletedFilesList.jsx"
+import api from "../components/UniversalComponents/api.jsx";
 
-function MyAccountPage() {
+function DeletedFilesPage() {
+    const searchParams = new URLSearchParams(location.search);
+    const cameraID = searchParams.get("camera");
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -15,10 +17,11 @@ function MyAccountPage() {
         <div className="flex flex-col min-h-screen w-full">
             <TopBar isLoggedIn={true}></TopBar>
             <div className="flex flex-1 justify-center items-center w-full">
-                <UserInfo></UserInfo>
+                <DeletedFilesList cameraID={cameraID}></DeletedFilesList>
             </div>
         </div>
     );
+
 }
 
-export default MyAccountPage;
+export default DeletedFilesPage;

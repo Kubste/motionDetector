@@ -4,10 +4,19 @@ import {useNavigate} from "react-router-dom";
 import ErrorWindow from "./ErrorWindow.jsx";
 import ConfirmWindow from "./ConfirmWindow.jsx";
 import api from "./api.jsx";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {BsMoon, BsSun} from "react-icons/bs";
 import {Button} from "@/components/ui/button.js";
 import { useTranslation } from "react-i18next";
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue
+} from "@/components/ui/select.js";
 
 function TopBar({isLoggedIn}) {
     const { i18n } = useTranslation();
@@ -71,13 +80,44 @@ function TopBar({isLoggedIn}) {
         }
     }
 
-    const handleLanguageToggle = () => {
-        if(language === "en") {
-            setLanguage("pl");
-            i18n.changeLanguage("pl");
-        } else {
-            setLanguage("en");
-            i18n.changeLanguage("en");
+    const handleLanguageToggle = (lan) => {
+        setLanguage(lan);
+        switch(lan) {
+            case "en":
+                i18n.changeLanguage("en");
+                break;
+
+            case "pl":
+                i18n.changeLanguage("pl");
+                break;
+
+            case "de":
+                i18n.changeLanguage("de");
+                break;
+
+            case "es":
+                i18n.changeLanguage("es");
+                break;
+
+            case "fr":
+                i18n.changeLanguage("fr");
+                break;
+
+            case "pt":
+                i18n.changeLanguage("pt");
+                break;
+
+            case "uk":
+                i18n.changeLanguage("uk");
+                break;
+
+            case "zh":
+                i18n.changeLanguage("zh");
+                break;
+
+            default:
+                setLanguage("en");
+                i18n.changeLanguage("en");
         }
     }
 
@@ -101,12 +141,65 @@ function TopBar({isLoggedIn}) {
                 {isLoggedIn && (<span className="text-sm text-slate-600 dark:text-slate-400">{t("greetings")} {username}!</span>)}
                     </div>
                         <div className="flex items-center gap-3">
-                            <Button className="hover:cursor-pointer w-25"
-                                variant="outline"
-                                size="sm"
-                                onClick={handleLanguageToggle}>
-                                <IoLanguage />
-                                {language === "en" ? "Polski" : "English"}</Button>
+                            <Select value={i18n.language}
+                                    onValueChange={(value) => {handleLanguageToggle(value)}}>
+                                <SelectTrigger className="w-40">
+                                    <SelectValue placeholder="Language" />
+                                </SelectTrigger>
+                                <SelectContent position="popper">
+                                    <SelectGroup>
+                                        <SelectLabel>{t("language")}</SelectLabel>
+                                        <SelectItem value="en">
+                                            <div className="flex items-center gap-2">
+                                                <IoLanguage className="inline-block" />
+                                                <span>{t("en")}</span>
+                                            </div>
+                                        </SelectItem>
+                                        <SelectItem value="pl">
+                                            <div className="flex items-center gap-2">
+                                                <IoLanguage className="inline-block" />
+                                                <span>{t("pl")}</span>
+                                            </div>
+                                        </SelectItem>
+                                        <SelectItem value="de">
+                                            <div className="flex items-center gap-2">
+                                                <IoLanguage className="inline-block" />
+                                                <span>{t("de")}</span>
+                                            </div>
+                                        </SelectItem>
+                                        <SelectItem value="es">
+                                            <div className="flex items-center gap-2">
+                                                <IoLanguage className="inline-block" />
+                                                <span>{t("es")}</span>
+                                            </div>
+                                        </SelectItem>
+                                        <SelectItem value="fr">
+                                            <div className="flex items-center gap-2">
+                                                <IoLanguage className="inline-block" />
+                                                <span>{t("fr")}</span>
+                                            </div>
+                                        </SelectItem>
+                                        <SelectItem value="pt">
+                                            <div className="flex items-center gap-2">
+                                                <IoLanguage className="inline-block" />
+                                                <span>{t("pt")}</span>
+                                            </div>
+                                        </SelectItem>
+                                        <SelectItem value="uk">
+                                            <div className="flex items-center gap-2">
+                                                <IoLanguage className="inline-block" />
+                                                <span>{t("uk")}</span>
+                                            </div>
+                                        </SelectItem>
+                                        <SelectItem value="zh">
+                                            <div className="flex items-center gap-2">
+                                                <IoLanguage className="inline-block" />
+                                                <span>{t("zh")}</span>
+                                            </div>
+                                        </SelectItem>
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
 
                             <Button className="hover:cursor-pointer w-25"
                                     variant="outline"
@@ -118,14 +211,14 @@ function TopBar({isLoggedIn}) {
                             {isLoggedIn && (
                                 <div className="flex items-center gap-3">
                                     {role === "sup" && (
-                                        <Button className="hover:cursor-pointer w-45"
+                                        <Button className="hover:cursor-pointer w-75"
                                             variant="destructive"
                                             size="sm"
                                             onClick={() => setShowConfirmation(true)}>
                                             <CgLogOut />
                                             {t("logoutAll")}</Button>)}
 
-                                    <Button className="hover:cursor-pointer w-30"
+                                    <Button className="hover:cursor-pointer w-35"
                                         size="sm"
                                         onClick={handleLogout}>
                                         <CgLogOut />

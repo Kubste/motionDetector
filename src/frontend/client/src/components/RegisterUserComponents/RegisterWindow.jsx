@@ -1,12 +1,20 @@
-import DropBar from "../UniversalComponents/DropBar.jsx";
 import ErrorWindow from "../UniversalComponents/ErrorWindow.jsx";
-import {useState} from "react";
+import React, {useState} from "react";
 import api from "../UniversalComponents/api.jsx";
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card.js";
+import {Label} from "@/components/ui/label.js";
+import {Input} from "@/components/ui/input.js";
+import {Button} from "@/components/ui/button.js";
+import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select.js";
+import {useTranslation} from "react-i18next";
+import {Spinner} from "@/components/ui/spinner.js";
 
 function RegisterWindow() {
+    const { t } = useTranslation();
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+    const [passwordError, setPasswordError] = useState(false);
     const [showError, setShowError] = useState(false);
     const [showRegisterConfirmation, setShowRegisterConfirmation] = useState(false);
 
@@ -23,12 +31,13 @@ function RegisterWindow() {
         event.preventDefault();
         setLoading(true);
         setError(null);
+        setPasswordError(false);
 
-        if (password !== passwordConfirm) {
+        if(password !== passwordConfirm) {
             setPassword("");
             setPasswordConfirm("");
             setError("Passwords do not match");
-            setShowError(true);
+            setPasswordError(true);
             setLoading(false);
             return;
         }
@@ -56,77 +65,129 @@ function RegisterWindow() {
         }).finally(() => setLoading(false));
     }
 
-    const handleRoleChange = (option) => {
-        setRole(option);
-    }
-
     const handleCloseError = () => {
         setError("");
         setShowError(false);
     }
 
     return (
-        <div className="flex justify-center items-center">
-            <div className="bg-cyan-50 dark:bg-slate-700 flex flex-col justify-center items-center rounded-3xl p-6 min-w-[500px] max-w-[90%] shadow-3xl gap-4">
-                <h2 className="text-2xl font-semibold">Input new User parameters</h2>
-                <form onSubmit={handleSubmit} className="w-full">
-                    <div className="flex flex-col items-center gap-3 w-full">
-                        <input className="input px-4 py-2"
-                               type="text"
-                               placeholder="Enter username"
-                               value={username}
-                               onChange={(event) => setUsername(event.target.value)} required/>
+        <div className="flex items-center justify-center min-h-[80vh] px-6">
+            <Card className="w-full max-w-xl rounded-3xl border-border/40 bg-background/70 backdrop-blur-xl shadow-2xl bg-gradient-to-br from-white/80
+                via-white/60 to-white/40 dark:from-cyan-800/10 dark:via-indigo-600/10 dark:to-violet-900/20">
 
-                        <input className="input px-4 py-2"
-                               type="password" placeholder="Enter password"
-                               value={password}
-                               onChange={(event) => setPassword(event.target.value)} required/>
+                <CardHeader className="space-y-1 text-center">
+                    <CardTitle className="text-2xl font-semibold">{t("registerTitle")}</CardTitle>
+                    <CardDescription>{t("registerDesc")}</CardDescription>
+                </CardHeader>
 
-                        <input className="input px-4 py-2"
-                               type="password"
-                               placeholder="Confirm Password"
-                               value={passwordConfirm}
-                               onChange={(event) => setPasswordConfirm(event.target.value)} required/>
+                <CardContent>
+                    <form onSubmit={handleSubmit} className="space-y-4">
 
-                        <input className="input px-4 py-2"
-                               type="text"
-                               placeholder="Enter E-mail"
-                               value={email}
-                               onChange={(event) => setEmail(event.target.value)} required/>
+                        <div className="space-y-2">
+                            <Label>{t("username")}</Label>
+                            <Input value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                                placeholder={t("enterUsername")}
+                                required/>
+                        </div>
 
-                        <input className="input px-4 py-2"
-                               type="text"
-                               placeholder="Enter first name"
-                               value={firstName}
-                               onChange={(event) => setFirstName(event.target.value)}/>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <Label>{t("firstName")}</Label>
+                                <Input value={firstName}
+                                    onChange={(e) => setFirstName(e.target.value)}
+                                    placeholder={t("enterFirstName")}/>
+                            </div>
 
-                        <input className="input px-4 py-2"
-                               type="text"
-                               placeholder="Enter last name"
-                               value={lastName}
-                               onChange={(event) => setLastName(event.target.value)}/>
+                            <div className="space-y-2">
+                                <Label>{t("lastName")}</Label>
+                                <Input value={lastName}
+                                    onChange={(e) => setLastName(e.target.value)}
+                                    placeholder={t("enterLastName")}/>
+                            </div>
+                        </div>
 
-                        <input className="input px-4 py-2"
-                               type="text"
-                               placeholder="Enter phone number"
-                               value={phoneNumber}
-                               onChange={(event) => setPhoneNumber(event.target.value)}/>
+                        <div className="space-y-2">
+                            <Label>{t("email")}</Label>
+                            <Input type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                placeholder={t("enterEmail")}
+                                required/>
+                        </div>
 
-                        {localStorage.getItem("role") === "sup" &&
-                            <DropBar label={"Role"}
-                                     options={[{name: "User", value: "user"}, {name: "Admin", value: "admin"}, {name: "Superuser", value: "sup"}]}
-                                     onChange={handleRoleChange}
-                                     selectedOption={role}/>
-                        }
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <Label>{t("password")}</Label>
+                                <Input type="password"
+                                    aria-invalid={!!passwordError}
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    placeholder={t("enterPassword")}
+                                    required/>
+                            </div>
 
-                        <button className="confirm-button px-3 py-2"
-                                type="submit"
-                                disabled={loading}>{loading ? "User registration ..." : "Register user"}</button>
-                    </div>
-                </form>
-                {showRegisterConfirmation && <p className="text-green-600 text-center font-medium mt-2">User has been registered</p>}
-            </div>
-            {showError && <ErrorWindow message={error} onClose={handleCloseError}></ErrorWindow>}
+                            <div className="space-y-2">
+                                <Label>{t("confirmPassword")}</Label>
+                                <Input type="password"
+                                    aria-invalid={!!passwordError}
+                                    value={passwordConfirm}
+                                    onChange={(e) => setPasswordConfirm(e.target.value)}
+                                    placeholder={t("confirmPassword")}
+                                    required/>
+                            </div>
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label>{t("phoneNum")}</Label>
+                            <Input value={phoneNumber}
+                                onChange={(e) => setPhoneNumber(e.target.value)}
+                                placeholder={t("enterPhoneNum")}/>
+                        </div>
+
+                        {localStorage.getItem("role") === "sup" && (
+                            <div className="space-y-2">
+                                <Label>{t("role")}</Label>
+                                <Select value={role}
+                                        onValueChange={(value) => setRole(value)}>
+                                    <SelectTrigger className="w-48">
+                                        <SelectValue placeholder={t("role")} />
+                                    </SelectTrigger>
+                                    <SelectContent position="popper">
+                                        <SelectGroup>
+                                            <SelectItem value="user">{t("user")}</SelectItem>
+                                            <SelectItem value="admin">{t("admin")}</SelectItem>
+                                            <SelectItem value="sup">{t("sup")}</SelectItem>
+                                        </SelectGroup>
+                                    </SelectContent>
+                                </Select>
+                            </div>)}
+
+                        <Button type="submit"
+                            className="w-full mt-4"
+                            disabled={loading}>
+                            {loading ? t("registerButtonInProgress") : t("registerButton")}
+                            {loading && <Spinner/>}
+                        </Button>
+
+                        {showRegisterConfirmation && (
+                            <div className="mt-4 text-center text-green-600 font-medium hover:cursor-pointer hover:underline" onClick={() => setShowRegisterConfirmation(false)}>
+                                User has been registered successfully
+                            </div>
+                        )}
+
+                        {error && (
+                            <div className="mt-2 text-center text-destructive font-medium hover:cursor-pointer hover:underline" onClick={() => {
+                                setError(null); 
+                                setPasswordError(false);}}>{error}</div>)}
+
+                    </form>
+                </CardContent>
+            </Card>
+
+            {showError && (
+                <ErrorWindow message={error} onClose={handleCloseError} />
+            )}
         </div>
     );
 }

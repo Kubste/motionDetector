@@ -1,8 +1,8 @@
 import {useEffect} from "react";
 import {useNavigate} from "react-router-dom";
-import TopBar from "../UniversalComponents/TopBar.jsx";
-import RegisterWindow from "./RegisterWindow.jsx";
-import api from "../UniversalComponents/api.jsx";
+import TopBar from "../components/UniversalComponents/TopBar.jsx";
+import RegisterWindow from "../components/RegisterUserComponents/RegisterWindow.jsx";
+import api from "../components/UniversalComponents/api.jsx";
 
 function RegisterPage() {
     const navigate = useNavigate();

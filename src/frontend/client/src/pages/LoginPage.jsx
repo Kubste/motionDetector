@@ -1,5 +1,6 @@
-import { LoginForm } from "@/components/login-form"
+import { LoginForm } from "@/components/LoginPageComponents/login-form.tsx"
 import TopBar from "@/components/UniversalComponents/TopBar.jsx";
+
 export default function Page() {
     return (
         <div className="flex flex-col overflow-hidden h-screen">    {/*preventing the site from scrolling*/}

@@ -1,8 +1,8 @@
 import {useNavigate} from "react-router-dom";
 import {useEffect} from "react";
-import TopBar from "../UniversalComponents/TopBar.jsx";
-import ModelsList from "./ModelsList.jsx";
-import api from "../UniversalComponents/api.jsx";
+import TopBar from "../components/UniversalComponents/TopBar.jsx";
+import UsersList from "../components/UsersComponents/UsersList.jsx";
+import api from "../components/UniversalComponents/api.jsx";
 
 function UsersPage() {
     const navigate = useNavigate();
@@ -15,7 +15,7 @@ function UsersPage() {
         <div className="flex flex-col min-h-screen">
             <TopBar isLoggedIn={true}></TopBar>
             <div className="flex flex-col flex-1 justify-center items-center w-full">
-                <ModelsList></ModelsList>
+                <UsersList></UsersList>
             </div>
         </div>
     );

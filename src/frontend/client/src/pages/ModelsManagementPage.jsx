@@ -1,11 +1,10 @@
-import TopBar from "../UniversalComponents/TopBar.jsx";
-import ImageInfoList from "./ImageInfoList.jsx";
-import {useEffect} from "react";
 import {useNavigate} from "react-router-dom";
-import api from "../UniversalComponents/api.jsx";
+import {useEffect} from "react";
+import TopBar from "../components/UniversalComponents/TopBar.jsx";
+import ModelsList from "../components/ModelsManagement/ModelsList.jsx";
+import api from "../components/UniversalComponents/api.jsx";
 
-
-function ImagesPage() {
+function UsersPage() {
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -16,10 +15,10 @@ function ImagesPage() {
         <div className="flex flex-col min-h-screen">
             <TopBar isLoggedIn={true}></TopBar>
             <div className="flex flex-col flex-1 justify-center items-center w-full">
-                <ImageInfoList></ImageInfoList>
+                <ModelsList></ModelsList>
             </div>
         </div>
     );
 }
 
-export default ImagesPage;
+export default UsersPage;

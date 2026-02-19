@@ -3,9 +3,8 @@ import {Badge} from "@/components/ui/badge.js";
 import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip.js";
 import {Button} from "@/components/ui/button.js";
 import {Eye, Info, Trash2} from "lucide-react";
-import React, {useEffect, useState} from "react";
+import React, { useState} from "react";
 import {useTranslation} from "react-i18next";
-import api from "@/components/UniversalComponents/api.jsx";
 import {Spinner} from "@/components/ui/spinner.js";
 
 function ImageCard({keyVal, item, index, onHandleShowImage, onHandleConvertTimestamp, onHandleShowDetails, onSetSelectedItem, onSetSelectedIndex, onSetShowConfirmation}) {
@@ -15,7 +14,7 @@ function ImageCard({keyVal, item, index, onHandleShowImage, onHandleConvertTimes
 
     return(
         <Card key={keyVal}
-              className="group relative bg-gradient-to-br from-white/80 via-white/60 to-white/40 dark:from-cyan-800/10
+              className="group w-58 relative bg-gradient-to-br from-white/80 via-white/60 to-white/40 dark:from-cyan-800/10
                                     dark:via-indigo-600/10 dark:to-violet-900/20 backdrop-blur-md border-2 border-slate-200/md dark:border-slate-700/60
                                     rounded-2xl shadow-sm transition-all hover:translate-y-1 hover:shadow-2xl hover:bg-white/90 dark:hover:bg-slate-700/30
                                     gap-3 pt-0 pb-2 pl-0 pr-0">

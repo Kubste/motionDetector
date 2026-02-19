@@ -1,14 +1,14 @@
-import App from "../../App.jsx";
+import App from "../App.jsx";
 import {FaImages, FaCamera, FaUsers} from "react-icons/fa";
 import {MdAccountCircle, MdAdminPanelSettings, MdSwitchAccount} from "react-icons/md";
 import {RiAdminFill} from "react-icons/ri"
 import {IoReloadCircle} from "react-icons/io5";
 import {SiTensorflow} from "react-icons/si";
-import MainPageCard from "./MainPageCard.jsx";
-import TopBar from "../UniversalComponents/TopBar.jsx";
+import MainPageCard from "../components/MainPageComponents/MainPageCard.jsx";
+import TopBar from "../components/UniversalComponents/TopBar.jsx";
 import {useNavigate} from "react-router-dom";
 import {useEffect} from "react";
-import api from "../UniversalComponents/api.jsx";
+import api from "../components/UniversalComponents/api.jsx";
 import {useTranslation} from "react-i18next";
 
 function MainPage() {

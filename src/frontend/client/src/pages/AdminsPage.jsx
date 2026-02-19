@@ -1,10 +1,11 @@
 import {useNavigate} from "react-router-dom";
 import {useEffect} from "react";
-import TopBar from "../UniversalComponents/TopBar.jsx"
-import DeletedFilesList from "./DeletedFilesList.jsx"
-import api from "../UniversalComponents/api.jsx";
+import TopBar from "../components/UniversalComponents/TopBar.jsx";
+import AdminsList from "../components/AdminsManagementComponents/AdminsList.jsx";
+import api from "../components/UniversalComponents/api.jsx";
 
-function DeletedFilesPage() {
+function AdminsPage() {
+
     const searchParams = new URLSearchParams(location.search);
     const cameraID = searchParams.get("camera");
     const navigate = useNavigate();
@@ -17,11 +18,10 @@ function DeletedFilesPage() {
         <div className="flex flex-col min-h-screen w-full">
             <TopBar isLoggedIn={true}></TopBar>
             <div className="flex flex-1 justify-center items-center w-full">
-                <DeletedFilesList cameraID={cameraID}></DeletedFilesList>
+                <AdminsList cameraID={cameraID} isNew={false}></AdminsList>
             </div>
         </div>
     );
-
 }
 
-export default DeletedFilesPage;
+export default AdminsPage;
