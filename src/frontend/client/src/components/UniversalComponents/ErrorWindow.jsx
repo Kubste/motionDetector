@@ -1,13 +1,32 @@
+import { BiSolidErrorAlt } from "react-icons/bi";
+import {Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle} from "@/components/ui/dialog.js";
+import {Button} from "@/components/ui/button.js";
+import {useTranslation} from "react-i18next";
 
 function ErrorWindow({message, onClose}) {
+    const { t } = useTranslation();
 
     return (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-100">
-            <div className="bg-cyan-50 dark:bg-slate-700 backdrop-blur-3xl rounded-3xl shadow-2xl p-6 max-w-sm text-black dark:text-white flex flex-col items-center">
-                <p className="text-center text-lg font-semibold mb-4">{message}</p>
-                <button className="close-button px-6 py-2" onClick={onClose}>Close</button>
-            </div>
-        </div>
+        <Dialog open onOpenChange={onClose}>
+            <DialogContent className="max-w-mdrounded-3xl bg-gradient-to-br dark:from-cyan-800/15 dark:via-indigo-600/10 dark:to-violet-900/10
+                backdrop-blur-2xl border border-white/20 dark:border-white/10 shadow-[0_25px_70px_-20px_rgba(0,0,0,0.45)]">
+                <DialogHeader className="items-center text-center space-y-4">
+
+                    <div className="w-14 h-14 flex items-center justify-center rounded-full bg-red-500/30 text-red-500 text-2xl animate-pulse"><BiSolidErrorAlt /></div>
+
+                    <DialogTitle className="text-xl font-semibold tracking-tight">{t("error")}</DialogTitle>
+
+                    <DialogDescription className="text-sm text-slate-600 dark:text-slate-400"><span className="font-medium">{message}</span>.</DialogDescription>
+
+                </DialogHeader>
+
+                <DialogFooter className="gap-3 sm:justify-center mt-4">
+
+                    <Button variant="secondary" onClick={onClose}>{t("close")}</Button>
+
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
     );
 }
 

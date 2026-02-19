@@ -1,9 +1,11 @@
 import axios from 'axios';
 
-const address = window.RUNTIME_CONFIG?.SERVER_IP
+const address = window.RUNTIME_CONFIG?.SERVER_IP;
+const protocol = window.RUNTIME_CONFIG?.PROTOCOL || 'https';
+const debug = window.RUNTIME_CONFIG?.DEBUG;
 
 const api = axios.create({
-    baseURL: `https://${address}`,
+    baseURL: `${protocol}://${address}`,
     withCredentials: true
 });
 
@@ -30,5 +32,15 @@ api.interceptors.response.use(
         return Promise.reject(error);
     }
 );
+
+if(debug) {
+    api.interceptors.request.use(
+        response => response,
+        (error) => {
+            if(error.response) console.error(error);
+            return Promise.reject(error);
+        }
+    )
+}
 
 export default api;

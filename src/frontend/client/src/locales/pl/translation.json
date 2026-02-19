@@ -62,5 +62,21 @@
   "model": "Model TensorFlow",
   "wasProcessed": "Czy przetworzone",
   "saveImage": "Zapisz zdjęcie",
-  "loadingImage": "Ładowanie zdjęcia"
+  "loadingImage": "Ładowanie zdjęcia",
+  "imageDetailsTitle": "Szczegóły zdjęcia",
+  "changeFilename": "Zmień nazwę pliku",
+  "conf": "Prawdopodobieństwo",
+  "person": "Liczba wykrytych ludzi",
+  "timestamp": "Timestamp",
+  "filenameChangeConf": "Nazwa pliku została zmieniona",
+  "enterNewFilename": "Wprowadź nową nazwę pliku",
+  "cancel": "Anuluj",
+  "saveChanges": "Zapisz zmiany",
+  "uSure": "Jesteś pewny?",
+  "action": "Ta akcja ",
+  "cantUndone": "Ta akcja nie możne zostać cofnięta",
+  "confirm": "Potwierdź",
+  "deleteFileConfirmation": "usunie plik ",
+  "logoutAllLow": "wyloguje wszystkich użytkowników",
+  "error": "Wystąpił błąd"
 }

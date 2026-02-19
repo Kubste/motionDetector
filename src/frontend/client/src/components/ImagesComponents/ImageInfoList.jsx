@@ -24,6 +24,7 @@ import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/compo
 import {Badge} from "@/components/ui/badge.js";
 import {useTranslation} from "react-i18next";
 import {Spinner} from "@/components/ui/spinner.js";
+import ImageCard from "@/components/ImagesComponents/ImageCard.jsx";
 
 function ImageInfoList() {
     const { t } = useTranslation();
@@ -53,7 +54,7 @@ function ImageInfoList() {
         setLoading(true);
 
         try {
-            const pageSizeParam = pageSize.value === -1 ? -1 : pageSize.value * 4;
+            const pageSizeParam = pageSize.value === -1 ? -1 : pageSize.value * 6;
 
             const response = await api.get(`/api/image-info/?ordering=${order.value}${sortingField.value}&page=${page}&page_size=${pageSizeParam}`);
             const data = response?.data;
@@ -157,8 +158,8 @@ function ImageInfoList() {
     }
 
     return (
-        <div className="flex flex-col text-center justify-center px-5 w-3/5 my-10 mx-auto">
-            <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-col text-center justify-center px-5 w-4/5 my-5 mx-auto">
+            <div className="flex items-center justify-between">
                 <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">{t("imagesListTitle")}</h1>
 
                 <div className="flex gap-3 items-center">
@@ -198,80 +199,97 @@ function ImageInfoList() {
             <div className="flex flex-col text-center justify-center px-5 w-auto my-10 mx-auto">
                 <div className="w-full">
                     {imageInfo?.length > 0 ? (
-                        <div className="grid grid-cols-4 gap-4 mb-6">
+                        <div className="grid grid-cols-6 gap-4 mb-2">
                             {imageInfo.map((item, index) => (
-                                <Card key={item.id}
-                                    className="group relative bg-white/80 dark:bg-slate-800/70 backdrop-blur-md border border-slate-200/md dark:border-slate-700/60
-                                    rounded-2xl shadow-sm transition-all hover:translate-y-1 hover:shadow-2xl hover:bg-white/90 dark:hover:bg-slate-700/80 gap-3">
+                                <ImageCard key={index} keyVal={item.id} item={item} index={index}
+                                           onHandleShowImage={() => handleShowImage(item)}
+                                           onHandleConvertTimestamp={() => handleConvertTimestamp(item.timestamp)}
+                                           onHandleShowDetails={() => handleShowDetails(item.id)}
+                                           onSetSelectedItem={() => setSelectedItem(item)}
+                                           onSetSelectedIndex={() => setSelectedIndex(index)}
+                                           onSetShowConfirmation={() => setShowConfirmation(true)}
+                                ></ImageCard>
 
-                                    <CardHeader>
-                                        <CardTitle className="truncate">{item.filename}</CardTitle>
-                                        <CardDescription className="flex flex-col gap-2 flex-wrap">
-                                            <Badge variant="secondary">#{index + 1}</Badge>
-                                                {item.is_processed ? (
-                                                    <Badge>{t("processed")}</Badge>
-                                                ) : (
-                                                    <Badge variant="destructive">{t("notProcessed")}</Badge>
-                                                )}
-                                        </CardDescription>
-                                    </CardHeader>
-
-                                    <CardContent className="flex flex-col justify-start items-start gap-2">
-                                        <span className="text-sm text-slate-500">ID: {item.id}</span>
-                                        <span className="text-sm text-slate-500">{t("date")}: {handleConvertTimestamp(item.timestamp)}</span>
-                                        <div className="flex self-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-
-                                            <TooltipProvider>
-                                                <Tooltip>
-                                                    <TooltipTrigger asChild>
-                                                        <Button className="hover:cursor-pointer"
-                                                                size="icon"
-                                                                variant="ghost"
-                                                                onClick={() => handleShowImage(item)}><Eye className="size-4"></Eye>
-                                                        </Button>
-                                                    </TooltipTrigger>
-                                                    <TooltipContent side="bottom">
-                                                        <p>{t("imagesListShowImage")}</p>
-                                                    </TooltipContent>
-                                                </Tooltip>
-                                            </TooltipProvider>
-
-                                            <TooltipProvider>
-                                                <Tooltip>
-                                                    <TooltipTrigger asChild>
-                                                        <Button className="hover:cursor-pointer"
-                                                                size="icon"
-                                                                variant="ghost"
-                                                                onClick={() => handleShowDetails(item.id)}><Info className="size-4"></Info>
-                                                        </Button>
-                                                    </TooltipTrigger>
-                                                    <TooltipContent side="bottom">
-                                                        <p>{t("imagesListShowDetails")}</p>
-                                                    </TooltipContent>
-                                                </Tooltip>
-                                            </TooltipProvider>
-
-                                            <TooltipProvider>
-                                                <Tooltip>
-                                                    <TooltipTrigger asChild>
-                                                        <Button className="hover:cursor-pointer"
-                                                                size="icon"
-                                                                variant="destructive"
-                                                                onClick={() => {
-                                                                    setSelectedItem(item);
-                                                                    setSelectedIndex(index);
-                                                                    setShowConfirmation(true);
-                                                                }}><Trash2 className="size-4"></Trash2>
-                                                        </Button>
-                                                    </TooltipTrigger>
-                                                    <TooltipContent side="bottom">
-                                                        <p>{t("imagesListDelete")}</p>
-                                                    </TooltipContent>
-                                                </Tooltip>
-                                            </TooltipProvider>
-                                        </div>
-                                    </CardContent>
-                                </Card>
+                                // <Card key={item.id}
+                                //     className="group relative bg-gradient-to-br from-white/80 via-white/60 to-white/40 dark:from-cyan-800/10
+                                //     dark:via-indigo-600/10 dark:to-violet-900/20 backdrop-blur-md border-2 border-slate-200/md dark:border-slate-700/60
+                                //     rounded-2xl shadow-sm transition-all hover:translate-y-1 hover:shadow-2xl hover:bg-white/90 dark:hover:bg-slate-700/30
+                                //     gap-3 pt-0 pb-2 pl-0 pr-0">
+                                //
+                                //     <img src={`/api/image-info/${item.id}/get-thumbnail/`}
+                                //         alt={item.filename}
+                                //         className="w-full h-36 object-cover rounded-2xl cursor-pointer"
+                                //         onClick={() => handleShowImage(item)}
+                                //         loading="lazy"/>
+                                //
+                                //     <CardHeader>
+                                //         <CardTitle className="truncate">{item.filename}</CardTitle>
+                                //         <CardDescription className="flex flex-col gap-2 flex-wrap">
+                                //             <Badge variant="secondary">#{index + 1}</Badge>
+                                //                 {item.is_processed ? (
+                                //                     <Badge>{t("processed")}</Badge>
+                                //                 ) : (
+                                //                     <Badge variant="destructive">{t("notProcessed")}</Badge>
+                                //                 )}
+                                //         </CardDescription>
+                                //     </CardHeader>
+                                //
+                                //     <CardContent className="flex flex-col justify-start items-start gap-2">
+                                //         <span className="text-xs text-slate-500">ID: {item.id}</span>
+                                //         <span className="text-xs text-slate-500">{t("date")}: {handleConvertTimestamp(item.timestamp)}</span>
+                                //         <div className="flex self-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                //
+                                //             <TooltipProvider>
+                                //                 <Tooltip>
+                                //                     <TooltipTrigger asChild>
+                                //                         <Button className="hover:cursor-pointer"
+                                //                                 size="icon"
+                                //                                 variant="ghost"
+                                //                                 onClick={() => handleShowImage(item)}><Eye className="size-4"></Eye>
+                                //                         </Button>
+                                //                     </TooltipTrigger>
+                                //                     <TooltipContent side="bottom">
+                                //                         <p>{t("imagesListShowImage")}</p>
+                                //                     </TooltipContent>
+                                //                 </Tooltip>
+                                //             </TooltipProvider>
+                                //
+                                //             <TooltipProvider>
+                                //                 <Tooltip>
+                                //                     <TooltipTrigger asChild>
+                                //                         <Button className="hover:cursor-pointer"
+                                //                                 size="icon"
+                                //                                 variant="ghost"
+                                //                                 onClick={() => handleShowDetails(item.id)}><Info className="size-4"></Info>
+                                //                         </Button>
+                                //                     </TooltipTrigger>
+                                //                     <TooltipContent side="bottom">
+                                //                         <p>{t("imagesListShowDetails")}</p>
+                                //                     </TooltipContent>
+                                //                 </Tooltip>
+                                //             </TooltipProvider>
+                                //
+                                //             <TooltipProvider>
+                                //                 <Tooltip>
+                                //                     <TooltipTrigger asChild>
+                                //                         <Button className="hover:cursor-pointer"
+                                //                                 size="icon"
+                                //                                 variant="destructive"
+                                //                                 onClick={() => {
+                                //                                     setSelectedItem(item);
+                                //                                     setSelectedIndex(index);
+                                //                                     setShowConfirmation(true);
+                                //                                 }}><Trash2 className="size-4"></Trash2>
+                                //                         </Button>
+                                //                     </TooltipTrigger>
+                                //                     <TooltipContent side="bottom">
+                                //                         <p>{t("imagesListDelete")}</p>
+                                //                     </TooltipContent>
+                                //                 </Tooltip>
+                                //             </TooltipProvider>
+                                //         </div>
+                                //     </CardContent>
+                                // </Card>
                             ))}
                         </div>
                     ) : (<h2 className="text-2xl">No images found</h2>)}
@@ -292,7 +310,7 @@ function ImageInfoList() {
             {showError && <ErrorWindow message={error} onClose={handleCloseError} />}
             {showDetails && <ImageInfoDetails id={currentID} onClose={handleCloseDetails} />}
             {showSelectedImage && <ImageWindow filename={selectedImage.filename} id={selectedImage.id} onClose={handleCloseSelectedImage}/>}
-            {showConfirmation && <ConfirmWindow message={`delete ${selectedItem.filename}`} onClose={handleCancelConfirmation} onConfirm={handleConfirmConfirmation}/>}
+            {showConfirmation && <ConfirmWindow message={`${t("deleteFileConfirmation")} ${selectedItem.filename}`} onClose={handleCancelConfirmation} onConfirm={handleConfirmConfirmation}/>}
         </div>
     );
 }

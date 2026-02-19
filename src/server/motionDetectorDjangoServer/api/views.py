@@ -1,21 +1,23 @@
 import os
 import sys
+import time
 
 from django.http import HttpResponse
 from rest_framework.permissions import IsAuthenticated
-
 from auth_manager.authentication import CookieTokenAuthentication
 from auth_manager.serializers import UsersSerializer
 from rest_framework import viewsets
 from rest_framework.pagination import PageNumberPagination
 from .serializers import *
 from auth_manager.permissions import AdminWritePermission
-from rest_framework.decorators import action
-from rest_framework.response import Response
 from rest_framework import status, filters
-import mimetypes, os
 from django.http import FileResponse, Http404
-from django.conf import settings
+from PIL import Image
+from django.http import HttpResponse
+from rest_framework.decorators import action
+from rest_framework import status
+from rest_framework.response import Response
+import io, os, mimetypes
 
 class PaginationClass(PageNumberPagination):
     page_size = 10
@@ -287,6 +289,44 @@ class ImageInfoViewSet(viewsets.ModelViewSet):
 
         else:
             raise PermissionDenied("User does not have access to this image")
+
+    @action(detail=True, methods=['get'], url_path="get-thumbnail")
+    def get_thumbnail(self, request, pk=None):
+        try:
+            image = ImageInfo.objects.get(id=pk)
+        except ImageInfo.DoesNotExist:
+            return Response({"success": False, "error": "Image does not exist"}, status=status.HTTP_404_NOT_FOUND)
+
+        user = request.user
+        role = user.role
+        path = image.storage.path
+
+        if role not in ["sup", "admin", "user"]:
+            raise PermissionDenied("User does not have access to this image")
+
+        if role == "admin" and user not in image.camera.admins.all():
+            raise PermissionDenied("User does not have access to this image")
+
+        if role == "user" and user != image.camera.user:
+            raise PermissionDenied("User does not have access to this image")
+
+        if not os.path.exists(path):
+            return Response({"success": False, "error": "Cannot find image"}, status=status.HTTP_404_NOT_FOUND)
+
+
+        try:
+            thumb_size = (300, 300)
+            with Image.open(path) as img:
+                img.thumbnail(thumb_size)
+                buf = io.BytesIO()
+                img_format = img.format if img.format else "JPEG"
+                img.save(buf, format=img_format)
+                buf.seek(0)
+
+                mime = mimetypes.guess_type(path)[0] or "image/jpeg"
+                return HttpResponse(buf, content_type=mime)
+        except Exception as e:
+            return Response({"success": False, "error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
     # deleting corresponding file

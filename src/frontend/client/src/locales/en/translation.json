@@ -62,5 +62,21 @@
   "model": "TensorFlow model",
   "wasProcessed": "Was processed",
   "saveImage": "Save image",
-  "loadingImage": "Loading image"
+  "loadingImage": "Loading image",
+  "imageDetailsTitle": "Image Details",
+  "changeFilename": "Change filename",
+  "conf": "Confidence",
+  "person": "Person count",
+  "timestamp": "Timestamp",
+  "filenameChangeConf": "Filename has been changed",
+  "enterNewFilename": "Enter new filename",
+  "cancel": "Cancel",
+  "saveChanges": "Save Changes",
+  "uSure": "Are you sure?",
+  "action": "This action will ",
+  "cantUndone": "This action cannot be undone",
+  "confirm": "Confirm",
+  "deleteFileConfirmation": "delete file ",
+  "logoutAllLow": "logout all users",
+  "error": "An error occurred"
 }

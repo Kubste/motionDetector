@@ -77,7 +77,9 @@ function ImageWindow({id, filename, onClose}) {
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-md p-4">
             <div ref={modalRef} className="p-0 min-w-[450px]">
-            <Card className="relative flex flex-col w-full max-w-5xl max-h-[90vh] p-6 rounded-2xl shadow-2xl overflow-auto no-scrollbar bg-white/90 dark:bg-slate-800/80 backdrop-blur-lg">
+            <Card className="relative flex flex-col w-full max-w-5xl max-h-[90vh] p-6 rounded-2xl shadow-2xl overflow-auto no-scrollbar
+                bg-white/90 bg-gradient-to-br from-white/80 via-white/60
+                to-white/40 dark:from-cyan-800/10 dark:via-indigo-600/10 dark:to-violet-900/20 backdrop-blur-2xl">
                 <CardHeader className="flex justify-between items-center">
                     <CardTitle className="text-lg font-semibold">{filename}</CardTitle>
                     <Button variant="ghost" size="icon" className="hover:cursor-pointer" onClick={onClose}>✕</Button>
@@ -86,7 +88,7 @@ function ImageWindow({id, filename, onClose}) {
                 <CardContent className="flex justify-center items-center mt-4">
                     {src ? (<img src={src}
                                  alt={filename}
-                                 className="rounded-xl shadow-lg max-h-[70vh] w-auto object-contain hover:scale-105 transition-transform hover:cursor-pointer"
+                                 className="rounded-xl shadow-lg max-h-[1200px] w-[1600px] object-contain hover:scale-105 transition-transform hover:cursor-pointer"
                                  onClick={() => window.open(src, "_blank")}
                                  onError={() => {setError(`Failed to load ${filename}`); setShowError(true);}}/>
                     ) : (<div className="flex justify-center items-center gap-6">

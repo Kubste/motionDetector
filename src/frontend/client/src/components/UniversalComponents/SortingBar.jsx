@@ -8,7 +8,8 @@ function SortingBar({onChangeField, onChangeOrder, selectedOptionName, selectedO
     const { t } = useTranslation();
 
     return (
-        <Card className="w-100 bg-white/80 dark:bg-slate-800/70 backdrop-blur-md border-slate-200 dark:border-slate-700/50 rounded-2xl shadow-md p-2">
+        <Card className="w-100 bg-white/80 bg-gradient-to-br from-white/80 via-white/60 to-white/40 dark:from-cyan-800/10
+            dark:via-indigo-600/10 dark:to-violet-900/20 rounded-2xl shadow-md p-2">
             <CardHeader className="flex flex-col gap-3">
                 <CardTitle className="text-sm font-medium text-slate-700 dark:text-slate-300">{t("orderTitle")}</CardTitle>
 

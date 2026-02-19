@@ -92,7 +92,8 @@ function TopBar({isLoggedIn}) {
 
     return (
         <div>
-            <div className="sticky top-0 z-50 w-full backdrop-blur-md bg-cyan-100 dark:bg-slate-900/70 border-b border-slate-200 dark:border-slate-700">
+            <div className="sticky top-0 z-50 w-full bg-gradient-to-br from-white/80 via-white/60 to-white/40
+                dark:from-cyan-800/10 dark:via-indigo-600/10 dark:to-violet-900/20 backdrop-blur-2xl">
                 <div className="mx-auto px-6 py-4 flex items-center justify-between">
                     <div className="flex flex-col cursor-pointer" onClick={() => navigate("/")}>
 
@@ -138,7 +139,7 @@ function TopBar({isLoggedIn}) {
                     onClose={handleCloseError}</ErrorWindow>)}
 
             {showConfirmation && (
-                <ConfirmWindow message="log out all users"
+                <ConfirmWindow message={t("logoutAllLow")}
                     onClose={handleCloseConfirmation}
                     onConfirm={handleLogoutAll}></ConfirmWindow>)}
         </div>

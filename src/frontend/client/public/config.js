@@ -1,4 +1,5 @@
 window.RUNTIME_CONFIG = {
     SERVER_IP: "motiondetector.test",
-    DEBUG: Boolean(false)
+    DEBUG: Boolean(true),
+    PROTOCOL: "https"
 };
