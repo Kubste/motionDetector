@@ -8,9 +8,12 @@ import {Button} from "@/components/ui/button.js";
 import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select.js";
 import {useTranslation} from "react-i18next";
 import {Spinner} from "@/components/ui/spinner.js";
+import {LuArrowLeft} from "react-icons/lu";
+import {useNavigate} from "react-router-dom";
 
 function RegisterWindow() {
     const { t } = useTranslation();
+    const navigate = useNavigate();
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
@@ -76,6 +79,12 @@ function RegisterWindow() {
                 via-white/60 to-white/40 dark:from-cyan-800/10 dark:via-indigo-600/10 dark:to-violet-900/20">
 
                 <CardHeader className="space-y-1 text-center">
+                    <Button size="icon"
+                            variant="ghost"
+                            onClick={() => navigate("/")}
+                            className="absolute left-4 top-4 rounded-full"><LuArrowLeft className="size-4" />
+                    </Button>
+
                     <CardTitle className="text-2xl font-semibold">{t("registerTitle")}</CardTitle>
                     <CardDescription>{t("registerDesc")}</CardDescription>
                 </CardHeader>
@@ -163,12 +172,15 @@ function RegisterWindow() {
                                 </Select>
                             </div>)}
 
-                        <Button type="submit"
-                            className="w-full mt-4"
-                            disabled={loading}>
-                            {loading ? t("registerButtonInProgress") : t("registerButton")}
-                            {loading && <Spinner/>}
-                        </Button>
+                        <div className="space-y-2 flex items-center justify-center w-full">
+                            <Button type="submit"
+                                    className="w-2/5 mt-4 "
+                                    disabled={loading}>
+                                {loading ? t("registerButtonInProgress") : t("registerButton")}
+                                {loading && <Spinner/>}
+                            </Button>
+                        </div>
+
 
                         {showRegisterConfirmation && (
                             <div className="mt-4 text-center text-green-600 font-medium hover:cursor-pointer hover:underline" onClick={() => setShowRegisterConfirmation(false)}>

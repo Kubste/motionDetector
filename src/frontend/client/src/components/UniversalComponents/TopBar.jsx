@@ -143,56 +143,56 @@ function TopBar({isLoggedIn}) {
                         <div className="flex items-center gap-3">
                             <Select value={i18n.language}
                                     onValueChange={(value) => {handleLanguageToggle(value)}}>
-                                <SelectTrigger className="w-40">
+                                <SelectTrigger className="w-40 hover:cursor-pointer">
                                     <SelectValue placeholder="Language" />
                                 </SelectTrigger>
                                 <SelectContent position="popper">
                                     <SelectGroup>
                                         <SelectLabel>{t("language")}</SelectLabel>
                                         <SelectItem value="en">
-                                            <div className="flex items-center gap-2">
+                                            <div className="flex items-center gap-2 hover:cursor-pointer">
                                                 <IoLanguage className="inline-block" />
                                                 <span>{t("en")}</span>
                                             </div>
                                         </SelectItem>
                                         <SelectItem value="pl">
-                                            <div className="flex items-center gap-2">
+                                            <div className="flex items-center gap-2 hover:cursor-pointer">
                                                 <IoLanguage className="inline-block" />
                                                 <span>{t("pl")}</span>
                                             </div>
                                         </SelectItem>
                                         <SelectItem value="de">
-                                            <div className="flex items-center gap-2">
+                                            <div className="flex items-center gap-2 hover:cursor-pointer">
                                                 <IoLanguage className="inline-block" />
                                                 <span>{t("de")}</span>
                                             </div>
                                         </SelectItem>
                                         <SelectItem value="es">
-                                            <div className="flex items-center gap-2">
+                                            <div className="flex items-center gap-2 hover:cursor-pointer">
                                                 <IoLanguage className="inline-block" />
                                                 <span>{t("es")}</span>
                                             </div>
                                         </SelectItem>
                                         <SelectItem value="fr">
-                                            <div className="flex items-center gap-2">
+                                            <div className="flex items-center gap-2 hover:cursor-pointer">
                                                 <IoLanguage className="inline-block" />
                                                 <span>{t("fr")}</span>
                                             </div>
                                         </SelectItem>
                                         <SelectItem value="pt">
-                                            <div className="flex items-center gap-2">
+                                            <div className="flex items-center gap-2 hover:cursor-pointer">
                                                 <IoLanguage className="inline-block" />
                                                 <span>{t("pt")}</span>
                                             </div>
                                         </SelectItem>
                                         <SelectItem value="uk">
-                                            <div className="flex items-center gap-2">
+                                            <div className="flex items-center gap-2 hover:cursor-pointer">
                                                 <IoLanguage className="inline-block" />
                                                 <span>{t("uk")}</span>
                                             </div>
                                         </SelectItem>
                                         <SelectItem value="zh">
-                                            <div className="flex items-center gap-2">
+                                            <div className="flex items-center gap-2 hover:cursor-pointer">
                                                 <IoLanguage className="inline-block" />
                                                 <span>{t("zh")}</span>
                                             </div>

@@ -84,6 +84,7 @@ export function LoginForm({
               <Field>
                 <FieldLabel htmlFor="username">{t("username")}</FieldLabel>
                 <Input
+                  aria-invalid={!!error}
                   id="username"
                   type="text"
                   placeholder={t("username")}
@@ -102,6 +103,7 @@ export function LoginForm({
                   </a>
                 </div>
                 <Input
+                    aria-invalid={!!error}
                     id="password"
                     type="password"
                     onChange={(event) => setPassword(event.target.value)}

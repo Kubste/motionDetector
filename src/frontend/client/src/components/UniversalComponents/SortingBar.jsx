@@ -20,7 +20,7 @@ function SortingBar({onChangeField, onChangeOrder, selectedOptionName, selectedO
                         <SelectTrigger className="w-48">
                             <SelectValue placeholder="Field name" />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent position="popper">
                             <SelectGroup>
                                 {options.map((opt) => (
                                     <SelectItem key={opt.value} value={opt.value}>
@@ -36,7 +36,7 @@ function SortingBar({onChangeField, onChangeOrder, selectedOptionName, selectedO
                         <SelectTrigger className="w-36">
                             <SelectValue placeholder="Order" />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent position="popper">
                             <SelectGroup>
                                 <SelectItem value="ascending">{t("asc")}</SelectItem>
                                 <SelectItem value="descending">{t("desc")}</SelectItem>
