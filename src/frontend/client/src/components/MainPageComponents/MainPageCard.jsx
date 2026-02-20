@@ -12,11 +12,10 @@ function MainPageCard({Icon, description, onClick}) {
         cursor-pointer
         transition-all duration-300
         hover:-translate-y-2 hover:shadow-xl hover:bg-cyan-200 dark:hover:bg-white/10
-
         before:absolute before:inset-0 before:rounded-2xl before:p-[1px]
         before:bg-gradient-to-br
-        before:from-indigo-300/25 before:via-purple-200/25 before:to-cyan-200/25
-        dark:before:from-cyan-500/30 dark:before:via-indigo-500/20 dark:before:to-violet-500/30
+        before:from-emerald-200/20 before:via-sky-200/30 before:to-amber-100/10
+        dark:before:from-blue-950/95 dark:before:via-slate-950/95 dark:before:to-violet-950/95
         before:opacity-60 dark:before:opacity-40 before:pointer-events-none
 
         after:absolute after:inset-[1px] after:rounded-2xl after:border after:border-white/20
@@ -24,8 +23,8 @@ function MainPageCard({Icon, description, onClick}) {
 
             <div className="
           flex items-center justify-center size-14 rounded-full
-          bg-gradient-to-br from-indigo-200/40 via-purple-200/30 to-cyan-200/30
-          dark:bg-gradient-to-br dark:from-cyan-500/20 dark:via-indigo-500/20 dark:to-violet-500/20
+          bg-gradient-to-br from-emerald-200/90 via-sky-200/70 to-amber-100/60
+          dark:bg-gradient-to-br dark:from-blue-950/50 dark:via-slate-450/50 dark:to-violet-650/50
           border border-white/20 dark:border-white/10
           transition-transform duration-300
           group-hover:scale-110 group-hover:rotate-6">

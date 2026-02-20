@@ -9,7 +9,7 @@ import React from "react";
 function ChangeBox({name, val, newVal, setNewVal, showChangeConfirmation, setShowChangeConfirmation, confirmationLabel, showChange, setShowChange, error, setError, setShowError, onConfirm, placeholder}) {
 
     return (
-        <div className={`group relative gap-5 flex items-center justify-between rounded-xl border bg-card bg-transparent px-6 py-4 shadow-sm transition-all hover:shadow-md
+        <div className={`group relative gap-5 flex items-center justify-between rounded-xl border bg-transparent px-6 py-4 shadow-sm transition-all hover:shadow-md
         ${showChangeConfirmation && "border-green-600"} ${error && "border-red-600"}`}>
 
             <div className="flex flex-col gap-1">

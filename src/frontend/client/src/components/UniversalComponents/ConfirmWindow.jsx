@@ -8,7 +8,8 @@ function ConfirmWindow({message, onClose, onConfirm}) {
 
     return (
         <Dialog open onOpenChange={onClose}>
-            <DialogContent className="max-w-mdrounded-3xl bg-gradient-to-br dark:from-cyan-800/15 dark:via-indigo-600/10 dark:to-violet-900/10
+            <DialogContent className="max-w-mdrounded-3xl bg-gradient-to-br from-emerald-200/80 via-sky-200/80 to-amber-100/80
+            dark:from-blue-950/30 dark:via-slate-950/30 dark:to-violet-950/30
                 backdrop-blur-2xl border border-white/20 dark:border-white/10 shadow-[0_25px_70px_-20px_rgba(0,0,0,0.45)]">
                 <DialogHeader className="items-center text-center space-y-4">
 

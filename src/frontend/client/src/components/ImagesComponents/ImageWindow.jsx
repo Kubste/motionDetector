@@ -78,8 +78,8 @@ function ImageWindow({id, filename, onClose}) {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-md p-4">
             <div ref={modalRef} className="p-0 min-w-[450px]">
             <Card className="relative flex flex-col w-full max-w-5xl max-h-[90vh] p-6 rounded-2xl shadow-2xl overflow-auto no-scrollbar
-                bg-white/90 bg-gradient-to-br from-white/80 via-white/60
-                to-white/40 dark:from-cyan-800/10 dark:via-indigo-600/10 dark:to-violet-900/20 backdrop-blur-2xl">
+                bg-white/90 bg-gradient-to-br from-emerald-200/80
+                via-sky-200/80 to-amber-100/80 dark:from-cyan-800/10 dark:via-indigo-600/10 dark:to-violet-900/20 backdrop-blur-2xl">
                 <CardHeader className="flex justify-between items-center">
                     <CardTitle className="text-lg font-semibold">{filename}</CardTitle>
                     <Button variant="ghost" size="icon" className="hover:cursor-pointer" onClick={onClose}>✕</Button>

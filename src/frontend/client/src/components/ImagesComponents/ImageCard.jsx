@@ -14,8 +14,7 @@ function ImageCard({keyVal, item, index, onHandleShowImage, onHandleConvertTimes
 
     return(
         <Card key={keyVal}
-              className="group w-58 relative bg-gradient-to-br from-white/80 via-white/60 to-white/40 dark:from-cyan-800/10
-                                    dark:via-indigo-600/10 dark:to-violet-900/20 backdrop-blur-md border-2 border-slate-200/md dark:border-slate-700/60
+              className="group w-58 relative bg-gradient-to-br from-emerald-200/90 via-sky-200/70 to-amber-100/60 dark:from-blue-950/50 dark:via-slate-950/50 dark:to-violet-950/50 backdrop-blur-md border-2 border-slate-200/md dark:border-slate-700/60
                                     rounded-2xl shadow-sm transition-all hover:translate-y-1 hover:shadow-2xl hover:bg-white/90 dark:hover:bg-slate-700/30
                                     gap-3 pt-0 pb-2 pl-0 pr-0">
 

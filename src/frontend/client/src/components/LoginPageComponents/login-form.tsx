@@ -70,8 +70,7 @@ export function LoginForm({
   // @ts-ignore
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card className="bg-gradient-to-br from-white/80 via-white/60 to-white/40 dark:from-cyan-800/10
-            dark:via-indigo-600/10 dark:to-violet-900/20">
+      <Card className="bg-gradient-to-br from-emerald-200/20 via-sky-200/30 to-amber-100/10 dark:from-blue-950/30 dark:via-slate-950/30 dark:to-violet-950/30">
         <CardHeader>
           <CardTitle>{t("loginTitle")}</CardTitle>
           <CardDescription>

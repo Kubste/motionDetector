@@ -80,8 +80,8 @@ function ImageInfoDetails({id, onClose}) {
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-md p-6 opacity-100 backdrop-saturate-150 transition-all duration-300">
-            <div ref={modalRef} className="relative w-full max-w-4xl max-h-[95vh] overflow-auto no-scrollbar p-4 rounded-3xl bg-gradient-to-br from-white/80 via-white/60
-                to-white/40 dark:from-cyan-800/15 dark:via-indigo-600/15 dark:to-violet-900/25 backdrop-blur-2xl border border-white/20 dark:border-white/10
+            <div ref={modalRef} className="relative w-full max-w-4xl max-h-[95vh] overflow-auto no-scrollbar p-4 rounded-3xl bg-gradient-to-br from-emerald-200/80
+            via-sky-200/80 to-amber-100/80 dark:from-cyan-800/15 dark:via-indigo-600/15 dark:to-violet-900/25 backdrop-blur-2xl border border-white/20 dark:border-white/10
                 shadow-[0_25px_70px_-20px_rgba(0,0,0,0.45)] text-black dark:text-white transition-all duration-300 ease-out">
 
                 <Card className="bg-transparent shadow-none p-2">

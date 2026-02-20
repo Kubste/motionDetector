@@ -14,12 +14,11 @@
     }
 
     body {
-        /*@apply min-h-screen bg-gradient-to-br from-stone-50 via-blue-100 to-cyan-200 text-black;*/
         background:
-                radial-gradient(700px at 20% 15%, rgba(199,210,254,.20), transparent),
-                radial-gradient(600px at 80% 25%, rgba(224,231,255,.18), transparent),
-                radial-gradient(500px at 50% 85%, rgba(203,213,225,.15), transparent),
-                #e5e7f0;
+                radial-gradient(700px at 20% 15%, rgba(253,186,116,0.22), transparent),
+                radial-gradient(600px at 80% 25%, rgba(251,113,133,0.2), transparent),
+                radial-gradient(500px at 50% 85%, rgba(252,211,77,0.18), transparent),
+                #fff7ed;
         background-attachment: fixed;
         background-repeat: no-repeat;
     }

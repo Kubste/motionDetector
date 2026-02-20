@@ -15,8 +15,8 @@ function ChangePasswordWindow({handleSubmit, oldPassword, newPassword, setOldPas
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
             <div className="animate-in zoom-in-95 fade-in duration-200">
-                <Card className={`w-[420px] rounded-3xl border-border/40 bg-background/80 backdrop-blur-xl shadow-2xl bg-gradient-to-br from-white/80 via-white/60
-                    to-white/40 dark:from-blue-950/25 dark:via-slate-800/25 dark:to-violet-900/25 
+                <Card className={`w-[420px] rounded-3xl border-border/40 bg-background/80 backdrop-blur-xl shadow-2xl bg-gradient-to-br from-emerald-200/80
+            via-sky-200/80 to-amber-100/80 dark:from-blue-950/50 dark:via-slate-950/50 dark:to-violet-950/50
                     ${showPasswordChangeConfirmation && "border-green-600"} ${error && "border-red-600"}`}>
 
                     <CardHeader className="relative text-center space-y-1">

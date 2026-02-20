@@ -156,8 +156,8 @@ function UserInfo() {
 
     return (
         <div className="flex items-center justify-center min-h-[80vh] px-6">
-            <Card className="w-full max-w-6xl min-w-2xl rounded-4xl border-border/40 bg-background/70 backdrop-blur-xl shadow-2xl bg-gradient-to-br from-white/80
-                via-white/60 to-white/40 dark:from-cyan-800/10 dark:via-indigo-600/10 dark:to-violet-900/20">
+            <Card className="w-full max-w-6xl min-w-2xl rounded-4xl border-border/40 bg-background/70 backdrop-blur-xl shadow-2xl bg-gradient-to-br from-emerald-200/30
+            via-sky-200/30 to-amber-100/30 dark:from-blue-950/30 dark:via-slate-950/30 dark:to-violet-950/30">
 
                 <CardHeader className="space-y-1 text-center">
 

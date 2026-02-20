@@ -89,8 +89,8 @@ function ForgotPasswordWindow({onClose}) {
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
             <div ref={modalRef} className="p-0 min-w-[450px]">
-            <Card className="w-full max-w-md p-6 rounded-3xl bg-gradient-to-br from-white/80 via-white/60 to-white/40 dark:from-blue-950
-            dark:via-slate-800 dark:to-violet-900">
+            <Card className="w-full max-w-md p-6 rounded-3xl bg-gradient-to-br from-emerald-100/90 via-sky-100/95 to-amber-200/95 dark:from-blue-950
+            dark:via-slate-950 dark:to-violet-950">
                 <CardHeader>
                     <CardTitle className="text-center">{t("resetPasswordTitle")}</CardTitle>
                     <CardDescription className="text-center">

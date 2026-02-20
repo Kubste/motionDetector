@@ -132,7 +132,7 @@ function TopBar({isLoggedIn}) {
 
     return (
         <div>
-            <div className="sticky top-0 z-50 w-full bg-gradient-to-br from-white/80 via-white/60 to-white/40
+            <div className="sticky top-0 z-50 w-full bg-gradient-to-br from-emerald-200/90 via-sky-200/70 to-amber-100/60
                 dark:from-cyan-800/10 dark:via-indigo-600/10 dark:to-violet-900/20 backdrop-blur-2xl">
                 <div className="mx-auto px-6 py-4 flex items-center justify-between">
                     <div className="flex flex-col cursor-pointer" onClick={() => navigate("/")}>
